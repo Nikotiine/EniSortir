@@ -67,7 +67,7 @@ class AppFixtures extends Fixture
             ->setLastName('admin')
             ->setEmail('admin@admin.fr')
             ->setCampus($allCampus[mt_rand(0,count($allCampus)-1)])
-            ->setRoles(['ROLE_ADMIN'])
+            ->setIsAdmin(true)
             ->setIsActive(true)
             ->setPseudo('SuperTOTO')
             ->setPhoneNumber('0606060606');
@@ -79,7 +79,6 @@ class AppFixtures extends Fixture
             $user->setFirstName($this->faker->firstName())
                 ->setLastName($this->faker->lastName())
                 ->setEmail($this->faker->email())
-                ->setRoles(['ROLE_USER'])
                 ->setCampus($allCampus[mt_rand(0,count($allCampus)-1)])
                 ->setPseudo($this->faker->userName());
             $user->setPlainPassword('password');

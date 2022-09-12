@@ -26,7 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $email = null;
-
+    //a supprimer
     #[ORM\Column]
     private array $roles = [];
 
@@ -63,11 +63,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isActive = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updateAt = null;
 
     #[ORM\OneToMany(mappedBy: 'organizer', targetEntity: Event::class, orphanRemoval: true)]
     private Collection $events;
@@ -78,11 +73,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?string $plainPassword =null;
 
+    #[ORM\Column]
+    private ?bool $isAdmin = null;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
         $this->setIsActive(true);
-        $this->createdAt = new \DateTimeImmutable();
+        $this->setIsAdmin(false);
     }
 
     public function getId(): ?int
@@ -125,11 +123,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        if($this->isIsAdmin()) {
+            return ['ROLE_ADMIN', 'ROLE_USER'];
+        } else {
+            return ['ROLE_USER'];
+        }
     }
 
     public function setRoles(array $roles): self
@@ -234,29 +232,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdateAt(): ?\DateTimeImmutable
-    {
-        return $this->updateAt;
-    }
-
-    public function setUpdateAt(?\DateTimeImmutable $updateAt): self
-    {
-        $this->updateAt = $updateAt;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Event>
@@ -278,12 +253,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeEvent(Event $event): self
     {
-        if ($this->events->removeElement($event)) {
-            // set the owning side to null (unless already changed)
-            if ($event->getOrganizer() === $this) {
-                $event->setOrganizer(null);
-            }
-        }
+        $this->events->removeElement($event);
+
 
         return $this;
     }
@@ -316,4 +287,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = $plainPassword;
     }
 
+    public function isIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): self
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+    
 }

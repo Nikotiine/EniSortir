@@ -29,13 +29,13 @@ class Location
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $street = null;
-
+    //mettre nullable
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Assert\Length(max: 10)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $latitude = null;
-
+    //mettre nullable
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Assert\Length(max: 10)]
     #[Assert\NotBlank()]
@@ -46,11 +46,7 @@ class Location
     #[ORM\JoinColumn(nullable: false)]
     private ?City $city = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Event::class, orphanRemoval: true)]
     private Collection $events;
@@ -58,7 +54,7 @@ class Location
     public function __construct()
     {
         $this->events = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+
     }
 
     public function getId(): ?int
@@ -126,29 +122,7 @@ class Location
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Event>

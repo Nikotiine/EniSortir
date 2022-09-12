@@ -33,16 +33,11 @@ class City
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: Location::class, orphanRemoval: true)]
     private Collection $locations;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
         $this->locations = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+
     }
 
     public function getId(): ?int
@@ -104,27 +99,5 @@ class City
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
 }

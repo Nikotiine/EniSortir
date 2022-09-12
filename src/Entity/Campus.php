@@ -24,8 +24,7 @@ class Campus
     #[Assert\NotNull()]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+
 
     #[ORM\OneToMany(mappedBy: 'campus', targetEntity: User::class, orphanRemoval: true)]
     private Collection $users;
@@ -37,7 +36,7 @@ class Campus
     {
         $this->users = new ArrayCollection();
         $this->events = new ArrayCollection();
-        $this->createdAt =new \DateTimeImmutable();
+
     }
 
     public function getId(): ?int
@@ -57,17 +56,6 @@ class Campus
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, User>

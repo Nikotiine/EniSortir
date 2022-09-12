@@ -26,6 +26,8 @@ class Event
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank()]
+    #[Assert\NotNull()]
     private ?\DateTimeImmutable $startAt = null;
 
     #[ORM\Column]
@@ -44,11 +46,6 @@ class Event
     #[Assert\Positive()]
     private ?int $duration = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
@@ -72,7 +69,7 @@ class Event
     public function __construct()
     {
         $this->registration = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+
     }
 
     public function getId(): ?int
@@ -152,29 +149,6 @@ class Event
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
 
     public function getOrganizer(): ?User
     {
@@ -240,6 +214,7 @@ class Event
     {
         return $this->campus;
     }
+
 
     public function setCampus(?Campus $campus): self
     {
