@@ -101,32 +101,6 @@ class UserModificationType extends AbstractType
                     new Assert\NotNull()
                 ],
             ])
-            ->add('plainPassword',RepeatedType::class, [
-                'type'=>PasswordType::class,
-                'first_options'=>[
-                    'attr' => [
-                    'class' => 'form-control',
-                ],
-                    'label' => 'Mot de Passe',
-                    'label_attr' => [
-                        'class' => 'form-label mt-4',
-                    ],
-                ],
-                'second_options'=>[
-                    'attr' => [
-                        'class' => 'form-control',
-                    ],
-                    'label' => 'Confirmer mot de passe',
-                    'label_attr' => [
-                        'class' => 'form-label mt-4',
-                    ],
-                'invalid_message'=>'les mots de passe sont differents',
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\NotNull()
-                ],
-                ],
-            ])
             ->add('campus', EntityType::class, [
             'class' => Campus::class,
             'attr'=>['class'=>'form-select'],
