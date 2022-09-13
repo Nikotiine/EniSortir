@@ -19,11 +19,10 @@ class Campus
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\Length(min: 2,max: 50)]
+    #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $name = null;
-
 
 
     #[ORM\OneToMany(mappedBy: 'campus', targetEntity: User::class, orphanRemoval: true)]
@@ -115,5 +114,10 @@ class Campus
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }
