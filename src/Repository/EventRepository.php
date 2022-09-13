@@ -20,6 +20,14 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
+//    public function findEventsDefault(){
+//        $queryBuilder = $this->createQueryBuilder('e');
+//        $queryBuilder ->andWhere('e.campus = 1');
+//        $query=$queryBuilder->getQuery();
+//
+//        $result = $query->getResult();
+//        return $result;
+//    }
 
     public function add(Event $entity, bool $flush = false): void
     {
