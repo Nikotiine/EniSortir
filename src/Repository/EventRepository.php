@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\Status;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,14 +22,58 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
-//    public function findEventsDefault(){
-//        $queryBuilder = $this->createQueryBuilder('e');
-//        $queryBuilder ->andWhere('e.campus = 1');
-//        $query=$queryBuilder->getQuery();
+//Solution 1
+//    public function getEventsWithParams(int $statusPassee, int $statusAnnulee)
+//    {
+//        $queryBuilder = $this->createQueryBuilder('e')
+//                ->andWhere('e.status != :statusPassee')
+//                ->setParameter('statusPassee',$statusPassee)
 //
+//                ->andWhere('e.status!= :statusAnnulee')
+//                ->setParameter('statusAnnulee',$statusAnnulee)
+//
+//                ->orderBy('e.startAt','ASC');
+//        $query=$queryBuilder->getQuery();
 //        $result = $query->getResult();
 //        return $result;
 //    }
+    public function getEventsWithParams($parameters,User $fakeUser)
+    {
+        $queryBuilder = $this->createQueryBuilder('e');
+        if(isset($parameters['asOrganizer'])){
+            $queryBuilder
+                ->orWhere('e.organizer = :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
+
+        }
+        if(isset($parameters['registred'])){
+            $queryBuilder
+                ->join('e.registration','u')
+                ->orWhere('u = :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
+
+        }
+        if(isset($parameters['notRegistred'])){
+            $queryBuilder
+                ->join('e.registration','us')
+                ->orWhere('us = :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
+
+        }
+        $queryBuilder->orderBy('e.startAt','ASC');
+        $query=$queryBuilder->getQuery();
+        $result = $query->getResult();
+        return $result;
+
+//            ->andWhere('e.status != :statusPassee')
+//            ->setParameter('statusPassee',$statusPassee)
+//
+//            ->andWhere('e.status!= :statusAnnulee')
+//            ->setParameter('statusAnnulee',$statusAnnulee)
+//
+
+    }
+
 
     public function add(Event $entity, bool $flush = false): void
     {
