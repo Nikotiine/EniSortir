@@ -2,81 +2,79 @@
 
 namespace App\Controller;
 
-use App\Entity\Status;
+use App\Entity\Event;
 use App\Entity\User;
+use App\Form\EventsListType;
 use App\Repository\EventRepository;
-use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class EventController extends AbstractController
 {
-    //solution 1
-//    #[Route('/event', name: 'event_lister', methods: 'GET')]
-//    public function lister(
-//        EventRepository $eventRepository,
-//        StatusRepository $statusRepository,
-//        UserRepository $userRepository
-//    ): Response
-//    {
-//        $statusPassee=$statusRepository->findOneBy(['wording'=>'Passée']);
-//        $statusAnnulee=$statusRepository->findOneBy(['wording'=>'Annulée']);
-//        $events = $eventRepository->getEventsWithParams($statusPassee->getId(),$statusAnnulee->getId());
-//
-//        $fakeUser=$userRepository->find(82);//TODO remplacer $fakeUser par getUser()
-//        $statusCreer=$statusRepository->findOneBy(['wording'=>'Créer']);
-//
-//        for ($i=0 ; $i<count($events);$i++){
-//            if(($events[$i]->getStatus()==$statusCreer) && ($events[$i]->getOrganizer() !== $fakeUser) ){
-//                unset($events[$i]);
-//            }
-//        }
-//
-//        return $this->render('event/lister.html.twig', [
-//            "events"=>$events,
-//        ]);
-
-
-
-        //if ("je suis l'organisateur" est coché) {$parameters["asOrganiser"] = true}
-        //if ("je suis inscrit" est coché) {$parameters["registred"] = true}
-        //if ("sorties auxquelles je ne suis pas inscrit" est coché){$parameters["notRegistred"]=true}
-
-        //if ("sorties passées" est coché) {$parameters["passed"]=true}
-        //$parameters["campus"]="choix du campus";
-        //if ("recherche par nom de sortie" rensignée) {$parameters["seacrhByKeyWords"]="laSaisie"}
-        //if ("date début renseignée") {$parameters["dateAfter"]="date choisie"}
-        //if ("date fin renseignée") {$parameters["dateBefore"]="date choisie"}
-        //appel de la méthode getEventsWithParams($parameters)
-
-    #[Route('/event', name: 'event_lister', methods: 'GET')]
-    public function lister(
+    #[Route('/event', name: 'event_list', methods: ['GET', 'POST'])]
+    public function list(
         EventRepository $eventRepository,
-        StatusRepository $statusRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        Request $request,
     ): Response
     {
-        $fakeUser=$userRepository->find(90);//TODO remplacer $fakeUser par getUser()
+        $fakeUser=$userRepository->find(2);//TODO remplacer $fakeUser par getUser()
+        $events=[];
 
-        $parameters["asOrganizer"]=true;
-        $parameters["registred"]=true;
-        $parameters["notRegistred"]=true;
-        $parameters=[];
-        $events = $eventRepository->getEventsWithParams($parameters, $fakeUser);
-
-
-        $statusCreer=$statusRepository->findOneBy(['wording'=>'Créer']);
+        $event=new Event();
+        $form = $this->createForm(EventsListType::class,$event);
+        $form->handleRequest($request);
+        if($form->isSubmitted()){
+            dump($request->request->get('checkBoxOrganizer'));
+//            $choix = $request->query->get('checkBoxOrganizer');
+//            dump($choix);
+            //TODO : récupérer les params dans un tableau associatif et le passer en paramètre d'une methode du repo
+        }else{
+            $this->listEventsAsOrganizer($events, $eventRepository, $fakeUser);
+            $this->listEventsAsRegistred($events, $eventRepository, $fakeUser);
+            $this->listEventsWhereNotRegistred($events, $eventRepository, $fakeUser);
+        }
 
         for ($i=0 ; $i<count($events);$i++){
-            if(($events[$i]->getStatus()==$statusCreer) && ($events[$i]->getOrganizer() !== $fakeUser) ){
+            if(($events[$i]->getStatus()->getId()==1) && ($events[$i]->getOrganizer() !== $fakeUser) ){
                 unset($events[$i]);
             }
         }
 
         return $this->render('event/lister.html.twig', [
-            "events"=>$events,
+            "events"        =>  $events,
+            "EventForm"     =>  $form->createView(),
+            "fakeUser"      =>  $fakeUser
         ]);
+    }
+//            $eventRepository->getEventsPassed($events); TODO A creer pour le 4eme checkbox ("sortie passées")
+
+    private function listEventsAsOrganizer(array &$events, EventRepository $eventRepository, ?User $fakeUser)
+    {
+        $eventsAsOrganizer= $eventRepository->getEventsAsOrganizer($fakeUser);
+        foreach ($eventsAsOrganizer as $event){
+            array_push($events, $event);
+        }
+    }
+
+    private function listEventsAsRegistred(array &$events, EventRepository $eventRepository, ?User $fakeUser)
+    {
+        $eventsAsRegistred = $eventRepository->getEventsWhereRegistred($fakeUser);
+        foreach ($eventsAsRegistred as $event){
+            if(!in_array($event,$events,true))
+                array_push($events, $event);
+        }
+    }
+
+    private function listEventsWhereNotRegistred(array &$events, EventRepository $eventRepository, ?User $fakeUser)
+    {
+        $eventsWhereNotRegistred=$eventRepository->getEventsWhereNotRegistred($fakeUser);
+        foreach ($eventsWhereNotRegistred as $event){
+            if(!in_array($event,$events,true))
+                array_push($events, $event);
+        }
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Event;
-use App\Entity\Status;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,59 +21,46 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
-//Solution 1
-//    public function getEventsWithParams(int $statusPassee, int $statusAnnulee)
-//    {
-//        $queryBuilder = $this->createQueryBuilder('e')
-//                ->andWhere('e.status != :statusPassee')
-//                ->setParameter('statusPassee',$statusPassee)
-//
-//                ->andWhere('e.status!= :statusAnnulee')
-//                ->setParameter('statusAnnulee',$statusAnnulee)
-//
-//                ->orderBy('e.startAt','ASC');
-//        $query=$queryBuilder->getQuery();
-//        $result = $query->getResult();
-//        return $result;
-//    }
-    public function getEventsWithParams($parameters,User $fakeUser)
+
+    public function getEventsAsOrganizer(User $fakeUser)
     {
-        $queryBuilder = $this->createQueryBuilder('e');
-        if(isset($parameters['asOrganizer'])){
-            $queryBuilder
-                ->orWhere('e.organizer = :fakeUser')
-                ->setParameter('fakeUser', $fakeUser);
-
-        }
-        if(isset($parameters['registred'])){
-            $queryBuilder
-                ->join('e.registration','u')
-                ->orWhere('u = :fakeUser')
-                ->setParameter('fakeUser', $fakeUser);
-
-        }
-        if(isset($parameters['notRegistred'])){
-            $queryBuilder
-                ->join('e.registration','us')
-                ->orWhere('us = :fakeUser')
-                ->setParameter('fakeUser', $fakeUser);
-
-        }
-        $queryBuilder->orderBy('e.startAt','ASC');
+        $queryBuilder = $this->createQueryBuilder('e')
+            ->andWhere('e.organizer = :fakeUser')
+            ->setParameter('fakeUser', $fakeUser)
+            ->andWhere('e.startAt > :now ')
+            ->setParameter('now', new \DateTime('now'))
+            ->orderBy('e.startAt','ASC');
         $query=$queryBuilder->getQuery();
         $result = $query->getResult();
         return $result;
 
-//            ->andWhere('e.status != :statusPassee')
-//            ->setParameter('statusPassee',$statusPassee)
-//
-//            ->andWhere('e.status!= :statusAnnulee')
-//            ->setParameter('statusAnnulee',$statusAnnulee)
-//
-
     }
-
-
+    public function getEventsWhereRegistred(User $fakeUser)
+    {
+        $queryBuilder = $this->createQueryBuilder('e')
+            ->join('e.registration','u')
+            ->addSelect('u')
+            ->andWhere('u = :fakeUser')
+            ->setParameter('fakeUser', $fakeUser)
+            ->andWhere('e.startAt > :now ')
+            ->setParameter('now', new \DateTime('now'));
+        $query=$queryBuilder->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+    public function getEventsWhereNotRegistred(?User $fakeUser)
+    {
+        $queryBuilder = $this->createQueryBuilder('e')
+            ->join('e.registration','u')
+            ->addSelect('u')
+            ->andWhere('u != :fakeUser')
+            ->setParameter('fakeUser', $fakeUser)
+            ->andWhere('e.startAt > :now ')
+            ->setParameter('now', new \DateTime('now'));
+        $query=$queryBuilder->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
     public function add(Event $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -93,28 +79,7 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Event[] Returns an array of Event objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?Event
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+
+
 }

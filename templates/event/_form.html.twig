@@ -1,0 +1,38 @@
+<h2>Filtrer les sorties</h2>
+{{ form_start(EventForm) }}
+<div class="d-flex col-12">
+    <div class="col-5">
+        <div>
+            {{  form_label(EventForm.campus) }}
+            {{ form_widget(EventForm.campus) }}
+        </div>
+        <div>
+            {{ form_label(EventForm.name) }}
+            {{ form_widget(EventForm.name) }}
+        </div>
+        <div class="d-flex justify-content-around">
+            {{ form_widget(EventForm.minDate) }}
+            {{ form_widget(EventForm.maxDate) }}
+        </div>
+    </div>
+    <div class="col-3 d-flex flex-column">
+        <div>
+        {{ form_widget(EventForm.checkBoxOrganizer) }}
+        {{ form_label(EventForm.checkBoxOrganizer) }}
+        </div>
+        <div>
+        {{ form_widget(EventForm.checkBoxRegistred) }}
+        {{ form_label(EventForm.checkBoxRegistred) }}
+        </div>
+        <div>
+        {{ form_widget(EventForm.checkBoxNotRegistred) }}
+        {{ form_label(EventForm.checkBoxNotRegistred) }}
+        </div>
+        <div>
+        {{ form_widget(EventForm.checkBoxEventsPassed) }}
+        {{ form_label(EventForm.checkBoxEventsPassed) }}
+        </div>
+    </div>
+    <button type="submit" class="col-4">Rechercher</button>
+</div>
+{{ form_end(EventForm) }}

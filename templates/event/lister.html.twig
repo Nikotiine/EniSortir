@@ -2,40 +2,8 @@
 
 {% block body %}
     <div class="w-75 mt-5 mx-auto">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Nom de la sortie</th>
-            <th scope="col">Date de sortie</th>
-            <th scope="col">Cloture inscription</th>
-            <th scope="col">inscrit/place</th>
-            <th scope="col">etat</th>
-            <th scope="col">inscrit</th>
-            <th scope="col">organisateur</th>
-            <th scope="col">action</th>
-        </thead>
-        <tbody>
-        {% for event in events %}
-            <h1></h1>
-            <tr>
-                <th>{{ event.name }}</th>
-                <td>{{ event.startAt | date("d/m/Y - H\\Hi") }}</td>
-                <td>{{ event.deadLineInscriptionAt | date("d/m/Y") }}</td>
-                <td>{{ event.registration.count }} / {{ event.maxPeople }}</td>
-                <td>{{ event.status.wording }}</td>
-                <td>a faire</td>
-{#                TODO :: décommenter ci-dessous lorsqu'on aura un user loggé#}
-{#                {% if app.user in event.registration %}#}
-{#                    <td>X</td>#}
-{#                {% else %}#}
-{#                    <td></td>#}
-{#                {% endif %}#}
-                <td>{{ event.organizer.firstName }}</td>
-                <td>a faire aussi</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        {% include 'event/_form.html.twig' %}
+        {% include 'event/_liste.html.twig' %}
     </div>
 
 {% endblock %}
