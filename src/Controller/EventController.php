@@ -13,7 +13,9 @@ class EventController extends AbstractController
     public function lister(EventRepository $eventRepository): Response
     {
         $events=$eventRepository->findAll();
+        dump($events);
 //        $events = $eventRepository->findEventsDefault();
-        return $this->render('event/lister.html.twig');
+        return $this->render('event/lister.html.twig',
+        ["events"=>$events]);
     }
 }

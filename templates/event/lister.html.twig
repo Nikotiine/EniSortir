@@ -1,9 +1,40 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% for event in events %}
-        <h1>event.name</h1>
-    {% endfor %}
+    <div class="w-75 mt-5 mx-auto">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Nom de la sortie</th>
+            <th scope="col">Date de sortie</th>
+            <th scope="col">Cloture inscription</th>
+            <th scope="col">inscrit/place</th>
+            <th scope="col">etat</th>
+            <th scope="col">inscrit</th>
+            <th scope="col">organisateur</th>
+            <th scope="col">action</th>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <h1></h1>
+            <tr>
+                <th>{{ event.name }}</th>
+                <td>{{ event.startAt | date("d/m/Y") }}</td>
+                <td>{{ event.deadLineInscriptionAt | date("d/m/Y") }}</td>
+                <td>{{ event.maxPeople }}</td>
+                <td>{{ event.status.wording }}</td>
+                <td>a faire</td>
+                <td>{{ event.organizer.firstName }}</td>
+                <td>a faire aussi</td>
+
+            </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+    </div>
+
 {% endblock %}
 
 {% block title %}
