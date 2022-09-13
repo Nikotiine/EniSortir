@@ -7,10 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -80,12 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isAdmin = null;
 
-    #[
-        Vich\UploadableField(
-            mapping: "user_avatar",
-            fileNameProperty: "imageName"
-        )
-    ]
+    #[Vich\UploadableField(mapping: "user_avatar",fileNameProperty: "imageName")]
     private ?File $imageFile = null;
 
     #[ORM\Column(type: "string", nullable: true)]

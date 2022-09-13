@@ -139,16 +139,17 @@ class UserModificationType extends AbstractType
             'expanded' => false,
             ])
             ->add('imageFile',VichImageType::class, [
-                'attr'=>[
-                    'class'=>'bg-secondary'
+                "attr" => [
+                    "class" => "bg-secondary mb-3",
                 ],
-                'label'=>'Photo de profil',
-                'label_attr'=>[
-                    'class'=>'form-label mt-3'
-                ]
+                "label" => "Photo de profil",
+                "label_attr" => [
+                    "class" => "form-label mt-3 mb-2",
+                ],
+
             ])
         ;
-        //TODO Inserer photo ?
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
