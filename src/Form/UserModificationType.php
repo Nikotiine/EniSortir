@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Campus;
 use App\Entity\User;
+use App\Repository\CampusRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -14,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Form\Type\VichFileType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 
 class UserModificationType extends AbstractType
@@ -124,10 +127,25 @@ class UserModificationType extends AbstractType
                 ],
                 ],
             ])
-            //TODO completer champ par defaut valeur null
             ->add('campus', EntityType::class, [
-                'class'=> Campus::class,
-                'label'=>'Campus'
+            'class' => Campus::class,
+            'attr'=>['class'=>'form-select'],
+            'label' => 'Campus ',
+            'label_attr' => [
+            'class' => 'form-label mt-4',
+            ],
+            'choice_label' => 'name',
+            'multiple' => false,
+            'expanded' => false,
+            ])
+            ->add('imageFile',VichImageType::class, [
+                'attr'=>[
+                    'class'=>'bg-secondary'
+                ],
+                'label'=>'Photo de profil',
+                'label_attr'=>[
+                    'class'=>'form-label mt-3'
+                ]
             ])
         ;
         //TODO Inserer photo ?
