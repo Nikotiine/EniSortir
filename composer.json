@@ -89,11 +89,11 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "load-toto":[
-            "php bin/console doctrine:database:drop --force",
-            "php bin/console d:d:c",
-            "php bin/console d:m:m",
-            "php bin/console d:f:l"
+        "load-fixtures":[
+            "bin/console doctrine:database:drop --force",
+            "bin/console d:d:c",
+            "bin/console d:m:m",
+            "bin/console d:f:l"
         ]
     },
     "conflict": {

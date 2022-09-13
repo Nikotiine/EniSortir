@@ -10,9 +10,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\EntityListeners(['App\EntityListener\UserListener'])]
 #[UniqueEntity('email')]
+#[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -75,6 +79,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?bool $isAdmin = null;
+
+    #[Vich\UploadableField(mapping: "user_avatar",fileNameProperty: "imageName")]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(type: "string", nullable: true)]
+    private ?string $imageName = null;
 
     public function __construct()
     {
@@ -298,5 +308,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+       /* if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }*/
+    }
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+
+
 }
