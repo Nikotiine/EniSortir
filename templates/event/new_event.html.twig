@@ -2,6 +2,7 @@
 {% block title %}
 
 {% endblock %}
+
 {% block body %}
 
 {{ form_start(form) }}
@@ -16,10 +17,10 @@
         </div>
         <div class="col-6">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
         <div class="col-6">
-            <select class="form-select" aria-label="Choisir un ville">
-                <option selected>Ville</option>
+            <select class="form-select" id="city">
+                <option value="0">Ville</option>
                {% for city in citys %}
-                   <option >{{ city.name }}</option>
+                   <option value="{{ city.id }}">{{ city.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -31,6 +32,29 @@
 
     </div>
     {{ form_end(form) }}
+
+{% endblock %}
+{% block javascripts %}
+
+    <script>
+
+        const select = document.getElementById('city');
+        select.addEventListener('change',(e)=>{
+            console.log(e.target.value);
+            const lieux = document.getElementById('event_location');
+            if(e.target.value !== 0){
+                lieux.removeAttribute('disabled')
+            }else {
+                lieux.setAttribute('disabled','true')
+            }
+
+        })
+
+
+
+
+
+    </script>
 
 {% endblock %}
 

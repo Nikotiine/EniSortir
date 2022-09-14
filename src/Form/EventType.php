@@ -101,8 +101,9 @@ class EventType extends AbstractType
             ])*/
             ->add('location',EntityType::class,[
                 'class'=>Location::class,
-                "attr" => [
+                "attr" => ["disabled"=>true,
                     "class" => "form-select",
+                    "id"=>"location"
                 ],
                 "label" => "Lieu",
                 "label_attr" => [
@@ -112,8 +113,6 @@ class EventType extends AbstractType
                 "multiple" => false,
                 "expanded" => false,
             ])
-
-
         ;
     }
 
