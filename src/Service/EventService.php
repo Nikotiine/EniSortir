@@ -21,7 +21,7 @@ class EventService
     /*************************************/
     /************ Chris*****************/
     /*************************************/
-    public function listEventsWithParams(
+    private function listEventsWithParams(
         string $eventType,
         array &$events,
         array $filters,
@@ -73,6 +73,10 @@ class EventService
         $this->listEventsWithParams("WhereNotRegistred",$events, $filters, $fakeUser);
         return $events;
     }
+    /**
+     * @param array Tableau contenant les Events correspondants aux filtres de recherche
+     * @return void Supprime les Events "en création" dont l'utilisateur connecté n'est pas "l'Organizer"
+     */
     public function formatList(array &$events, User $fakeUser)
     {
         for ($i=0 ; $i<count($events);$i++){
@@ -80,10 +84,46 @@ class EventService
                 unset($events[$i]);
             }
         }
-//        function comparator(\App\Entity\Event $event1, \App\Entity\Event $event2 ){
-//            return ($event1->getStartAt() > $event2->getStartAt());
+
+        //TODO : reorganiser les sorties par ordre croissant (avec usort()?)
+//        function comparator( $event1,  $event2 ){
+//            return ($event1->getStartAt() < $event2->getStartAt());
 //        }
-//        usort($events,'comparator');
+//        usort($events,"comparator");
+    }
+
+    /**
+     * @param array Tableau contenant les Events qui seront affichées
+     * @return array Tableau associatif avec Key = Event.id et Value = actions autorisées
+     */
+    public function listAllowedActions(array $events, ?User $fakeUser)
+    {
+        foreach ($events as $event){
+            $action1="";
+            $action2="";
+            if($event->getStatus()->getId() == 1){//si statut "Créer" (seules les sortie "créées"
+                // de l'utilisateur connecté sont dans $events, dc pas besoin de vérifier organizer=getUser)
+                $action1.= "<a href='/event/modifier'>Modifier</a>";
+                $action2.= " - <a href='/event/publier'>Publier</a> ";
+            }else{//affichage de toutes les autres
+                $action1.= "<a href='/event/afficher'>Afficher</a> ";
+            }
+            if($event->getStatus()->getId() == 2 || $event->getStatus()->getId() == 3){//si statut "Ouvert ou Cloturée"
+                if($event->getStatus()->getId() == 2
+                    && $event->getOrganizer() == $fakeUser){//si ouvert et l'utilisateur connecté et l'organisateur
+                    $action2.= " - <a href='/event/annuler'>Annuler</a>";
+                }
+                if($event->getRegistration()->contains($fakeUser)){//si inscrit sur la sortie
+                    $action2.= " - <a href='/event/desister'>Se désister</a>";
+                }
+                elseif ($event->getStatus()->getId() == 2
+                    && ($event->getMaxPeople() > count($event->getRegistration()))) {//si ouvert et places disponibles
+                    $action2.= " - <a href='/event/inscrire'>S'inscrire</a>";
+                }
+            }
+            $allowedActions[$event->getId()]=$action1 . $action2;
+        }
+            return $allowedActions;
     }
     /*************************************/
     /************ FinChris*****************/

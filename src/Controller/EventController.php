@@ -21,7 +21,7 @@ class EventController extends AbstractController
         EventService $service,
     ): Response
     {
-        $fakeUser=$userRepository->find(5);//TODO remplacer $fakeUser par getUser()
+        $fakeUser=$userRepository->find(3);//TODO remplacer $fakeUser par getUser()
         $events=[];
 
         $eventForm = $this->createForm(EventsListType::class);
@@ -33,12 +33,40 @@ class EventController extends AbstractController
         }else{
             $events = $service->loadInitialEvents($fakeUser);
         }
-        $service->formatList($events, $fakeUser);
+        $service->formatList($events, $fakeUser);//formattage de la liste :
+        //retrait des status "créé" si user != organizer et rangement par ordre croissant
 
+        $allowedActions=$service->listAllowedActions($events,$fakeUser);
+
+        /*if(en creation){
+        //pas besoin de vérifier le getUser car seules les event dont le user et l'organiseur sont affichées
+                champs1 = "modifier"
+                 champs2 = "publier"
+        }
+        else{
+                champs1 ="afficher"
+        }
+        if(event.statut=En cours OU "passée" ou "annulée"){
+                champs2 = ""
+        }else{//ouverte Fermée
+                si(ouvert et user=organiser){
+                    Champs2+= Annuler
+                }
+                si (user inscrit){
+                    champs2 += "se désister"
+                else(user pas inscrit){
+                    si( statut "ouvert" et places dispo){
+                        champs2 += s'inscire
+                }
+                }
+        }
+        edeef
+        */
         return $this->render('event/lister.html.twig', [
-            "events"    => $events,
-            "EventForm"=>$eventForm->createView(),
-            "fakeUser"=>$fakeUser,
+            "events"            =>  $events,
+            "EventForm"         =>  $eventForm->createView(),
+            "fakeUser"          =>  $fakeUser,
+            "allowedActions"    =>  $allowedActions,
         ]);
     }
 

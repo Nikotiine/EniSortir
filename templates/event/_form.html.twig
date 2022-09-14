@@ -1,6 +1,6 @@
 <h2>Filtrer les sorties</h2>
 {{ form_start(EventForm) }}
-<div class="d-flex col-12">
+<div class="d-flex col-12 justify-content-around">
     <div class="col-5">
         <div>
             {{  form_label(EventForm.campus) }}
@@ -10,14 +10,14 @@
             {{ form_label(EventForm.searchBar) }}
             {{ form_widget(EventForm.searchBar) }}
         </div>
-        <div class="d-flex justify-content-around">
+        <div class="d-flex justify-content-around align-content-center align-items-center ">
             <p>Entre</p>
             {{ form_widget(EventForm.minDate) }}
             <p>et</p>
             {{ form_widget(EventForm.maxDate) }}
         </div>
     </div>
-    <div class="col-3 d-flex flex-column">
+    <div class="col-3 d-flex flex-column m-auto">
         <div>
         {{ form_widget(EventForm.checkBoxOrganizer) }}
         {{ form_label(EventForm.checkBoxOrganizer) }}
@@ -35,6 +35,6 @@
         {{ form_label(EventForm.checkBoxEventsPassed) }}
         </div>
     </div>
-    <button type="submit" class="col-4">Rechercher</button>
+    <button type="submit" class="btn btn-primary my-auto col-2">Rechercher</button>
 </div>
 {{ form_end(EventForm) }}

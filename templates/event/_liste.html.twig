@@ -27,9 +27,8 @@
                 <td></td>
             {% endif %}
             <td>{{ event.organizer.firstName }}</td>
-            <td>a faire aussi</td>
+            <td>{{ allowedActions[event.id] | raw }}</td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
-
