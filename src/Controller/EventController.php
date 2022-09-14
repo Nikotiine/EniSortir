@@ -8,6 +8,7 @@ use App\Form\EventsListType;
 use App\Form\EventType;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
+use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -83,24 +84,42 @@ class EventController extends AbstractController
 
 
     #[Route('/event/new/{id}', name: 'app_event_new', methods: ['GET', 'POST'])]
-    public function create(Request $request,User $user,StatusRepository $statusRepository,CityRepository $cityRepository):Response{
+    public function create(Request $request,User $user,
+                           StatusRepository $statusRepository,CityRepository $cityRepository,
+                           LocationRepository $locationRepository):Response
+    {
+        $idCity = $request->query->getInt('city');
         $event = new Event();
         $citys = $cityRepository->findAll();
         $campus = $user->getCampus();
-       // dd($user);
+        $loc = $locationRepository->findBy([
+            'id'=>$idCity
+        ]);
         $event->setCampus($campus);
         $event->setOrganizer($user);
         $event->setStatus($statusRepository->findOneBy([
             'wording'=>'Creer'
         ]));
-
-
         $form = $this->createForm(EventType::class,$event);
+        $form->handleRequest($request);
+        if($form->isSubmitted()){
+            $idLocation = $request->request->getInt('location');
+            foreach ($loc as $l){
+                if($l->getId() == $idLocation){
+                    $location = $l;
+                }
+            }
+            $event = $form->getData();
+            $event->setLocation($location);
+            dump($event);
+        }
 
        return $this->render('event/new_event.html.twig',[
             'form'=>$form->createView(),
-           'citys'=>$citys,
-           'campus'=>$campus
+            'citys'=>$citys,
+            'campus'=>$campus,
+            'locations'=>$loc,
+            'idCity'=>$idCity
         ]);
 
     }

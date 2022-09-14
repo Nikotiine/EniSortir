@@ -4,50 +4,73 @@
 {% endblock %}
 
 {% block body %}
-
+    <form action="" method="get">
+        <select class="form-select" id="city" name="city" onchange="submit()">
+            <option value="0">Ville</option>
+            {% for city in citys %}
+                <option value="{{ city.id }}" {% if idCity == city.id  %} selected="selected"{% endif %}>{{ city.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
 {{ form_start(form) }}
     <div class="row">
         <div class="col-6">{{ form_label(form.name) }}{{ form_widget(form.name) }}</div>
         <div class="col-6">
             <label class="form-label">Campus
-            <select class="form-select" aria-label="Campus" disabled>
+            <select class="form-select" aria-label="Campus" disabled >
                 <option selected>{{ campus.name }}</option>
             </select>
             </label>
         </div>
         <div class="col-6">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
         <div class="col-6">
-            <select class="form-select" id="city">
-                <option value="0">Ville</option>
-               {% for city in citys %}
-                   <option value="{{ city.id }}">{{ city.name }}</option>
+
+        </div>
+        <div class="col-6">{{ form_label(form.deadLineInscriptionAt) }}{{ form_widget(form.deadLineInscriptionAt) }}</div>
+        <div class="col-6">
+            <select class="form-select" id="location" name="location" disabled>
+                <option value="0">Choisir un lieux</option>
+                {% for location in locations %}
+                    <option value="{{ location.id }}" >{{ location.name }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col-6">{{ form_label(form.deadLineInscriptionAt) }}{{ form_widget(form.deadLineInscriptionAt) }}</div>
-        <div class="col-6">{{ form_label(form.location) }}{{ form_widget(form.location) }}</div>
         <div class="col-6">{{ form_label(form.maxPeople) }}{{ form_widget(form.maxPeople) }}</div>
         <div class="col-6">rue code postal</div>
         <div class="col-6">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
 
     </div>
+    <div class="d-flex">
+        <button type="submit" class="btn btn-primary">valide</button>
+    </div>
     {{ form_end(form) }}
+
 
 {% endblock %}
 {% block javascripts %}
 
     <script>
-
+        const from =  document.forms["selectedCity"];
+        const selectValue = document.getElementById('city').value;
         const select = document.getElementById('city');
+        const lieux = document.getElementById('location');
+        if(selectValue !=='0'){
+            lieux.removeAttribute('disabled');
+        }
         select.addEventListener('change',(e)=>{
             console.log(e.target.value);
-            const lieux = document.getElementById('event_location');
-            if(e.target.value !== 0){
-                lieux.removeAttribute('disabled')
+
+            if(e.target.value !== '0'){
+                lieux.removeAttribute('disabled');
+              //  from.submit();
+
             }else {
                 lieux.setAttribute('disabled','true')
             }
+        })
 
+        from.addEventListener('submit',(e)=>{
+            e.preventDefault();
         })
 
 
