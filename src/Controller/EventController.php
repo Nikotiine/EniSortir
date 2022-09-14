@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Status;
 use App\Entity\User;
 use App\Form\EventsListType;
 use App\Repository\EventRepository;
+use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,24 +20,53 @@ class EventController extends AbstractController
     public function list(
         EventRepository $eventRepository,
         UserRepository $userRepository,
+        StatusRepository $statusRepository,
         Request $request,
     ): Response
     {
-        $fakeUser=$userRepository->find(2);//TODO remplacer $fakeUser par getUser()
+        $fakeUser=$userRepository->find(5);//TODO remplacer $fakeUser par getUser()
+        $statusAnnulee=$statusRepository->find(6);
         $events=[];
+        $filters = [];
 
-        $event=new Event();
-        $form = $this->createForm(EventsListType::class,$event);
-        $form->handleRequest($request);
-        if($form->isSubmitted()){
-            dump($request->request->get('checkBoxOrganizer'));
-//            $choix = $request->query->get('checkBoxOrganizer');
-//            dump($choix);
-            //TODO : récupérer les params dans un tableau associatif et le passer en paramètre d'une methode du repo
+        $eventForm = $this->createForm(EventsListType::class);
+        $eventForm->handleRequest($request);
+
+        if($eventForm->isSubmitted()){
+            $choices = $eventForm->getData();
+
+            if($choices['campus']){
+                $filters['campus']=$choices['campus'];
+            }
+            if($choices['name']){
+                $filters['name']=$choices['name'];
+            }
+            if($choices['minDate']){
+                $filters['minDate']=$choices['minDate'];
+            }
+            if($choices['maxDate']){
+                $filters['maxDate']=$choices['maxDate'];
+            }
+
+            if($choices['checkBoxOrganizer']){
+                $this->listEventsWithParams("AsOrganizer",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee);
+            }
+            if($choices['checkBoxRegistred']){
+                $this->listEventsWithParams("WhereRegistred",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee);
+            }
+            if($choices['checkBoxNotRegistred']){
+                $this->listEventsWithParams("WhereNotRegistred",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee);
+            }
+//            if($choices['checkBoxEventsPassed']){
+//                $statusPassed=$statusRepository->find(5);
+//                $this->listEventsWithParams("PassedEvents",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee,$statusPassed);
+//            }
+    dump($choices);
+            //TODO : récupérer un StatusRepository directement dans le EventRepository
         }else{
-            $this->listEventsAsOrganizer($events, $eventRepository, $fakeUser);
-            $this->listEventsAsRegistred($events, $eventRepository, $fakeUser);
-            $this->listEventsWhereNotRegistred($events, $eventRepository, $fakeUser);
+            $this->listEventsWithParams("AsOrganizer",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee);
+            $this->listEventsWithParams("WhereRegistred",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee);
+            $this->listEventsWithParams("WhereNotRegistred",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee);
         }
 
         for ($i=0 ; $i<count($events);$i++){
@@ -43,36 +74,26 @@ class EventController extends AbstractController
                 unset($events[$i]);
             }
         }
+        dump($events);
 
         return $this->render('event/lister.html.twig', [
             "events"        =>  $events,
-            "EventForm"     =>  $form->createView(),
+            "EventForm"     =>  $eventForm->createView(),
             "fakeUser"      =>  $fakeUser
         ]);
     }
-//            $eventRepository->getEventsPassed($events); TODO A creer pour le 4eme checkbox ("sortie passées")
 
-    private function listEventsAsOrganizer(array &$events, EventRepository $eventRepository, ?User $fakeUser)
+    private function listEventsWithParams(
+        string $eventType,
+        array &$events,
+        array $filters,
+        EventRepository $eventRepository,
+        User $fakeUser,
+        Status $statusAnnulee,
+    )
     {
-        $eventsAsOrganizer= $eventRepository->getEventsAsOrganizer($fakeUser);
-        foreach ($eventsAsOrganizer as $event){
-            array_push($events, $event);
-        }
-    }
-
-    private function listEventsAsRegistred(array &$events, EventRepository $eventRepository, ?User $fakeUser)
-    {
-        $eventsAsRegistred = $eventRepository->getEventsWhereRegistred($fakeUser);
-        foreach ($eventsAsRegistred as $event){
-            if(!in_array($event,$events,true))
-                array_push($events, $event);
-        }
-    }
-
-    private function listEventsWhereNotRegistred(array &$events, EventRepository $eventRepository, ?User $fakeUser)
-    {
-        $eventsWhereNotRegistred=$eventRepository->getEventsWhereNotRegistred($fakeUser);
-        foreach ($eventsWhereNotRegistred as $event){
+            $eventsTmp=$eventRepository->getEventsWithParams($eventType, $filters, $fakeUser,$statusAnnulee);
+        foreach ($eventsTmp as $event){
             if(!in_array($event,$events,true))
                 array_push($events, $event);
         }

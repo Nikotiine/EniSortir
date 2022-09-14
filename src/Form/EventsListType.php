@@ -21,38 +21,34 @@ class EventsListType extends AbstractType
                 'label'         =>  "Campus",
                 'class'         =>  Campus::class,
                 'choice_label'  =>  'name',
-                'required'      =>  false,
             ])
             ->add('name', TextareaType::class,[
                 'label'     =>  'Le nom de la sortie contient',
                 'required'  =>  false,
             ])
             ->add('minDate', DateType::class,[
-                'mapped'    =>  false,
                 'required'  =>  false,
                 ])
             ->add('maxDate',DateType::class,[
-                'mapped'    =>  false,
                 'required'  =>  false,
             ])
             ->add('checkBoxOrganizer',CheckboxType::class,[
                 'label'     => 'Sortie dont je suis l\'organisateur/trice',
-                'mapped'    =>  false,
                 'required'  =>  false,
+                'data'      =>  true,
             ])
             ->add('checkBoxRegistred',CheckboxType::class,[
                 'label'     =>  'Sorties auxquelles je suis inscrits/es',
-                'mapped'    =>  false,
                 'required'  =>  false,
+                'data'      =>  true,
             ])
             ->add('checkBoxNotRegistred',CheckboxType::class,[
                 'label'     =>  'Sorties auxquelles je ne suis pas inscrits/es',
-                'mapped'    =>  false,
                 'required'  =>  false,
+                'data'      =>  true,
             ])
             ->add('checkBoxEventsPassed',CheckboxType::class,[
-                'label'     =>  'Sorties passées',
-                'mapped'    =>  false,
+                'label'     =>  'Sorties passées (-> A Implémenter)',
                 'required'  =>  false,
             ])
         ;
@@ -61,8 +57,7 @@ class EventsListType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Event::class,
-            'required'=> false,
+//            'required'=> false,
         ]);
     }
 }
