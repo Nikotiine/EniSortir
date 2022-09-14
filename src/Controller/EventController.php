@@ -5,7 +5,10 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Form\EventsListType;
+use App\Form\EventType;
+use App\Repository\CityRepository;
 use App\Repository\EventRepository;
+use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,5 +79,29 @@ class EventController extends AbstractController
             if(!in_array($event,$events,true))
                 array_push($events, $event);
         }
+    }
+
+
+    #[Route('/event/new/{id}', name: 'app_event_new', methods: ['GET', 'POST'])]
+    public function create(Request $request,User $user,StatusRepository $statusRepository,CityRepository $cityRepository):Response{
+        $event = new Event();
+        $citys = $cityRepository->findAll();
+        $campus = $user->getCampus();
+       // dd($user);
+        $event->setCampus($campus);
+        $event->setOrganizer($user);
+        $event->setStatus($statusRepository->findOneBy([
+            'wording'=>'Creer'
+        ]));
+
+
+        $form = $this->createForm(EventType::class,$event);
+
+       return $this->render('event/new_event.html.twig',[
+            'form'=>$form->createView(),
+           'citys'=>$citys,
+           'campus'=>$campus
+        ]);
+
     }
 }

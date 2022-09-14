@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+
+{% endblock %}
+{% block body %}
+
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-6">{{ form_label(form.name) }}{{ form_widget(form.name) }}</div>
+        <div class="col-6">
+            <label class="form-label">Campus
+            <select class="form-select" aria-label="Campus" disabled>
+                <option selected>{{ campus.name }}</option>
+            </select>
+            </label>
+        </div>
+        <div class="col-6">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
+        <div class="col-6">
+            <select class="form-select" aria-label="Choisir un ville">
+                <option selected>Ville</option>
+               {% for city in citys %}
+                   <option >{{ city.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-6">{{ form_label(form.deadLineInscriptionAt) }}{{ form_widget(form.deadLineInscriptionAt) }}</div>
+        <div class="col-6">{{ form_label(form.location) }}{{ form_widget(form.location) }}</div>
+        <div class="col-6">{{ form_label(form.maxPeople) }}{{ form_widget(form.maxPeople) }}</div>
+        <div class="col-6">rue code postal</div>
+        <div class="col-6">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
+
+    </div>
+    {{ form_end(form) }}
+
+{% endblock %}
+
+
