@@ -9,6 +9,7 @@ use App\Form\EventsListType;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
+use App\Service\EventService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,12 +23,36 @@ class EventController extends AbstractController
         UserRepository $userRepository,
         StatusRepository $statusRepository,
         Request $request,
+        EventService $service,
     ): Response
     {
+
+        $fakeUser2=$userRepository->find(6);
+        $campus = $service->getCampus();
+        $campusId = $request->query->getInt('campus');
+        $key = $request->query->getAlnum('key');
+        $startAt = $request->query->getAlnum('startAt');
+        $finsihAt = $request->query->getAlnum('finishAt');
+        $organizer = true;
+        $registered = true;
+        $notRegistered = true;
+        $oldEvents = false;
+
+        $events1 = $service->filteredEvents($fakeUser2, $fakeUser2->getCampus()->getId(),$key,$startAt,$finsihAt, true, true, true, false);
+        if($request->query->get('search') !== null){
+            $organizer = $request->query->getBoolean('orga');
+            $registered = $request->query->getBoolean('registered');
+            $notRegistered = $request->query->getBoolean('notRegistered');
+            $oldEvents = $request->query->getBoolean('oldEvents');
+            $events1 = $service->filteredEvents($fakeUser2,$campusId,$key,$startAt,$finsihAt,$organizer,$registered,$notRegistered,$oldEvents);
+        }
+
+
         $fakeUser=$userRepository->find(5);//TODO remplacer $fakeUser par getUser()
         $statusAnnulee=$statusRepository->find(6);
         $events=[];
         $filters = [];
+
 
         $eventForm = $this->createForm(EventsListType::class);
         $eventForm->handleRequest($request);
@@ -61,7 +86,7 @@ class EventController extends AbstractController
 //                $statusPassed=$statusRepository->find(5);
 //                $this->listEventsWithParams("PassedEvents",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee,$statusPassed);
 //            }
-    dump($choices);
+        dump($choices);
             //TODO : récupérer un StatusRepository directement dans le EventRepository
         }else{
             $this->listEventsWithParams("AsOrganizer",$events, $filters, $eventRepository, $fakeUser,$statusAnnulee);
@@ -74,12 +99,18 @@ class EventController extends AbstractController
                 unset($events[$i]);
             }
         }
-        dump($events);
+        dump($organizer);
 
         return $this->render('event/lister.html.twig', [
-            "events"        =>  $events,
-            "EventForm"     =>  $eventForm->createView(),
-            "fakeUser"      =>  $fakeUser
+            "events"=>$events1,
+            "EventForm"=>$eventForm->createView(),
+             "fakeUser"=>$fakeUser,
+            'campus'=>$campus,
+            'organizer'=>$organizer,
+            'registered'=>$registered,
+            'oldEvents'=>$oldEvents,
+            'notRegistered'=>$notRegistered
+
         ]);
     }
 

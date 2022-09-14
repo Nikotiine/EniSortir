@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Campus;
 use App\Entity\Event;
 use App\Entity\Status;
 use App\Entity\User;
@@ -203,6 +204,59 @@ class EventRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function filterEvents(Campus $campus):array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->join('e.campus','c')
+            ->join('e.registration','r')
+            ->addSelect('r')
+            ->where('c = :campus')
+            ->setParameter('campus',$campus)
+            ->getQuery()
+            ->getResult();
+
+    }
+    public function oldEvents():array
+    {
+       return $this->createQueryBuilder('e')
+            ->select('e,s')
+            ->join('e.status','s')
+            ->where('s.id = 5')
+            ->getQuery()
+            ->getResult();
+    }
+    public function filterEventsRegistered(Campus $campus,User $user):array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->join('e.campus','c')
+            ->join('e.registration','r')
+            ->addSelect('r')
+            ->where('c = :campus')
+            ->andWhere('r = :user')
+            ->setParameter('campus',$campus)
+            ->setParameter('user',$user)
+            ->getQuery()
+            ->getResult();
+
+    }
+    public function filterEventsNotRegistered(Campus $campus,User $user):array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->join('e.campus','c')
+            ->join('e.registration','r')
+            ->addSelect('r')
+            ->where('c = :campus')
+            ->andWhere('r != :user')
+            ->setParameter('campus',$campus)
+            ->setParameter('user',$user)
+            ->getQuery()
+            ->getResult();
+
     }
 
 
