@@ -24,50 +24,51 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
-    public function getEventsWithParams(String $eventType, array $filters, User $fakeUser, Status $statusAnnulee)
+    public function getEventsWithParams(String $eventType, array $filters, User $fakeUser)
     {
         $queryBuilder = $this->createQueryBuilder('e')
             ->andWhere('e.startAt > :minDate ')
-            ->andWhere('e.status NOT IN (:statusAnnulee)')
-            ->setParameter('statusAnnulee', $statusAnnulee)
+            ->select('e,s')
+            ->join('e.status','s')
+            ->andWhere('s.id != 6')
             ->andWhere('e.campus = :campus');
 
-//CheckBox choice
+//Application du filtre de sélection (organizer, registred, notRegistred, Passed)
         if($eventType==="AsOrganizer"){
             $queryBuilder
-                ->andWhere('e.organizer = :fakeUser');
-            $queryBuilder->setParameter('fakeUser', $fakeUser);
+                ->andWhere('e.organizer = :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
         }
         if($eventType==="WhereRegistred"){
             $queryBuilder
                 ->join('e.registration','u')
                 ->addSelect('u')
-                ->andWhere('u = :fakeUser');
-            $queryBuilder->setParameter('fakeUser', $fakeUser);
+                ->andWhere('u = :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
         }
         if($eventType==="WhereNotRegistred"){
             $queryBuilder
                 ->join('e.registration','u')
                 ->addSelect('u')
-                ->andWhere('u != :fakeUser');
-            $queryBuilder->setParameter('fakeUser', $fakeUser);
+                ->andWhere('u != :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
         }
-//        if($eventType==="PassedEvents"){
-//            $queryBuilder
-//                ->andWhere("e.status IN (':statusPassed')")
-//                ->setParameter('statusPassed', $statusPassed);
-//        }
+        if($eventType==="PassedEvents"){
+            $queryBuilder->andWhere('s.id = 5');
+        }else{
+            $queryBuilder->andWhere('s.id != 5');
+        }
 
-//filter choices
+//Application des filtre de recherches (campus, keywords, dates)
         if(isset($filters['campus'])){
             $queryBuilder->setParameter('campus',$filters['campus']);
         }else{
             $queryBuilder->setParameter('campus', $fakeUser->getCampus());
         }
-        if(isset($filters['name'])){
+        if(isset($filters['searchBar'])){
             $queryBuilder
-                ->andWhere("e.name LIKE :name")
-                ->setParameter('name','%'.$filters['name'].'%');
+                ->andWhere("e.name LIKE :searchBar")
+                ->setParameter('searchBar','%'.$filters['searchBar'].'%');
         }
         if(isset($filters['minDate'])){
             $queryBuilder->setParameter('minDate', $filters['minDate']);
@@ -79,115 +80,12 @@ class EventRepository extends ServiceEntityRepository
                 ->andWhere("e.startAt < :maxDate")
                 ->setParameter('maxDate', $filters['maxDate']);
         }
-        $query=$queryBuilder->getQuery();
-        $result = $query->getResult();
-        return $result;
+        return $queryBuilder
+            ->getQuery()
+            ->getResult();
     }
 
-    public function getEventsAsOrganizer(array $filters, User $fakeUser, Status $statusAnnulee)
-    {
-        $queryBuilder = $this->createQueryBuilder('e')
-            ->andWhere('e.organizer = :fakeUser')
-            ->setParameter('fakeUser', $fakeUser)
-            ->andWhere('e.startAt > :minDate ')
-            ->andWhere('e.status != :statusAnnulee')
-            ->setParameter('statusAnnulee', $statusAnnulee)
-            ->andWhere('e.campus = :campus');
-        if(isset($filters['campus'])){
-            $queryBuilder->setParameter('campus',$filters['campus']);
-        }else{
-            $queryBuilder->setParameter('campus', $fakeUser->getCampus());
-        }
-        if(isset($filters['name'])){
-            $queryBuilder
-                ->andWhere("e.name LIKE :name")
-                ->setParameter('name','%'.$filters['name'].'%');
-        }
-        if(isset($filters['minDate'])){
-            $queryBuilder->setParameter('minDate', $filters['minDate']);
-        }else{
-            $queryBuilder->setParameter('minDate', new \DateTime('now'));
-        }
-        if(isset($filters['maxDate'])){
-            $queryBuilder
-                ->andWhere("e.startAt < :maxDate")
-                ->setParameter('maxDate', $filters['maxDate']);
-        }
-        $query=$queryBuilder->getQuery();
-        $result = $query->getResult();
-        return $result;
 
-    }
-    public function getEventsWhereRegistred(array $filters, User $fakeUser, Status $statusAnnulee)
-    {
-        $queryBuilder = $this->createQueryBuilder('e')
-            ->join('e.registration','u')
-            ->addSelect('u')
-            ->andWhere('u = :fakeUser')
-            ->setParameter('fakeUser', $fakeUser)
-            ->andWhere('e.status != :statusAnnulee')
-            ->setParameter('statusAnnulee', $statusAnnulee)
-            ->andWhere('e.startAt > :minDate ')
-            ->andWhere('e.campus = :campus');;
-        if(isset($filters['campus'])){
-            $queryBuilder->setParameter('campus',$filters['campus']);
-        }else{
-            $queryBuilder->setParameter('campus', $fakeUser->getCampus());
-        }
-        if(isset($filters['name'])){
-            $queryBuilder
-                ->andWhere("e.name LIKE :name")
-                ->setParameter('name','%'.$filters['name'].'%');
-        }
-        if(isset($filters['minDate'])){
-            $queryBuilder->setParameter('minDate', $filters['minDate']);
-        }else{
-            $queryBuilder->setParameter('minDate', new \DateTime('now'));
-        }
-        if(isset($filters['maxDate'])){
-            $queryBuilder
-                ->andWhere("e.startAt < :maxDate")
-                ->setParameter('maxDate', $filters['maxDate']);
-        }
-        $query=$queryBuilder->getQuery();
-        $result = $query->getResult();
-        return $result;
-    }
-    public function getEventsWhereNotRegistred(array $filters, User $fakeUser, Status $statusAnnulee)
-    {
-        $queryBuilder = $this->createQueryBuilder('e')
-            ->join('e.registration','u')
-            ->addSelect('u')
-            ->andWhere('u != :fakeUser')
-            ->setParameter('fakeUser', $fakeUser)
-            ->andWhere('e.status != :statusAnnulee')
-            ->setParameter('statusAnnulee', $statusAnnulee)
-            ->andWhere('e.startAt > :minDate ')
-            ->andWhere('e.campus = :campus');;
-        if(isset($filters['campus'])){
-            $queryBuilder->setParameter('campus',$filters['campus']);
-        }else{
-            $queryBuilder->setParameter('campus', $fakeUser->getCampus());
-        }
-        if(isset($filters['name'])){
-            $queryBuilder
-                ->andWhere("e.name LIKE :name")
-                ->setParameter('name','%'.$filters['name'].'%');
-        }
-        if(isset($filters['minDate'])){
-            $queryBuilder->setParameter('minDate', $filters['minDate']);
-        }else{
-            $queryBuilder->setParameter('minDate', new \DateTime('now'));
-        }
-        if(isset($filters['maxDate'])){
-            $queryBuilder
-                ->andWhere("e.startAt < :maxDate")
-                ->setParameter('maxDate', $filters['maxDate']);
-        }
-        $query=$queryBuilder->getQuery();
-        $result = $query->getResult();
-        return $result;
-    }
     public function add(Event $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

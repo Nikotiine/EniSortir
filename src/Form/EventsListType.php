@@ -22,7 +22,7 @@ class EventsListType extends AbstractType
                 'class'         =>  Campus::class,
                 'choice_label'  =>  'name',
             ])
-            ->add('name', TextareaType::class,[
+            ->add('searchBar', TextareaType::class,[
                 'label'     =>  'Le nom de la sortie contient',
                 'required'  =>  false,
             ])

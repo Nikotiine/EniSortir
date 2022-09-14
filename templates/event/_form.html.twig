@@ -7,11 +7,13 @@
             {{ form_widget(EventForm.campus) }}
         </div>
         <div>
-            {{ form_label(EventForm.name) }}
-            {{ form_widget(EventForm.name) }}
+            {{ form_label(EventForm.searchBar) }}
+            {{ form_widget(EventForm.searchBar) }}
         </div>
         <div class="d-flex justify-content-around">
+            <p>Entre</p>
             {{ form_widget(EventForm.minDate) }}
+            <p>et</p>
             {{ form_widget(EventForm.maxDate) }}
         </div>
     </div>
