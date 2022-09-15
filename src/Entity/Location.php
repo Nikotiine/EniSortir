@@ -54,6 +54,7 @@ class Location
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this-> city = new City();
 
     }
 
