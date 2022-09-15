@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: StatusRepository::class)]
 #[UniqueEntity('wording')]
 class Status
@@ -20,7 +21,7 @@ class Status
     #[ORM\Column(length: 25)]
     #[Assert\NotNull()]
     #[Assert\NotBlank()]
-    #[Assert\Length(min: 2,max: 25)]
+    #[Assert\Length(min: 2, max: 25)]
     private ?string $wording = null;
 
     #[ORM\OneToMany(mappedBy: 'status', targetEntity: Event::class, orphanRemoval: true)]

@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CampusRepository::class)]
-#[UniqueEntity(fields: "name")]
+#[UniqueEntity(fields: 'name')]
 class Campus
 {
     #[ORM\Id]
@@ -19,12 +19,10 @@ class Campus
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\Length(min: 2,max: 50)]
+    #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $name = null;
-
-
 
     #[ORM\OneToMany(mappedBy: 'campus', targetEntity: User::class, orphanRemoval: true)]
     private Collection $users;
@@ -36,7 +34,6 @@ class Campus
     {
         $this->users = new ArrayCollection();
         $this->events = new ArrayCollection();
-
     }
 
     public function getId(): ?int
@@ -55,7 +52,6 @@ class Campus
 
         return $this;
     }
-
 
     /**
      * @return Collection<int, User>

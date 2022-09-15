@@ -7,10 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -26,11 +26,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email()]
-    #[Assert\Length(min: 2,max: 180)]
+    #[Assert\Length(min: 2, max: 180)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $email = null;
-    //a supprimer
+    // a supprimer
     #[ORM\Column]
     private array $roles = [];
 
@@ -41,21 +41,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\Length(min: 2,max: 100)]
+    #[Assert\Length(min: 2, max: 100)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $lastName = null;
 
-
     #[ORM\Column(length: 100)]
-    #[Assert\Length(min: 2,max: 100)]
+    #[Assert\Length(min: 2, max: 100)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $firstName = null;
 
-
     #[ORM\Column(length: 100)]
-    #[Assert\Length(min: 2,max: 100)]
+    #[Assert\Length(min: 2, max: 100)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $pseudo = null;
@@ -67,7 +65,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isActive = null;
 
-
     #[ORM\OneToMany(mappedBy: 'organizer', targetEntity: Event::class, orphanRemoval: true)]
     private Collection $events;
 
@@ -75,15 +72,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
 
-    private ?string $plainPassword =null;
+    private ?string $plainPassword = null;
 
     #[ORM\Column]
     private ?bool $isAdmin = null;
 
-    #[Vich\UploadableField(mapping: "user_avatar",fileNameProperty: "imageName")]
+    #[Vich\UploadableField(mapping: 'user_avatar', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
 
-    #[ORM\Column(type: "string", nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $imageName = null;
 
     public function __construct()
@@ -133,7 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        if($this->isIsAdmin()) {
+        if ($this->isIsAdmin()) {
             return ['ROLE_ADMIN', 'ROLE_USER'];
         } else {
             return ['ROLE_USER'];
@@ -242,7 +239,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     /**
      * @return Collection<int, Event>
      */
@@ -265,7 +261,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->events->removeElement($event);
 
-
         return $this;
     }
 
@@ -281,17 +276,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    /**
-     * @param string|null $plainPassword
-     */
     public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
@@ -313,25 +302,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->imageFile = $imageFile;
 
-       /* if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTimeImmutable();
-        }*/
+        /* if (null !== $imageFile) {
+             // It is required that at least one field changes if you are using doctrine
+             // otherwise the event listeners won't be called and the file is lost
+             $this->updatedAt = new \DateTimeImmutable();
+         }*/
     }
+
     public function getImageFile(): ?File
     {
         return $this->imageFile;
     }
+
     public function setImageName(?string $imageName): void
     {
         $this->imageName = $imageName;
     }
+
     public function getImageName(): ?string
     {
         return $this->imageName;
     }
-
-
-
 }
