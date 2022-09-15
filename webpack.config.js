@@ -13,7 +13,10 @@ Encore
     .setPublicPath('/build')
     // only needed for CDN's or sub-directory deploy
     //.setManifestKeyPrefix('build/')
-
+     .copyFiles({
+             from: './assets/images',
+             to: 'images/[path][name].[ext]',
+     })
     /*
      * ENTRY CONFIG
      *
@@ -53,6 +56,11 @@ Encore
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = 'usage';
         config.corejs = 3;
+    })
+    .configureDevServerOptions(options => {
+        options.allowedHosts = 'all';
+        // in older Webpack Dev Server versions, use this option instead:
+        // options.firewall = false;
     })
 
     // enables Sass/SCSS support

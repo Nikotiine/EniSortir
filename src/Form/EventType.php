@@ -3,10 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Campus;
+use App\Entity\City;
 use App\Entity\Event;
 use App\Entity\Location;
 use App\Entity\Status;
 
+use App\EventSubscriber\FormEventSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -31,6 +33,20 @@ class EventType extends AbstractType
                 'label_attr'=>[
                     'class'=>'form-label'
                 ]
+            ])
+            ->add('campus',EntityType::class,[
+                'class'=>Campus::class,
+                'attr'=>[
+                    'class'=>'form-select',
+                    'disabled'=>'disabled'
+                ],
+                "label" => "Campus",
+                "label_attr" => [
+                    "class" => "form-label mt-3",
+                ],
+                "choice_label" => "name",
+                "multiple" => false,
+                "expanded" => false,
             ])
             ->add('startAt',DateTimeType::class,[
                 "attr" => [
@@ -86,19 +102,25 @@ class EventType extends AbstractType
                     "class" => "form-label mt-3",
                 ],
             ])
-            /*->add('status',EntityType::class,[
-                'class'=>Campus::class,
+            ->add('ville',EntityType::class,[
+                'empty_data'=>'Ville',
+                'class'=>City::class,
                 "attr" => [
                     "class" => "form-select read-only",
                 ],
-                "label" => "Status",
+                "label" => "Ville",
                 "label_attr" => [
                     "class" => "form-label mt-3",
                 ],
+                'placeholder'=>'Ville',
                 "choice_label" => "name",
                 "multiple" => false,
                 "expanded" => false,
-            ])*/
+                'mapped'=>false,
+                'required'=>false,
+            ])
+           // ->addEventSubscriber(new FormEventSubscriber())
+
            /* ->add('location',EntityType::class,[
                 'class'=>Location::class,
                 "attr" => ["disabled"=>true,

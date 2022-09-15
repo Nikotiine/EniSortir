@@ -4,45 +4,36 @@
 {% endblock %}
 
 {% block body %}
-    <form action="" method="get">
-        <select class="form-select" id="city" name="city" onchange="submit()">
-            <option value="0">Ville</option>
-            {% for city in citys %}
-                <option value="{{ city.id }}" {% if idCity == city.id  %} selected="selected"{% endif %}>{{ city.name }}</option>
-            {% endfor %}
-        </select>
-    </form>
+
 {{ form_start(form) }}
-    <div class="row">
+    <div class="row w-75 mx-auto mt-5">
         <div class="col-6">{{ form_label(form.name) }}{{ form_widget(form.name) }}</div>
+        <div class="col-6">{{ form_label(form.campus) }}{{ form_widget(form.campus) }}</div>
+        <div class="col-6">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
+        {% if edit == false %}
+        <div class="col-6">{{ form_label(form.ville)  }} {{ form_widget(form.ville)}}</div>
+        {% endif %}
+        <div class="col-6">{{ form_label(form.deadLineInscriptionAt) }}{{ form_widget(form.deadLineInscriptionAt) }}</div>
         <div class="col-6">
-            <label class="form-label">Campus
-            <select class="form-select" aria-label="Campus" disabled >
-                <option selected>{{ campus.name }}</option>
+            <label>Lieux
+            <select class="form-select" id="location" name="location" disabled>
+                <option value="0">choisir un lieu</option>
             </select>
             </label>
         </div>
-        <div class="col-6">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
-        <div class="col-6">
-
-        </div>
-        <div class="col-6">{{ form_label(form.deadLineInscriptionAt) }}{{ form_widget(form.deadLineInscriptionAt) }}</div>
-        <div class="col-6">
-            <select class="form-select" id="location" name="location" disabled>
-                <option value="0">Choisir un lieux</option>
-                {% for location in locations %}
-                    <option value="{{ location.id }}" >{{ location.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
         <div class="col-6">{{ form_label(form.maxPeople) }}{{ form_widget(form.maxPeople) }}</div>
-        <div class="col-6">rue code postal</div>
-        <div class="col-6">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
+        <div class="col-6" id="info">
 
+        </div>
+        <div class="col-6" >{{ form_label(form.duration) }}{{ form_widget(form.duration) }}
+
+        </div>
+        <div class="col-6">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">valide</button>
+        </div>
     </div>
-    <div class="d-flex">
-        <button type="submit" class="btn btn-primary">valide</button>
-    </div>
+
     {{ form_end(form) }}
 
 
@@ -50,28 +41,59 @@
 {% block javascripts %}
 
     <script>
-        const from =  document.forms["selectedCity"];
-        const selectValue = document.getElementById('city').value;
-        const select = document.getElementById('city');
-        const lieux = document.getElementById('location');
-        if(selectValue !=='0'){
-            lieux.removeAttribute('disabled');
-        }
-        select.addEventListener('change',(e)=>{
-            console.log(e.target.value);
+        const loc = document.getElementById('location');
+        const selectedCity = document.getElementById('event_ville');
 
-            if(e.target.value !== '0'){
-                lieux.removeAttribute('disabled');
-              //  from.submit();
-
-            }else {
-                lieux.setAttribute('disabled','true')
+        selectedCity.addEventListener('change',(e)=>{
+            let idVille = e.target.value;
+            if (idVille !== ''){
+                loc.removeAttribute('disabled')
+                getAssociatedLocation(idVille);
+            } else {
+                loc.setAttribute('disabled','true')
             }
         })
+        function getAssociatedLocation(idVille) {
+            let zip = 0 ;
+            fetch('https://127.0.0.1:8000/api/location/'+idVille).then((res)=>
+                res.json()
+            ).then((data)=>{
+                console.log(data)
+                zip = data[0];
+                let option ="<option value='0'>Choisir un lieux</option>";
+                data[1].map(loc=>{
+                    option += `<option value="${ loc.id }">${ loc.name }</option>`
+                })
+                loc.innerHTML = option
+            })
+            loc.addEventListener('change',(e)=>{
+                const infos = document.getElementById('info');
+                let idLocation = e.target.value;
 
-        from.addEventListener('submit',(e)=>{
-            e.preventDefault();
-        })
+                fetch('https://127.0.0.1:8000/api/detail/'+idLocation).then((res)=>
+                    res.json()
+                ).then((data)=>{
+                    console.log(data);
+                    infos.innerHTML =
+                        `<div><p class="text-primary"> Rue :${data.street}</p> </div>
+                     <div>
+                        <p class="text-primary">code postal :${zip}</p>
+                    </div>
+                    <div>
+                        <div> <label class="form-label">Latitude<input type="number" class="form-control" readonly value="${data.latitude}"></label></div>
+                        <div> <label class="form-label">Longitude<input type="number" class="form-control" readonly value="${data.longitude}"></label></div>
+                    </div>`;
+                })
+            })
+        }
+
+
+
+
+
+
+
+
 
 
 

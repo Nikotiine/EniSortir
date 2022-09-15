@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 #[UniqueEntity(fields: ["name", "city"])]
@@ -16,30 +17,35 @@ class Location
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['location'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\Length(min: 2,max: 50)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
+    #[Groups(['location'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 180)]
     #[Assert\Length(min: 2,max: 180)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
+    #[Groups(['location'])]
     private ?string $street = null;
     //mettre nullable
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Assert\Length(max: 10)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
+    #[Groups(['location'])]
     private ?string $latitude = null;
     //mettre nullable
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Assert\Length(max: 10)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
+    #[Groups(['location'])]
     private ?string $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'locations')]

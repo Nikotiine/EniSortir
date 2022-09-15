@@ -12,6 +12,7 @@ use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use App\Service\EventService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,7 +60,7 @@ class EventController extends AbstractController
     }
 //            $eventRepository->getEventsPassed($events); TODO A creer pour le 4eme checkbox ("sortie passées")
 
-    private function listEventsAsOrganizer(array &$events, EventRepository $eventRepository, ?User $fakeUser)
+   /* private function listEventsAsOrganizer(array &$events, EventRepository $eventRepository, ?User $fakeUser)
     {
         $eventsAsOrganizer= $eventRepository->getEventsAsOrganizer($fakeUser);
         foreach ($eventsAsOrganizer as $event){
@@ -83,21 +84,19 @@ class EventController extends AbstractController
             if(!in_array($event,$events,true))
                 array_push($events, $event);
         }
-    }
+    }*/
 
 
-    #[Route('/event/new/{id}', name: 'app_event_new', methods: ['GET', 'POST'])]
-    public function create(Request $request,User $user,
-                           StatusRepository $statusRepository,CityRepository $cityRepository,
-                           LocationRepository $locationRepository):Response
+    #[Route('/event/new', name: 'app_event_new', methods: ['GET', 'POST'])]
+    public function create(Request $request,
+                           StatusRepository $statusRepository,
+                           LocationRepository $locationRepository,
+        EntityManagerInterface $manager):Response
     {
-        $idCity = $request->query->getInt('city');
+        $user = $this->getUser();
+        $idLocation = $request->request->getInt('location');
         $event = new Event();
-        $citys = $cityRepository->findAll();
         $campus = $user->getCampus();
-        $loc = $locationRepository->findBy([
-            'id'=>$idCity
-        ]);
         $event->setCampus($campus);
         $event->setOrganizer($user);
         $event->setStatus($statusRepository->findOneBy([
@@ -106,24 +105,40 @@ class EventController extends AbstractController
         $form = $this->createForm(EventType::class,$event);
         $form->handleRequest($request);
         if($form->isSubmitted()){
-            $idLocation = $request->request->getInt('location');
-            foreach ($loc as $l){
-                if($l->getId() == $idLocation){
-                    $location = $l;
-                }
-            }
-            $event = $form->getData();
+            $location = $locationRepository->findOneBy([
+                'id'=>$idLocation
+            ]);
             $event->setLocation($location);
-            dump($event);
+            $event = $form->getData();
+            $manager->persist($event);
+            $manager->flush();
+
         }
 
        return $this->render('event/new_event.html.twig',[
             'form'=>$form->createView(),
-            'citys'=>$citys,
-            'campus'=>$campus,
-            'locations'=>$loc,
-            'idCity'=>$idCity
+            'edit'=>false
+
         ]);
 
+    }
+    #[Route('/event/edit/{id}', name: 'app_event_edit', methods: ['GET', 'POST'])]
+    public function edit(Event $event,EntityManagerInterface $manager,Request $request):Response
+    {
+
+        $form = $this->createForm(EventType::class,$event);
+        $form->handleRequest($request);
+
+       // dump($form);
+        if($form->isSubmitted() && $form->isValid()){
+            $event = $form->getData();
+
+            $manager->persist($event);
+            $manager->flush();
+        }
+        return $this->render('event/new_event.html.twig',[
+            'form'=>$form->createView(),
+            'edit'=>true
+        ]);
     }
 }
