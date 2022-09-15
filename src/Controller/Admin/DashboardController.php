@@ -63,8 +63,7 @@ class DashboardController extends AbstractDashboardController
             "Evenements",
             "fa fa-calendar-days",
             Event::class
-        )
-        ;
+        );
     }
 
 }
