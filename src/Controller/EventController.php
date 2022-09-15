@@ -12,10 +12,12 @@ use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use App\Service\EventService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\throwException;
 
 class EventController extends AbstractController
 {
@@ -126,4 +128,13 @@ class EventController extends AbstractController
         ]);
 
     }
+
+    #[Route('/event/details/{id}', name: 'app_event_details', methods: ['GET'])]
+    public function detailEvent(Event $event) : Response {
+
+        return $this->render(view: 'event/details_event.html.twig',parameters:[
+            'event'=>$event,
+            ]);
+    }
+
 }

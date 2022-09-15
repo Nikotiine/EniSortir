@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} | Afficher Sortie {% endblock %}
+
+{% block body %}
+<div class="d-none d-sm-block">
+
+    <h1>{{ event.name }}</h1>
+    <div class="d-flex flex-column flex-lg-row">
+        <div class="col-6 me-5">
+            <table class="table table-borderless">
+                <tbody>
+                <tr>
+                    <th class="col-4">Nom de la sortie :</th>
+                    <td>{{ event.name }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Date et heure de la sortie :</th>
+                    <td>{{ event.startAt ? event.startAt|date('Y-m-d H:i') : '' }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Date limite d'inscription :</th>
+                    <td>{{ event.deadLineInscriptionAt ? event.deadLineInscriptionAt|date('Y-m-d') : '' }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Nombre de places disponibles :</th>
+                    <td>{{ event.registration.count }} / {{ event.maxPeople }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Durée :</th>
+                    <td>{{ event.duration }} minutes</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Description et infos :</th>
+                    <td>{{ event.description }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-6">
+            <table class="table table-borderless">
+                <tbody>
+                <tr>
+                    <th class="col-3">Campus :</th>
+                    <td>{{ event.campus.name }}</td>
+                </tr>
+                <tr>
+                    <th class="col-3">Lieu :</th>
+                    <td>{{ event.location.name }}</td>
+                </tr>
+                <tr>
+                    <th class="col-3">Rue :</th>
+                    <td>{{ event.location.street }}</td>
+                </tr>
+                <tr>
+                    <th class="col-3">Code postal :</th>
+                    <td>{{ event.location.city.zipCode }}</td>
+                </tr>
+                <tr>
+                    <th class="col-3">Latitude :</th>
+                    <td>{{ event.location.latitude }}</td>
+                </tr>
+                <tr>
+                    <th class="col-3">Longitude :</th>
+                    <td>{{ event.location.longitude }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
