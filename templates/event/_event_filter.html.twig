@@ -1,0 +1,60 @@
+<div class="container">
+    <form name="filter" action="" method="get">
+        <div>
+        <select class="form-select" aria-label="Default select example" name="campus">
+            <option selected>Campus</option>
+            {% for item in campus %}
+            <option value="{{ item.id }}" {% if item.id == fakeUser.campus.id %} selected="selected"{% endif%} >{{ item.name }}</option>
+            {% endfor %}
+
+        </select>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">@</span>
+            <input type="text" class="form-control"  aria-label="Username" name="key">
+        </div>
+        <div class="d-flex justify-content-around align-items-center">
+            <div>
+                <div class="input-group mb-3">
+                    <label class="form-label">debut
+                        <input type="datetime-local" class="form-control" name="startAt">
+                    </label>
+                </div>
+                <div class="input-group mb-3">
+                    <label class="form-label">fin
+                        <input type="datetime-local" class="form-control" name="finishAt">
+                    </label>
+                </div>
+            </div>
+            <div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="orga"  name="orga" {% if organizer == true %} checked="checked"{% endif%}>
+                    <label class="form-check-label" for="orga">organisateur</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="regist" name="registered"  {% if registered == true %} checked="checked"{% endif%}>
+                    <label class="form-check-label" for="regist">inscrit</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled"  name="notRegistered"  {% if notRegistered == true %} checked="checked"{% endif%}>
+                    <label class="form-check-label" for="flexSwitchCheckDisabled">non inscrit</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckCheckedDisabled" name="oldEvents"  {% if oldEvents == true %} checked="checked"{% endif%}>
+                    <label class="form-check-label" for="flexSwitchCheckCheckedDisabled">passe</label>
+                </div>
+
+            </div>
+            <div>
+                <button type="submit" name="search" class="btn btn-primary">Rechercher</button>
+            </div>
+        </div>
+
+
+
+
+
+
+
+    </form>
+</div>

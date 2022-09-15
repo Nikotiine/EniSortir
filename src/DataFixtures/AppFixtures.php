@@ -86,7 +86,7 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
         $events = [];
-        for ($i=0;$i<10;$i++){
+        for ($i=0;$i<20;$i++){
             $event = new Event();
             $event->setName($this->faker->sentence(3))
                 ->setStartAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('+1 week','+2 week','Europe/Paris')))
@@ -97,7 +97,7 @@ class AppFixtures extends Fixture
                 ->setMaxPeople(mt_rand(1,49))
                 ->setLocation($locations[mt_rand(0,count($locations)-1)])
                 ->setDescription($this->faker->text(75))
-                ->setStatus($status[mt_rand(0,1)]);
+                ->setStatus($status[mt_rand(0,count($status)-1)]);
             $events[] = $event;
             $manager->persist($event);
 

@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Campus;
 use App\Entity\Event;
+use App\Entity\Status;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,10 +19,72 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EventRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
     }
+    public function getEventsWithParams(String $eventType, array $filters, User $fakeUser)
+    {
+        $queryBuilder = $this->createQueryBuilder('e')
+            ->andWhere('e.startAt > :minDate ')
+            ->select('e,s')
+            ->join('e.status','s')
+            ->andWhere('s.id != 6')
+            ->andWhere('e.campus = :campus');
+
+//Application du filtre de sélection (organizer, registred, notRegistred, Passed)
+        if($eventType==="AsOrganizer"){
+            $queryBuilder
+                ->andWhere('e.organizer = :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
+        }
+        if($eventType==="WhereRegistred"){
+            $queryBuilder
+                ->join('e.registration','u')
+                ->addSelect('u')
+                ->andWhere('u = :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
+        }
+        if($eventType==="WhereNotRegistred"){
+            $queryBuilder
+                ->join('e.registration','u')
+                ->addSelect('u')
+                ->andWhere('u != :fakeUser')
+                ->setParameter('fakeUser', $fakeUser);
+        }
+        if($eventType==="PassedEvents"){
+            $queryBuilder->andWhere('s.id = 5');
+        }else{
+            $queryBuilder->andWhere('s.id != 5');
+        }
+
+//Application des filtre de recherches (campus, keywords, dates)
+        if(isset($filters['campus'])){
+            $queryBuilder->setParameter('campus',$filters['campus']);
+        }else{
+            $queryBuilder->setParameter('campus', $fakeUser->getCampus());
+        }
+        if(isset($filters['searchBar'])){
+            $queryBuilder
+                ->andWhere("e.name LIKE :searchBar")
+                ->setParameter('searchBar','%'.$filters['searchBar'].'%');
+        }
+        if(isset($filters['minDate'])){
+            $queryBuilder->setParameter('minDate', $filters['minDate']);
+        }else{
+            $queryBuilder->setParameter('minDate', new \DateTime('now'));
+        }
+        if(isset($filters['maxDate'])){
+            $queryBuilder
+                ->andWhere("e.startAt < :maxDate")
+                ->setParameter('maxDate', $filters['maxDate']);
+        }
+        return $queryBuilder
+            ->getQuery()
+            ->getResult();
+    }
+
 
     public function add(Event $entity, bool $flush = false): void
     {
@@ -39,28 +104,60 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Event[] Returns an array of Event objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function filterEvents(Campus $campus):array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->join('e.campus','c')
+            ->join('e.registration','r')
+            ->addSelect('r')
+            ->where('c = :campus')
+            ->setParameter('campus',$campus)
+            ->getQuery()
+            ->getResult();
 
-//    public function findOneBySomeField($value): ?Event
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    }
+    public function oldEvents():array
+    {
+       return $this->createQueryBuilder('e')
+            ->select('e,s')
+            ->join('e.status','s')
+            ->where('s.id = 5')
+            ->getQuery()
+            ->getResult();
+    }
+    public function filterEventsRegistered(Campus $campus,User $user):array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->join('e.campus','c')
+            ->join('e.registration','r')
+            ->addSelect('r')
+            ->where('c = :campus')
+            ->andWhere('r = :user')
+            ->setParameter('campus',$campus)
+            ->setParameter('user',$user)
+            ->getQuery()
+            ->getResult();
+
+    }
+    public function filterEventsNotRegistered(Campus $campus,User $user):array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->join('e.campus','c')
+            ->join('e.registration','r')
+            ->addSelect('r')
+            ->where('c = :campus')
+            ->andWhere('r != :user')
+            ->setParameter('campus',$campus)
+            ->setParameter('user',$user)
+            ->getQuery()
+            ->getResult();
+
+    }
+
+
+
+
 }
