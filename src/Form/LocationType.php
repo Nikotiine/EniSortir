@@ -59,6 +59,7 @@ class LocationType extends AbstractType
                 ],
                 'label' => 'Lattitude',
                 'required'  =>  false,
+                'empty_data' => '0',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -75,6 +76,7 @@ class LocationType extends AbstractType
                 ],
                 'label' => 'Longitude',
                 'required'  =>  false,
+                'empty_data' => '0',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
