@@ -68,6 +68,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'organizer', targetEntity: Event::class, orphanRemoval: true)]
     private Collection $events;
 
+
+
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
@@ -323,4 +325,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->imageName;
     }
+
 }
