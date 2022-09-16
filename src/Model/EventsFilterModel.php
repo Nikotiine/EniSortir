@@ -19,11 +19,14 @@ class EventsFilterModel
     public $maxDate;
 
     #[ORM\Column(type: 'boolean')]
-    public $isOrganizer = true;
+    public bool $isOrganizer= true;
 
     #[ORM\Column(type: 'boolean')]
-    public $isRegistred = true;
+    public bool $isRegistred = true;
 
     #[ORM\Column(type: 'boolean')]
-    public $isPassed = false;
+    public bool $isNotRegistred =false;
+
+    #[ORM\Column(type: 'boolean')]
+    public bool $isPassed = false;
 }

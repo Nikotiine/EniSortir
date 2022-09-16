@@ -90,8 +90,8 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 20; ++$i) {
             $event = new Event();
             $event->setName($this->faker->sentence(3))
-                ->setStartAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('+1 week', '+2 week', 'Europe/Paris')))
-                ->setDeadLineInscriptionAt(\DateTimeImmutable::createFromMutable($this->faker->dateTime('+1 week', 'Europe/Paris')))
+                ->setStartAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('now', '+3 week', 'Europe/Paris')))
+                ->setDeadLineInscriptionAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('+1 week','+2 week', 'Europe/Paris')))
                 ->setCampus($allCampus[mt_rand(0, count($allCampus) - 1)])
                 ->setOrganizer($users[mt_rand(0, count($users) - 1)])
                 ->setDuration(mt_rand(10, 180))

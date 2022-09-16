@@ -12,9 +12,9 @@
     </thead>
     <tbody>
     {% for event in events %}
-{#        TODO : penser à afficher seulement les events en statut créé de l'utilisateur connecter (côté TWIG avec VOter ?)#}
-
-        <h1></h1>
+        {% if (event.status.wording != 'Créer') or
+            (event.status.wording is same as ('Créer') and event.organizer==app.user) %}
+            <h1></h1>
             <tr>
                 <th>{{ event.name }}</th>
                 <td>{{ event.startAt | date("d/m/Y - H\\Hi") }}</td>
@@ -28,8 +28,9 @@
                 {% endif %}
                 <td>{{ event.organizer.firstName }}</td>
                 <td>A faire aussi</td>
-    {#             TODO : route pour modification : /event/edit/{id}#}
+{#                 TODO : route pour modification : /event/edit/{id}#}
             </tr>
+        {% endif %}
     {% endfor %}
     </tbody>
 </table>
