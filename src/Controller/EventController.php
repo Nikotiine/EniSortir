@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\throwException;
 
 class EventController extends AbstractController
 {
@@ -60,7 +61,7 @@ class EventController extends AbstractController
     }
 //            $eventRepository->getEventsPassed($events); TODO A creer pour le 4eme checkbox ("sortie passées")
 
-   /* private function listEventsAsOrganizer(array &$events, EventRepository $eventRepository, ?User $fakeUser)
+    private function listEventsAsOrganizer(array &$events, EventRepository $eventRepository, ?User $fakeUser)
     {
         $eventsAsOrganizer= $eventRepository->getEventsAsOrganizer($fakeUser);
         foreach ($eventsAsOrganizer as $event){
@@ -84,7 +85,7 @@ class EventController extends AbstractController
             if(!in_array($event,$events,true))
                 array_push($events, $event);
         }
-    }*/
+    }
 
 
     #[Route('/event/new', name: 'app_event_new', methods: ['GET', 'POST'])]
@@ -138,5 +139,15 @@ class EventController extends AbstractController
             'edit'=>true,
             'idLieux'=>$event->getLocation()->getId()
         ]);
+
     }
+
+    #[Route('/event/details/{id}', name: 'app_event_details', methods: ['GET'])]
+    public function detailEvent(Event $event) : Response {
+
+        return $this->render(view: 'event/details_event.html.twig',parameters:[
+            'event'=>$event,
+            ]);
+    }
+
 }
