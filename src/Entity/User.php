@@ -83,11 +83,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $imageName = null;
 
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'registration')]
+    private Collection $eventsRegistration;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
         $this->setIsActive(true);
         $this->setIsAdmin(false);
+        $this->eventsRegistration = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -322,5 +326,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEventsRegistration(): Collection
+    {
+        return $this->eventsRegistration;
+    }
+
+    public function addEventsRegistration(Event $eventsRegistration): self
+    {
+        if (!$this->eventsRegistration->contains($eventsRegistration)) {
+            $this->eventsRegistration->add($eventsRegistration);
+            $eventsRegistration->addRegistration($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventsRegistration(Event $eventsRegistration): self
+    {
+        if ($this->eventsRegistration->removeElement($eventsRegistration)) {
+            $eventsRegistration->removeRegistration($this);
+        }
+
+        return $this;
     }
 }

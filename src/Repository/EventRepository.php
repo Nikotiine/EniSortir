@@ -3,10 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Model\EventsFilterModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Event>
@@ -22,19 +22,15 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
-    public function getEvents(EventsFilterModel $data, ?UserInterface $connectedUser)
+    public function getEventList(EventsFilterModel $data, User $connectedUser)
     {
         $queryBuilder = $this->createQueryBuilder('e')
             ->andWhere('e.campus = :campus')
-            ->setParameter('campus', $connectedUser->getCampus())
-            ->join('e.status', 's')
-            ->andWhere('s.id != 6')
+            ->setParameter('campus', $data->campus)
+            ->leftJoin('e.status', 'stat')
+            ->addSelect('stat')
+            ->andwhere("stat.wording != 'Annulée'")
             ->andWhere('e.startAt > :minDate ');
-        if(isset($data->campus)){
-        //TODO : gérer le campus et les sorties passées
-        }else{
-
-        }
         if (isset($data->searchBar)) {
             $queryBuilder
                 ->andWhere('e.name LIKE :searchBar')
@@ -57,20 +53,23 @@ class EventRepository extends ServiceEntityRepository
         }
         if ($data->isRegistred) {
             $queryBuilder
-                ->join('e.registration', 'u')
-                ->addSelect('u')
-                ->andWhere('u = :connectedUser')
-                ->setParameter('connectedUser', $connectedUser);
-        }else{
+                ->join('e.registration','reg')
+                ->addSelect('reg')
+                ->andWhere("e.id IN (:connectedUserRegistration)")
+                ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
+        }
+        else {
             $queryBuilder
-                ->join('e.registration', 'u')
-                ->addSelect('u')
-                ->andWhere('u != :connectedUser')
-                ->setParameter('connectedUser', $connectedUser);
+                ->join('e.registration','reg')
+                ->addSelect('reg')
+                ->andWhere("e.id NOT IN (:connectedUserRegistration)")
+                ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
         if ($data->isPassed) {
-            //TODO : gérer les sorties passées
-//            $queryBuilder->andWhere('s.id = 5');
+            $queryBuilder->andWhere("stat.wording = 'Passée'");
+        }
+        else{
+            $queryBuilder->andWhere("stat.wording != 'Passée'");
         }
         return $queryBuilder
             ->getQuery()

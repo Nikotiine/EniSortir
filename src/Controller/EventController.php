@@ -11,6 +11,7 @@ use App\Repository\CityRepository;
 use App\Repository\EventRepository;
 use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,15 +23,16 @@ class EventController extends AbstractController
     public function list(
         Request $request,
         EventRepository $eventRepository,
+        UserRepository $userRepository,
     ): Response {
         $data = new EventsFilterModel();
-        $data->campus = $this->getUser()->getCampus();
+        $user=$userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+        $data->campus = $user->getCampus();
 
         $form = $this->createForm(EventsListType::class, $data);
         $form->handleRequest($request);
 
-        $events = $eventRepository->getEvents($data, $this->getUser());
-
+        $events = $eventRepository->getEventList($data, $user);
         return $this->render('event/lister.html.twig', [
             'events' => $events,
             'form' => $form->createView(),

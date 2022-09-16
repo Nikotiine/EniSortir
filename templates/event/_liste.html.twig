@@ -12,21 +12,24 @@
     </thead>
     <tbody>
     {% for event in events %}
+{#        TODO : penser à afficher seulement les events en statut créé de l'utilisateur connecter (côté TWIG avec VOter ?)#}
+
         <h1></h1>
-        <tr>
-            <th>{{ event.name }}</th>
-            <td>{{ event.startAt | date("d/m/Y - H\\Hi") }}</td>
-            <td>{{ event.deadLineInscriptionAt | date("d/m/Y") }}</td>
-            <td>{{ event.registration.count }} / {{ event.maxPeople }}</td>
-            <td>{{ event.status.wording }}</td>
-            {% if app.user in event.registration %}
-                <td>X</td>
-            {% else %}
-                <td></td>
-            {% endif %}
-            <td>{{ event.organizer.firstName }}</td>
-            <td>A faire aussi</td>
-        </tr>
+            <tr>
+                <th>{{ event.name }}</th>
+                <td>{{ event.startAt | date("d/m/Y - H\\Hi") }}</td>
+                <td>{{ event.deadLineInscriptionAt | date("d/m/Y") }}</td>
+                <td>{{ event.registration.count }} / {{ event.maxPeople }}</td>
+                <td>{{ event.status.wording }}</td>
+                {% if app.user in event.registration %}
+                    <td>X</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{ event.organizer.firstName }}</td>
+                <td>A faire aussi</td>
+    {#             TODO : route pour modification : /event/edit/{id}#}
+            </tr>
     {% endfor %}
     </tbody>
 </table>

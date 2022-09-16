@@ -56,12 +56,12 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
-    private Collection $registration;
-
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'eventsRegistration')]
+    private Collection $registration;
 
     public function __construct()
     {
@@ -181,6 +181,18 @@ class Event
         return $this;
     }
 
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -201,18 +213,6 @@ class Event
     public function removeRegistration(User $registration): self
     {
         $this->registration->removeElement($registration);
-
-        return $this;
-    }
-
-    public function getCampus(): ?Campus
-    {
-        return $this->campus;
-    }
-
-    public function setCampus(?Campus $campus): self
-    {
-        $this->campus = $campus;
 
         return $this;
     }
