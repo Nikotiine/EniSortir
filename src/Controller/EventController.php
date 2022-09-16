@@ -40,39 +40,13 @@ class EventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-//            $eventRepository->getEventsPassed($events); TODO A creer pour le 4eme checkbox ("sortie passées")
-
-    private function listEventsAsOrganizer(array &$events, EventRepository $eventRepository, ?User $fakeUser)
-    {
-        $eventsAsOrganizer= $eventRepository->getEventsAsOrganizer($fakeUser);
-        foreach ($eventsAsOrganizer as $event){
-            array_push($events, $event);
-        }
-    }
-
-    private function listEventsAsRegistred(array &$events, EventRepository $eventRepository, ?User $fakeUser)
-    {
-        $eventsAsRegistred = $eventRepository->getEventsWhereRegistred($fakeUser);
-        foreach ($eventsAsRegistred as $event){
-            if(!in_array($event,$events,true))
-                array_push($events, $event);
-        }
-    }
-
-    private function listEventsWhereNotRegistred(array &$events, EventRepository $eventRepository, ?User $fakeUser)
-    {
-        $eventsWhereNotRegistred=$eventRepository->getEventsWhereNotRegistred($fakeUser);
-        foreach ($eventsWhereNotRegistred as $event){
-            if(!in_array($event,$events,true))
-                array_push($events, $event);
-        }
-    }
 
 
-    #[Route('/event/new/{id}', name: 'app_event_new', methods: ['GET', 'POST'])]
-    public function create(Request $request,User $user,
+
+    #[Route('/event/new', name: 'app_event_new', methods: ['GET', 'POST'])]
+    public function create(Request $request,
                            StatusRepository $statusRepository,CityRepository $cityRepository,
-                           LocationRepository $locationRepository):Response
+                           LocationRepository $locationRepository,EntityManagerInterface $manager):Response
     {
         $user = $this->getUser();
         $idLocation = $request->request->getInt('location');
