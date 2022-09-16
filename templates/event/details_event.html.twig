@@ -3,11 +3,13 @@
 {% block title %} {{ parent() }} | Afficher Sortie {% endblock %}
 
 {% block body %}
-<div class="d-none d-sm-block">
 
-    <h1>{{ event.name }}</h1>
-    <div class="d-flex flex-column flex-lg-row">
-        <div class="col-6 me-5">
+<div class="container-fluid pt-4">
+
+    <h1>Afficher une sortie</h1>
+
+    <div class="d-flex flex-lg-row">
+        <div class="col-6">
             <table class="table table-borderless">
                 <tbody>
                 <tr>
@@ -42,32 +44,56 @@
             <table class="table table-borderless">
                 <tbody>
                 <tr>
-                    <th class="col-3">Campus :</th>
+                    <th class="col-4">Campus :</th>
                     <td>{{ event.campus.name }}</td>
                 </tr>
                 <tr>
-                    <th class="col-3">Lieu :</th>
+                    <th class="col-4">Lieu :</th>
                     <td>{{ event.location.name }}</td>
                 </tr>
                 <tr>
-                    <th class="col-3">Rue :</th>
+                    <th class="col-4">Rue :</th>
                     <td>{{ event.location.street }}</td>
                 </tr>
                 <tr>
-                    <th class="col-3">Code postal :</th>
+                    <th class="col-4">Code postal :</th>
                     <td>{{ event.location.city.zipCode }}</td>
                 </tr>
                 <tr>
-                    <th class="col-3">Latitude :</th>
+                    <th class="col-4">Latitude :</th>
                     <td>{{ event.location.latitude }}</td>
                 </tr>
                 <tr>
-                    <th class="col-3">Longitude :</th>
+                    <th class="col-4">Longitude :</th>
                     <td>{{ event.location.longitude }}</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="col-3">
+
+        <h4>Liste des participants inscrits</h4>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Nom</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for registration in event.registration %}
+                <tr>
+                    <td><a href="{{ path('app_user',{'pseudo':registration.pseudo}) }}">{{ registration.pseudo }}</a></td>
+                    <td>{{ registration.firstname }}{{ registration.lastname| upper }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
     </div>
 
 {% endblock %}
