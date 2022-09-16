@@ -10,16 +10,20 @@
         <div class="col-6">{{ form_label(form.name) }}{{ form_widget(form.name) }}</div>
         <div class="col-6">{{ form_label(form.campus) }}{{ form_widget(form.campus) }}</div>
         <div class="col-6">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
-        {% if edit == false %}
-        <div class="col-6">{{ form_label(form.ville)  }} {{ form_widget(form.ville)}}</div>
-        {% endif %}
+
+        <div class="col-6">{{ form_label(form.city)  }} {{ form_widget(form.city)}}</div>
+
         <div class="col-6">{{ form_label(form.deadLineInscriptionAt) }}{{ form_widget(form.deadLineInscriptionAt) }}</div>
         <div class="col-6">
             <label>Lieux
+                {% if edit == false%}
             <select class="form-select" id="location" name="location" disabled>
                 <option value="0">choisir un lieu</option>
             </select>
+                {% else %}
             </label>
+           {{ form_label(form.location)  }} {{ form_widget(form.location)}}
+                {% endif %}
         </div>
         <div class="col-6">{{ form_label(form.maxPeople) }}{{ form_widget(form.maxPeople) }}</div>
         <div class="col-6" id="info">
@@ -30,7 +34,7 @@
         </div>
         <div class="col-6">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
         <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">valide</button>
+            {{ form_label(form.submit) }}{{ form_widget(form.submit) }}
         </div>
     </div>
 
@@ -42,7 +46,7 @@
 
     <script>
         const loc = document.getElementById('location');
-        const selectedCity = document.getElementById('event_ville');
+        const selectedCity = document.getElementById('event_city');
 
         selectedCity.addEventListener('change',(e)=>{
             let idVille = e.target.value;

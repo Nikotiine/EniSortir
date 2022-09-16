@@ -125,20 +125,18 @@ class EventController extends AbstractController
     #[Route('/event/edit/{id}', name: 'app_event_edit', methods: ['GET', 'POST'])]
     public function edit(Event $event,EntityManagerInterface $manager,Request $request):Response
     {
-
-        $form = $this->createForm(EventType::class,$event);
+        dump($event->getLocation()->getCity()->getName());
+        $form = $this->createForm(EventType::class,$event,['event_city'=>$event->getLocation()->getCity()->getName()]);
         $form->handleRequest($request);
-
-       // dump($form);
         if($form->isSubmitted() && $form->isValid()){
             $event = $form->getData();
-
             $manager->persist($event);
             $manager->flush();
         }
         return $this->render('event/new_event.html.twig',[
             'form'=>$form->createView(),
-            'edit'=>true
+            'edit'=>true,
+            'idLieux'=>$event->getLocation()->getId()
         ]);
     }
 }
