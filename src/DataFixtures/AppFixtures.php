@@ -44,7 +44,7 @@ class AppFixtures extends Fixture
         }
         // Creation des Etats des sorties
         $status = [];
-        $allState = ['Créer', 'Ouverte', 'Cloturée', 'Activité en cours', 'Passée', 'Annulée'];
+        $allState = [Status::CREATE, Status::OPEN, Status::IN_PROGRESS, Status::CLOSE, Status::PAST, Status::CANCELED];
         foreach ($allState as $wording) {
             $statu = new Status();
             $statu->setWording($wording);
@@ -90,15 +90,15 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 20; ++$i) {
             $event = new Event();
             $event->setName($this->faker->sentence(3))
-                ->setStartAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('+1 week', '+2 week', 'Europe/Paris')))
-                ->setDeadLineInscriptionAt(\DateTimeImmutable::createFromMutable($this->faker->dateTime('+1 week', 'Europe/Paris')))
+                ->setStartAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('now', '+3 week', 'Europe/Paris')))
+                ->setDeadLineInscriptionAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('+1 week', '+2 week', 'Europe/Paris')))
                 ->setCampus($allCampus[mt_rand(0, count($allCampus) - 1)])
                 ->setOrganizer($users[mt_rand(0, count($users) - 1)])
                 ->setDuration(mt_rand(10, 180))
                 ->setMaxPeople(mt_rand(1, 49))
                 ->setLocation($locations[mt_rand(0, count($locations) - 1)])
                 ->setDescription($this->faker->text(75))
-                ->setStatus($status[mt_rand(0, count($status) - 1)]);
+                ->setStatus($status[mt_rand(0,1)]);
             $events[] = $event;
             $manager->persist($event);
         }

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Entity\User;
+use App\Entity\Status;
 use App\Form\EventsListType;
 use App\Form\EventType;
 use App\Model\EventsFilterModel;
@@ -12,7 +12,6 @@ use App\Repository\EventRepository;
 use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
-use App\Service\EventService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,24 +51,25 @@ class EventController extends AbstractController
         $idLocation = $request->request->getInt('location');
         $event = new Event();
         $campus = $user->getCampus();
-        $event->setCampus($campus);
+        dump($campus);
         $event->setOrganizer($user);
         $event->setStatus($statusRepository->findOneBy([
-            'wording' => 'Creer',
+            'wording' => Status::CREATE,
         ]));
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $location = $locationRepository->findOneBy([
                 'id' => $idLocation,
             ]);
             $event->setLocation($location);
             $event = $form->getData();
+            $event->setCampus($campus);
             $manager->persist($event);
             $manager->flush();
         }
 
-        return $this->render('event/new_event.html.twig', [
+        return $this->render('event/new_event.html.twig', parameters: [
              'form' => $form->createView(),
              'edit' => false,
          ]);
@@ -79,8 +79,11 @@ class EventController extends AbstractController
     public function edit(Event $event, EntityManagerInterface $manager, Request $request): Response
     {
         dump($event->getLocation()->getCity()->getName());
-        $form = $this->createForm(EventType::class, $event, ['event_city' => $event->getLocation()->getCity()->getName()]);
+        $form = $this->createForm(EventType::class, $event,
+            ['event_city' => $event->getLocation()->getCity()->getName()]
+        );
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $event = $form->getData();
             $manager->persist($event);
@@ -90,7 +93,7 @@ class EventController extends AbstractController
         return $this->render('event/new_event.html.twig', [
             'form' => $form->createView(),
             'edit' => true,
-            'idLieux' => $event->getLocation()->getId(),
+            'idEvent'=>$form->getData()->getId()
         ]);
     }
 

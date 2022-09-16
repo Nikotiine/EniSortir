@@ -8,7 +8,7 @@
 {{ form_start(form) }}
     <div class="row w-75 mx-auto mt-5">
         <div class="col-6">{{ form_label(form.name) }}{{ form_widget(form.name) }}</div>
-        <div class="col-6">{{ form_label(form.campus) }}{{ form_widget(form.campus) }}</div>
+        <div class="col-6">{{ form_label(form.campus) }}{{ form_widget(form.campus, { 'attr': {'disabled': true} }) }}</div>
         <div class="col-6">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
 
         <div class="col-6">{{ form_label(form.city)  }} {{ form_widget(form.city)}}</div>
@@ -35,7 +35,11 @@
         <div class="col-6">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
         <div class="d-flex justify-content-end">
             {{ form_label(form.submit) }}{{ form_widget(form.submit) }}
+            {% if edit == true %}
+            <a class="btn btn-light mt-4" href="{{ path('app_cancel_event',{id:idEvent}) }}">Supprimer la sortie</a>
+            {% endif %}
         </div>
+
     </div>
 
     {{ form_end(form) }}

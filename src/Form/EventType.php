@@ -32,7 +32,8 @@ class EventType extends AbstractType
                 'class' => Campus::class,
                 'attr' => [
                     'class' => 'form-select',
-                    'disabled' => 'disabled',
+                    'readonly' => true
+
                 ],
                 'label' => 'Campus',
                 'label_attr' => [
