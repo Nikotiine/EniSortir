@@ -10,8 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
-#[UniqueEntity(fields: ["name", "city"])]
+#[UniqueEntity(fields: ['name', 'city'])]
 class Location
 {
     #[ORM\Id]
@@ -21,26 +22,26 @@ class Location
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\Length(min: 2,max: 50)]
+    #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Groups(['location'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 180)]
-    #[Assert\Length(min: 2,max: 180)]
+    #[Assert\Length(min: 2, max: 180)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Groups(['location'])]
     private ?string $street = null;
-    //mettre nullable
+    // mettre nullable
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Assert\Length(max: 10)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     #[Groups(['location'])]
     private ?string $latitude = null;
-    //mettre nullable
+    // mettre nullable
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     #[Assert\Length(max: 10)]
     #[Assert\NotBlank()]
@@ -52,15 +53,12 @@ class Location
     #[ORM\JoinColumn(nullable: false)]
     private ?City $city = null;
 
-
-
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Event::class, orphanRemoval: true)]
     private Collection $events;
 
     public function __construct()
     {
         $this->events = new ArrayCollection();
-
     }
 
     public function getId(): ?int
@@ -127,8 +125,6 @@ class Location
 
         return $this;
     }
-
-
 
     /**
      * @return Collection<int, Event>

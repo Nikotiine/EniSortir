@@ -16,12 +16,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends AbstractDashboardController
 {
     public function __construct(private readonly AdminUrlGenerator $adminUrlGenerator
-    )
-    {
+    ) {
     }
 
     #[Route('/admin', name: 'admin')]
-
     public function index(): Response
     {
         $url = $this->adminUrlGenerator
@@ -29,7 +27,6 @@ class DashboardController extends AbstractDashboardController
             ->generateUrl();
 
         return $this->redirect($url);
-
     }
 
     public function configureDashboard(): Dashboard
@@ -42,28 +39,27 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::section(
             'Dashboard',
-            icon: "fa fa-home"
+            icon: 'fa fa-home'
         );
         yield MenuItem::linkToCrud(
-            "Utilisateurs",
-            "fa fa-users",
+            'Utilisateurs',
+            'fa fa-users',
             User::class
         );
         yield MenuItem::linkToCrud(
-            "Campus",
-            "fa fa-school",
+            'Campus',
+            'fa fa-school',
             Campus::class
         );
         yield MenuItem::linkToCrud(
-            "Villes",
-            "fa fa-calendar-days",
+            'Villes',
+            'fa fa-calendar-days',
             City::class
         );
         yield MenuItem::linkToCrud(
-            "Evenements",
-            "fa fa-calendar-days",
+            'Evenements',
+            'fa fa-calendar-days',
             Event::class
         );
     }
-
 }

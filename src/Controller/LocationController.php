@@ -20,14 +20,14 @@ class LocationController extends AbstractController
         ]);
     }
 
-    #[Route('/location/new', name: 'app_location_new', methods: ['GET','POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager) : Response
+    #[Route('/location/new', name: 'app_location_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $location = new Location();
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
-        if ($form->isSubmitted()){
-            $location=$form->getData();
+        if ($form->isSubmitted()) {
+            $location = $form->getData();
             $entityManager->persist($location);
             $entityManager->flush();
             $this->addFlash(
@@ -40,5 +40,5 @@ class LocationController extends AbstractController
         return $this->render('location/new_location.html.twig', [
             'form' => $form->createView(),
         ]);
-        }
+    }
 }

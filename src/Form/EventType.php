@@ -13,87 +13,86 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name',TextType::class,[
-                'attr'=>[
-                    'class'=>'form-control'
+            ->add('name', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
                 ],
-                'label'=>'Nom de la sortie',
-                'label_attr'=>[
-                    'class'=>'form-label'
-                ]
-            ])
-            ->add('campus',EntityType::class,[
-                'class'=>Campus::class,
-                'attr'=>[
-                    'class'=>'form-select',
-                    'disabled'=>'disabled'
-                ],
-                "label" => "Campus",
-                "label_attr" => [
-                    "class" => "form-label mt-3",
-                ],
-                "choice_label" => "name",
-                "multiple" => false,
-                "expanded" => false,
-            ])
-            ->add('startAt',DateTimeType::class,[
-                "attr" => [
-                    "class" => "form-control mt-2",
-                ],
-                "input" => "datetime_immutable",
-                "label" => "Date de la sortie",
-                "label_attr" => [
-                    "class" => "form-label mt-3",
-                ],
-                "html5" => false,
-            ])
-            ->add('deadLineInscriptionAt',DateTimeType::class,[
-                "attr" => [
-                    "class" => "form-control mt-2",
-                ],
-                "input" => "datetime_immutable",
-                "label" => "Date de cloture",
-                "label_attr" => [
-                    "class" => "form-label mt-3",
-                ],
-                "html5" => false,
-            ])
-            ->add('maxPeople', IntegerType::class,[
-                "attr" => [
-                    "class" => "form-control",
-                    "min" => 1,
-                    "max" => 99,
-                ],
-                "label" => "Nombre max de personne",
-                "label_attr" => [
-                    "class" => "form-label mt-3",
+                'label' => 'Nom de la sortie',
+                'label_attr' => [
+                    'class' => 'form-label',
                 ],
             ])
-            ->add('description',TextareaType::class,[
-                "attr" => [
-                    "class" => "form-control",
+            ->add('campus', EntityType::class, [
+                'class' => Campus::class,
+                'attr' => [
+                    'class' => 'form-select',
+                    'disabled' => 'disabled',
                 ],
-                "label" => "description de la sortie",
-                "label_attr" => [
-                    "class" => "form-label mt-3",
+                'label' => 'Campus',
+                'label_attr' => [
+                    'class' => 'form-label mt-3',
+                ],
+                'choice_label' => 'name',
+                'multiple' => false,
+                'expanded' => false,
+            ])
+            ->add('startAt', DateTimeType::class, [
+                'attr' => [
+                    'class' => 'form-control mt-2',
+                ],
+                'input' => 'datetime_immutable',
+                'label' => 'Date de la sortie',
+                'label_attr' => [
+                    'class' => 'form-label mt-3',
+                ],
+                'html5' => false,
+            ])
+            ->add('deadLineInscriptionAt', DateTimeType::class, [
+                'attr' => [
+                    'class' => 'form-control mt-2',
+                ],
+                'input' => 'datetime_immutable',
+                'label' => 'Date de cloture',
+                'label_attr' => [
+                    'class' => 'form-label mt-3',
+                ],
+                'html5' => false,
+            ])
+            ->add('maxPeople', IntegerType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => 1,
+                    'max' => 99,
+                ],
+                'label' => 'Nombre max de personne',
+                'label_attr' => [
+                    'class' => 'form-label mt-3',
                 ],
             ])
-            ->add('duration',IntegerType::class,[
-                "attr" => [
-                    "class" => "form-control",
-                    "min" => 1,
-                    "max" => 99999,
+            ->add('description', TextareaType::class, [
+                'attr' => [
+                    'class' => 'form-control',
                 ],
-                "label" => "Duree",
-                "label_attr" => [
-                    "class" => "form-label mt-3",
+                'label' => 'description de la sortie',
+                'label_attr' => [
+                    'class' => 'form-label mt-3',
+                ],
+            ])
+            ->add('duration', IntegerType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => 1,
+                    'max' => 99999,
+                ],
+                'label' => 'Duree',
+                'label_attr' => [
+                    'class' => 'form-label mt-3',
                 ],
             ])
             ->addEventSubscriber(new FormEventSubscriber());
@@ -103,9 +102,7 @@ class EventType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Event::class,
-            'event_city'=> "",
-
-
+            'event_city' => '',
         ]);
     }
 }

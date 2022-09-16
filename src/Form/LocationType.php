@@ -4,12 +4,9 @@ namespace App\Form;
 
 use App\Entity\City;
 use App\Entity\Location;
-use App\Repository\CityRepository;
-use Doctrine\DBAL\Types\DecimalType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -54,11 +51,11 @@ class LocationType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'precision' => '9',
-                    'scale'=>'6',
+                    'scale' => '6',
                     'maxlength' => '10',
                 ],
                 'label' => 'Lattitude',
-                'required'  =>  false,
+                'required' => false,
                 'empty_data' => '0',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
@@ -71,11 +68,11 @@ class LocationType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'precision' => '9',
-                    'scale'=>'6',
+                    'scale' => '6',
                     'maxlength' => '10',
                 ],
                 'label' => 'Longitude',
-                'required'  =>  false,
+                'required' => false,
                 'empty_data' => '0',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
@@ -85,16 +82,16 @@ class LocationType extends AbstractType
                 ],
             ])
             ->add('city', EntityType::class, [
-                'class'=>City::class,
-                'label'=> 'Les villes',
-                'label_attr'=>[
+                'class' => City::class,
+                'label' => 'Les villes',
+                'label_attr' => [
                     'class' => 'form-label mt-4',
                     ],
-                'choice_label'=>'name',
-                'multiple'=> false,
-                'expanded'=> false,
+                'choice_label' => 'name',
+                'multiple' => false,
+                'expanded' => false,
                 ])
-    ;
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

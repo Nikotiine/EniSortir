@@ -7,11 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-
 class Event
 {
     #[ORM\Id]
@@ -20,7 +18,7 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\Length(min: 2,max: 100)]
+    #[Assert\Length(min: 2, max: 100)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $name = null;
@@ -46,7 +44,6 @@ class Event
     #[Assert\Positive()]
     private ?int $duration = null;
 
-
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $organizer = null;
@@ -69,7 +66,6 @@ class Event
     public function __construct()
     {
         $this->registration = new ArrayCollection();
-
     }
 
     public function getId(): ?int
@@ -149,7 +145,6 @@ class Event
         return $this;
     }
 
-
     public function getOrganizer(): ?User
     {
         return $this->organizer;
@@ -214,7 +209,6 @@ class Event
     {
         return $this->campus;
     }
-
 
     public function setCampus(?Campus $campus): self
     {

@@ -9,14 +9,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
-
     {
         return User::class;
     }
@@ -37,7 +35,7 @@ class UserCrudController extends AbstractCrudController
             TextField::new('pseudo', 'Pseudo'),
             TextField::new('plainPassword', 'password')
                 ->setFormType(PasswordType::class)
-                ->setRequired($pageName === Crud::PAGE_NEW)
+                ->setRequired(Crud::PAGE_NEW === $pageName)
                 ->onlyOnForms(),
             TextField::new('phoneNumber', 'Numéro de téléphone'),
             EmailField::new('email', 'email'),
@@ -45,8 +43,7 @@ class UserCrudController extends AbstractCrudController
                 ->setCrudController(CampusCrudController::class),
             BooleanField::new('isActive', 'Actif'),
             BooleanField::new('IsAdmin', 'Admin')
-                ->hideOnDetail()
+                ->hideOnDetail(),
         ];
     }
-
 }
