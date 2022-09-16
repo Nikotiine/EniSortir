@@ -13,7 +13,9 @@ use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use App\Service\EventService;
+use Cassandra\Type\UserType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -101,4 +103,30 @@ class EventController extends AbstractController
             'event' => $event,
             ]);
     }
+
+    #[Route('/event/subscribe/{id}', name: 'app_event_subscribe', methods: ['GET'])]
+    public function subscribeEvent( Event $event, EntityManagerInterface $manager) : Response
+    {
+        $event->addRegistration($this->getUser());
+        $manager->persist($event);
+        $manager->flush();
+        $this->addFlash(
+            'success', 'Votre inscription est confirmée!'
+        );
+        return $this->redirectToRoute('app_event_list');
+    }
+
+    #[Route('/event/unsubscribe/{id}', name: 'app_event_unsubscribe', methods: ['GET'])]
+    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager) : Response
+    {
+        $event->removeEventsRegistration($this->getUser());
+        $entityManager->persist($event);
+        $entityManager->flush();
+        $this->addFlash(
+            'success', 'Votre inscription est annulée!'
+        );
+        return $this->redirectToRoute('app_event_list');
+    }
+
+
 }
