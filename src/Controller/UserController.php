@@ -43,7 +43,7 @@ class UserController extends AbstractController
                 'form' => $form->createView(),
             ]);
     }
-    #[Route('/user/edit-password/{id}','app_user_editpassword ', methods: ['GET','POST'])]
+    #[Route('/user/edit-password/{id}','app_user_edit-password', methods: ['GET','POST'])]
     public function editPassword(User $user, Request $request, UserPasswordHasherInterface $hasher,EntityManagerInterface $manager) : Response
     {
         $form = $this->createForm(UserPasswordType::class);
