@@ -2,9 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Campus;
 use App\Entity\Event;
 use App\Entity\User;
+use App\Model\EventsFilterModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,64 +22,55 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
-
-    public function getEventsWithParams(string $eventType, array $filters, User $fakeUser)
+    public function getEventList(EventsFilterModel $data, User $connectedUser)
     {
         $queryBuilder = $this->createQueryBuilder('e')
-            ->andWhere('e.startAt > :minDate ')
-            ->select('e,s')
-            ->join('e.status', 's')
-            ->andWhere('s.id != 6')
-            ->andWhere('e.campus = :campus');
-
-        // Application du filtre de sélection (organizer, registred, notRegistred, Passed)
-        if ('AsOrganizer' === $eventType) {
-            $queryBuilder
-                ->andWhere('e.organizer = :fakeUser')
-                ->setParameter('fakeUser', $fakeUser);
-        }
-        if ('WhereRegistred' === $eventType) {
-            $queryBuilder
-                ->join('e.registration', 'u')
-                ->addSelect('u')
-                ->andWhere('u = :fakeUser')
-                ->setParameter('fakeUser', $fakeUser);
-        }
-        if ('WhereNotRegistred' === $eventType) {
-            $queryBuilder
-                ->join('e.registration', 'u')
-                ->addSelect('u')
-                ->andWhere('u != :fakeUser')
-                ->setParameter('fakeUser', $fakeUser);
-        }
-        if ('PassedEvents' === $eventType) {
-            $queryBuilder->andWhere('s.id = 5');
-        } else {
-            $queryBuilder->andWhere('s.id != 5');
-        }
-
-        // Application des filtre de recherches (campus, keywords, dates)
-        if (isset($filters['campus'])) {
-            $queryBuilder->setParameter('campus', $filters['campus']);
-        } else {
-            $queryBuilder->setParameter('campus', $fakeUser->getCampus());
-        }
-        if (isset($filters['searchBar'])) {
+            ->andWhere('e.campus = :campus')
+            ->setParameter('campus', $data->campus)
+            ->leftJoin('e.status', 'stat')
+            ->addSelect('stat')
+            ->andwhere("stat.wording != 'Annulée'")
+            ->andWhere('e.startAt > :minDate ');
+        if (isset($data->searchBar)) {
             $queryBuilder
                 ->andWhere('e.name LIKE :searchBar')
-                ->setParameter('searchBar', '%'.$filters['searchBar'].'%');
+                ->setParameter('searchBar', '%'.$data->searchBar.'%');
         }
-        if (isset($filters['minDate'])) {
-            $queryBuilder->setParameter('minDate', $filters['minDate']);
+        if (isset($data->minDate)) {
+            $queryBuilder->setParameter('minDate', $data->minDate);
         } else {
             $queryBuilder->setParameter('minDate', new \DateTime('now'));
         }
-        if (isset($filters['maxDate'])) {
+        if (isset($data->maxDate)) {
             $queryBuilder
                 ->andWhere('e.startAt < :maxDate')
-                ->setParameter('maxDate', $filters['maxDate']);
+                ->setParameter('maxDate', $data->maxDate);
         }
-
+        if ($data->isOrganizer) {
+            $queryBuilder
+                ->andWhere('e.organizer = :connectedUser')
+                ->setParameter('connectedUser', $connectedUser);
+        }
+        if ($data->isRegistred) {
+            $queryBuilder
+                ->join('e.registration','reg')
+                ->addSelect('reg')
+                ->andWhere("e.id IN (:connectedUserRegistration)")
+                ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
+        }
+        else {
+            $queryBuilder
+                ->join('e.registration','reg')
+                ->addSelect('reg')
+                ->andWhere("e.id NOT IN (:connectedUserRegistration)")
+                ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
+        }
+        if ($data->isPassed) {
+            $queryBuilder->andWhere("stat.wording = 'Passée'");
+        }
+        else{
+            $queryBuilder->andWhere("stat.wording != 'Passée'");
+        }
         return $queryBuilder
             ->getQuery()
             ->getResult();
@@ -103,56 +94,6 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
-    public function filterEvents(Campus $campus): array
-    {
-        return $this->createQueryBuilder('e')
-            ->select('e')
-            ->join('e.campus', 'c')
-            ->join('e.registration', 'r')
-            ->addSelect('r')
-            ->where('c = :campus')
-            ->setParameter('campus', $campus)
-            ->getQuery()
-            ->getResult();
-    }
 
-    public function oldEvents(): array
-    {
-        return $this->createQueryBuilder('e')
-             ->select('e,s')
-             ->join('e.status', 's')
-             ->where('s.id = 5')
-             ->getQuery()
-             ->getResult();
-    }
 
-    public function filterEventsRegistered(Campus $campus, User $user): array
-    {
-        return $this->createQueryBuilder('e')
-            ->select('e')
-            ->join('e.campus', 'c')
-            ->join('e.registration', 'r')
-            ->addSelect('r')
-            ->where('c = :campus')
-            ->andWhere('r = :user')
-            ->setParameter('campus', $campus)
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function filterEventsNotRegistered(Campus $campus, User $user): array
-    {
-        return $this->createQueryBuilder('e')
-            ->select('e')
-            ->join('e.campus', 'c')
-            ->join('e.registration', 'r')
-            ->addSelect('r')
-            ->where('c = :campus')
-            ->andWhere('r != :user')
-            ->setParameter('campus', $campus)
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
-    }
 }

@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
+
 class Event
 {
     #[ORM\Id]
@@ -18,7 +19,7 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\Length(min: 2, max: 100)]
+    #[Assert\Length(min: 2,max: 100)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $name = null;
@@ -44,6 +45,7 @@ class Event
     #[Assert\Positive()]
     private ?int $duration = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $organizer = null;
@@ -56,16 +58,17 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
-    private Collection $registration;
-
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'eventsRegistration')]
+    private Collection $registration;
+
     public function __construct()
     {
         $this->registration = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -145,6 +148,7 @@ class Event
         return $this;
     }
 
+
     public function getOrganizer(): ?User
     {
         return $this->organizer;
@@ -181,6 +185,18 @@ class Event
         return $this;
     }
 
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -209,6 +225,7 @@ class Event
     {
         return $this->campus;
     }
+
 
     public function setCampus(?Campus $campus): self
     {

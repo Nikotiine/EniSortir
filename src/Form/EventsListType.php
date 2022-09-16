@@ -3,9 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Campus;
+use App\Model\EventsFilterModel;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,34 +48,32 @@ class EventsListType extends AbstractType
                 ],
                 'required' => false,
             ])
-            ->add('checkBoxOrganizer', CheckboxType::class, [
+            ->add('isOrganizer', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
                     'type' => 'checkbox',
                 ],
                 'label' => 'Sortie dont je suis l\'organisateur/trice',
                 'required' => false,
-                'data' => true,
             ])
-            ->add('checkBoxRegistred', CheckboxType::class, [
+            ->add('isRegistred', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
                     'type' => 'checkbox',
                 ],
                 'label' => 'Sorties auxquelles je suis inscrits/es',
                 'required' => false,
-                'data' => true,
             ])
-            ->add('checkBoxNotRegistred', CheckboxType::class, [
+            ->add('isNotRegistred', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
                     'type' => 'checkbox',
                 ],
                 'label' => 'Sorties auxquelles je ne suis pas inscrits/es',
                 'required' => false,
-                'data' => true,
+                'mapped' => false,
             ])
-            ->add('checkBoxEventsPassed', CheckboxType::class, [
+            ->add('isPassed', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
                     'type' => 'checkbox',
@@ -87,7 +87,8 @@ class EventsListType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-//            'required'=> false,
+            'data_class' => EventsFilterModel::class,
+            'method' => 'GET',
         ]);
     }
 }
