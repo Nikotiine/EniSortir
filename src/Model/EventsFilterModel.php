@@ -7,22 +7,25 @@ use Doctrine\ORM\Mapping as ORM;
 class EventsFilterModel
 {
     #[ORM\Column(type: 'string')]
-    public  $campus = '';
+    public $campus = '';
 
     #[ORM\Column(type: 'string')]
-    public  $searchBar = '';
+    public $searchBar = '';
 
     #[ORM\Column(type: 'datetime')]
-    public  $minDate;
+    public $minDate;
 
     #[ORM\Column(type: 'datetime')]
-    public  $maxDate;
+    public $maxDate;
 
     #[ORM\Column(type: 'boolean')]
     public ?bool $isOrganizer = true;
 
     #[ORM\Column(type: 'boolean')]
     public ?bool $isRegistred = true;
+
+    #[ORM\Column(type: 'boolean')]
+    public ?bool $isNotRegistred =false;
 
     #[ORM\Column(type: 'boolean')]
     public ?bool $isPassed = false;

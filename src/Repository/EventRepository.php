@@ -22,7 +22,7 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
-    public function getEventList(EventsFilterModel $data, User $connectedUser)
+    public function getEventList(EventsFilterModel $data, User $connectedUser): array
     {
         $queryBuilder = $this->createQueryBuilder('e')
             ->andWhere('e.campus = :campus')
@@ -30,7 +30,9 @@ class EventRepository extends ServiceEntityRepository
             ->leftJoin('e.status', 'stat')
             ->addSelect('stat')
             ->andwhere("stat.wording != 'Annulée'")
-            ->andWhere('e.startAt > :minDate ');
+            ->andWhere('e.startAt > :minDate ')
+            ->join('e.registration','reg')
+            ->addSelect('reg');
         if (isset($data->searchBar)) {
             $queryBuilder
                 ->andWhere('e.name LIKE :searchBar')
@@ -53,15 +55,11 @@ class EventRepository extends ServiceEntityRepository
         }
         if ($data->isRegistred) {
             $queryBuilder
-                ->join('e.registration','reg')
-                ->addSelect('reg')
                 ->andWhere("e.id IN (:connectedUserRegistration)")
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
-        else {
+        if ($data->isNotRegistred && !is_null($connectedUser->getEventsRegistration())) {
             $queryBuilder
-                ->join('e.registration','reg')
-                ->addSelect('reg')
                 ->andWhere("e.id NOT IN (:connectedUserRegistration)")
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }

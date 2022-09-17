@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -51,7 +52,6 @@ class EventsListType extends AbstractType
             ->add('isOrganizer', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
-                    'type' => 'checkbox',
                 ],
                 'label' => 'Sortie dont je suis l\'organisateur/trice',
                 'required' => false,
@@ -59,7 +59,6 @@ class EventsListType extends AbstractType
             ->add('isRegistred', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
-                    'type' => 'checkbox',
                 ],
                 'label' => 'Sorties auxquelles je suis inscrits/es',
                 'required' => false,
@@ -67,16 +66,13 @@ class EventsListType extends AbstractType
             ->add('isNotRegistred', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
-                    'type' => 'checkbox',
                 ],
                 'label' => 'Sorties auxquelles je ne suis pas inscrits/es',
                 'required' => false,
-                'mapped' => false,
             ])
             ->add('isPassed', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
-                    'type' => 'checkbox',
                 ],
                 'label' => 'Sorties passées',
                 'required' => false,
