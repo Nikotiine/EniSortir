@@ -24,7 +24,12 @@ class FormEventSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onPostSetData(FormEvent $event)
+    /**
+     * Verifie sur le formulaire est de type creation ou mise a jour
+     * @param FormEvent $event
+     * @return void
+     */
+    public function onPostSetData(FormEvent $event): void
     {
         $form = $event->getForm();
         $city = $form->getConfig()->getOption('event_city');

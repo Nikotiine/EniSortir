@@ -13,6 +13,8 @@ use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class EventController extends AbstractController
 {
     #[Route('/event', name: 'app_event_list', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function list(
         Request $request,
         EventRepository $eventRepository,
@@ -43,6 +46,7 @@ class EventController extends AbstractController
 
 
     #[Route('/event/new', name: 'app_event_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function create(Request $request,
                            StatusRepository $statusRepository,CityRepository $cityRepository,
                            LocationRepository $locationRepository,EntityManagerInterface $manager):Response
@@ -76,6 +80,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/edit/{id}', name: 'app_event_edit', methods: ['GET', 'POST'])]
+    #[Security("is_granted('ROLE_USER') and user === event.getOrganizer()")]
     public function edit(Event $event, EntityManagerInterface $manager, Request $request): Response
     {
         dump($event->getLocation()->getCity()->getName());

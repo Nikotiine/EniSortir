@@ -19,8 +19,10 @@ class CancelEventController extends AbstractController
     #[Security("is_granted('ROLE_USER') and user === event.getOrganizer()")]
     public function cancelEvent(Event $event, EntityManagerInterface $manager,Request $request,StatusRepository $statusRepository):Response
     {
+        //Recupere le status de la sortie a annulée
         $status = $event->getStatus()->getWording();
-        dump($event->getRegistration());
+
+       //Si le status de la sortie est different de Creer ou Ouverte , redirection sur acceuil avec message d'erreur
         if (!str_contains(Status::CREATE, $status) && !str_contains(Status::OPEN, $status)){
             $this->addFlash("failed", "Annulation impossible");
             return $this->redirectToRoute('app_event_list');

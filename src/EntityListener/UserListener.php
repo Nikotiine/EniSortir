@@ -9,22 +9,41 @@ class UserListener
 {
     private UserPasswordHasherInterface $hasher;
 
+    /**
+     * Constructeur
+     * @param UserPasswordHasherInterface $hasher
+     */
     public function __construct(UserPasswordHasherInterface $hasher)
     {
         $this->hasher = $hasher;
     }
 
-    public function prePersist(User $user)
+    /**
+     * Hash le password de l'user au persit
+     * @param User $user
+     * @return void
+     */
+    public function prePersist(User $user): void
     {
         $this->encodePassword($user);
     }
 
-    public function preUpdate(User $user)
+    /**
+     * Hash le password au update de l'user
+     * @param User $user
+     * @return void
+     */
+    public function preUpdate(User $user): void
     {
         $this->encodePassword($user);
     }
 
-    public function encodePassword(User $user)
+    /**
+     * Encode le password avec le hasher interface
+     * @param User $user
+     * @return void
+     */
+    public function encodePassword(User $user): void
     {
         if (null === $user->getPlainPassword()) {
             return;

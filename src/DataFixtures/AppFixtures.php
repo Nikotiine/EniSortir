@@ -53,9 +53,9 @@ class AppFixtures extends Fixture
         }
         // Creation des lieux
         $locations = [];
-        for ($i = 0; $i < 10; ++$i) {
+        for ($i = 0; $i < 20; ++$i) {
             $location = new Location();
-            $location->setName($this->faker->company())
+            $location->setName($this->faker->title())
             ->setLongitude($this->faker->longitude())
             ->setLatitude($this->faker->longitude())
             ->setCity($citys[mt_rand(0, count($citys) - 1)])
@@ -63,6 +63,7 @@ class AppFixtures extends Fixture
             $locations[] = $location;
             $manager->persist($location);
         }
+        // Creation de l 'admin
         $admin = new User();
         $admin->setFirstName('admin')
             ->setLastName('admin')
@@ -74,6 +75,7 @@ class AppFixtures extends Fixture
             ->setPhoneNumber('0606060606');
         $admin->setPlainPassword('admin');
         $manager->persist($admin);
+        // Creation des users
         $users = [];
         for ($i = 0; $i < 10; ++$i) {
             $user = new User();
@@ -86,6 +88,20 @@ class AppFixtures extends Fixture
             $users[] = $user;
             $manager->persist($user);
         }
+        // Creation des users inactifs
+        for ($i = 0; $i < 5; ++$i) {
+            $unactiveUser = new User();
+            $unactiveUser->setFirstName($this->faker->firstName())
+                ->setLastName($this->faker->lastName())
+                ->setEmail($this->faker->email())
+                ->setCampus($allCampus[mt_rand(0, count($allCampus) - 1)])
+                ->setPseudo($this->faker->userName())
+                ->setIsActive(false);
+            $unactiveUser->setPlainPassword('password');
+            //$users[] = $unactiveUser;
+            $manager->persist($unactiveUser);
+        }
+        // Creation des sorties
         $events = [];
         for ($i = 0; $i < 20; ++$i) {
             $event = new Event();
@@ -102,6 +118,7 @@ class AppFixtures extends Fixture
             $events[] = $event;
             $manager->persist($event);
         }
+        // Creation des inscriptions aux sorties
         foreach ($events as $event) {
             for ($i = 0; $i < count($users) - 1; ++$i) {
                 $event->addRegistration($users[mt_rand(0, count($users) - 1)]);

@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserModificationType;
 use App\Form\UserPasswordType;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,22 +15,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/user', name: 'app_user', methods: ['GET'])]
-    public function index(): Response
-    {
-        return $this->render('user/index.html.twig', [
-            'controller_name' => 'UserController',
-        ]);
-    }
+
 
     #[Route('/user/edit/{id}', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(User $user, Request $request, EntityManagerInterface $manager,): Response
+    #[Security("is_granted('ROLE_USER') and user === currentUser")]
+    public function edit(User $currentUser, Request $request, EntityManagerInterface $manager,): Response
     {
-        $form = $this->createForm(UserModificationType::class, $user);
+        $form = $this->createForm(UserModificationType::class, $currentUser);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
-            $manager->persist($user);
+            $currentUser = $form->getData();
+            $manager->persist($currentUser);
             $manager->flush();
             $this->addFlash(
                 'success', 'Votre profil a été modifié avec succès!'
@@ -44,17 +40,18 @@ class UserController extends AbstractController
             ]);
     }
     #[Route('/user/edit-password/{id}','app_user_edit-password', methods: ['GET','POST'])]
-    public function editPassword(User $user, Request $request, UserPasswordHasherInterface $hasher,EntityManagerInterface $manager) : Response
+    #[Security("is_granted('ROLE_USER') and user === currentUser")]
+    public function editPassword(User $currentUser, Request $request, UserPasswordHasherInterface $hasher,EntityManagerInterface $manager) : Response
     {
         $form = $this->createForm(UserPasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($hasher->isPasswordValid($user, $form->getData()['plainPassword']))
+            if ($hasher->isPasswordValid($currentUser, $form->getData()['plainPassword']))
             {
-                $user->setPassword(
-                $hasher->hashPassword($user,  $form->getData()['newPassword'])
+                $currentUser->setPassword(
+                $hasher->hashPassword($currentUser,  $form->getData()['newPassword'])
                 );
-                $manager->persist($user);
+                $manager->persist($currentUser);
                 $manager->flush();
                 $this->addFlash(
                     'success', 'Votre mot de passe a été modifié avec succès!'
