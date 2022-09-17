@@ -25,7 +25,7 @@ class EventsFilterModel
     public ?bool $isRegistred = true;
 
     #[ORM\Column(type: 'boolean')]
-    public ?bool $isNotRegistred =false;
+    public ?bool $isNotRegistred = false;
 
     #[ORM\Column(type: 'boolean')]
     public ?bool $isPassed = false;

@@ -98,7 +98,7 @@ class AppFixtures extends Fixture
                 ->setPseudo($this->faker->userName())
                 ->setIsActive(false);
             $unactiveUser->setPlainPassword('password');
-            //$users[] = $unactiveUser;
+            // $users[] = $unactiveUser;
             $manager->persist($unactiveUser);
         }
         // Creation des sorties
@@ -114,7 +114,7 @@ class AppFixtures extends Fixture
                 ->setMaxPeople(mt_rand(1, 49))
                 ->setLocation($locations[mt_rand(0, count($locations) - 1)])
                 ->setDescription($this->faker->text(75))
-                ->setStatus($status[mt_rand(0,1)]);
+                ->setStatus($status[mt_rand(0, 1)]);
             $events[] = $event;
             $manager->persist($event);
         }

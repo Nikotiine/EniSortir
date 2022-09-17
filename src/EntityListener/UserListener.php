@@ -10,8 +10,7 @@ class UserListener
     private UserPasswordHasherInterface $hasher;
 
     /**
-     * Constructeur
-     * @param UserPasswordHasherInterface $hasher
+     * Constructeur.
      */
     public function __construct(UserPasswordHasherInterface $hasher)
     {
@@ -19,9 +18,7 @@ class UserListener
     }
 
     /**
-     * Hash le password de l'user au persit
-     * @param User $user
-     * @return void
+     * Hash le password de l'user au persit.
      */
     public function prePersist(User $user): void
     {
@@ -29,9 +26,7 @@ class UserListener
     }
 
     /**
-     * Hash le password au update de l'user
-     * @param User $user
-     * @return void
+     * Hash le password au update de l'user.
      */
     public function preUpdate(User $user): void
     {
@@ -39,9 +34,7 @@ class UserListener
     }
 
     /**
-     * Encode le password avec le hasher interface
-     * @param User $user
-     * @return void
+     * Encode le password avec le hasher interface.
      */
     public function encodePassword(User $user): void
     {

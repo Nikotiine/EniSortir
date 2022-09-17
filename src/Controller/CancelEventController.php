@@ -17,30 +17,33 @@ class CancelEventController extends AbstractController
 {
     #[Route('/event/cancel/{id}', name: 'app_cancel_event', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === event.getOrganizer()")]
-    public function cancelEvent(Event $event, EntityManagerInterface $manager,Request $request,StatusRepository $statusRepository):Response
+    public function cancelEvent(Event $event, EntityManagerInterface $manager, Request $request, StatusRepository $statusRepository): Response
     {
-        //Recupere le status de la sortie a annulée
+        // Recupere le status de la sortie a annulée
         $status = $event->getStatus()->getWording();
 
-       //Si le status de la sortie est different de Creer ou Ouverte , redirection sur acceuil avec message d'erreur
-        if (!str_contains(Status::CREATE, $status) && !str_contains(Status::OPEN, $status)){
-            $this->addFlash("failed", "Annulation impossible");
+        // Si le status de la sortie est different de Creer ou Ouverte , redirection sur acceuil avec message d'erreur
+        if (!str_contains(Status::CREATE, $status) && !str_contains(Status::OPEN, $status)) {
+            $this->addFlash('failed', 'Annulation impossible');
+
             return $this->redirectToRoute('app_event_list');
         }
-        $form = $this->createForm(CancelEventType::class,$event);
+        $form = $this->createForm(CancelEventType::class, $event);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $event = $form->getData();
             $event->setStatus($statusRepository->findOneBy([
                 'wording' => Status::CANCELED,
             ]));
             $manager->persist($event);
             $manager->flush();
-            $this->addFlash("success", "Sortie Annulee");
-           return $this->redirectToRoute('app_event_list');
+            $this->addFlash('success', 'Sortie Annulee');
+
+            return $this->redirectToRoute('app_event_list');
         }
-        return $this->render('event/cancel/cancel_event.html.twig',[
-         'form'=>$form->createView()
+
+        return $this->render('event/cancel/cancel_event.html.twig', [
+         'form' => $form->createView(),
      ]);
     }
 }

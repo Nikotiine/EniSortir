@@ -15,11 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-
-
     #[Route('/user/edit/{id}', name: 'user_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === currentUser")]
-    public function edit(User $currentUser, Request $request, EntityManagerInterface $manager,): Response
+    public function edit(User $currentUser, Request $request, EntityManagerInterface $manager): Response
     {
         $form = $this->createForm(UserModificationType::class, $currentUser);
         $form->handleRequest($request);
@@ -39,31 +37,33 @@ class UserController extends AbstractController
                 'form' => $form->createView(),
             ]);
     }
-    #[Route('/user/edit-password/{id}','app_user_edit-password', methods: ['GET','POST'])]
+
+    #[Route('/user/edit-password/{id}', 'app_user_edit-password', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === currentUser")]
-    public function editPassword(User $currentUser, Request $request, UserPasswordHasherInterface $hasher,EntityManagerInterface $manager) : Response
+    public function editPassword(User $currentUser, Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager): Response
     {
         $form = $this->createForm(UserPasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($hasher->isPasswordValid($currentUser, $form->getData()['plainPassword']))
-            {
+            if ($hasher->isPasswordValid($currentUser, $form->getData()['plainPassword'])) {
                 $currentUser->setPassword(
-                $hasher->hashPassword($currentUser,  $form->getData()['newPassword'])
+                    $hasher->hashPassword($currentUser, $form->getData()['newPassword'])
                 );
                 $manager->persist($currentUser);
                 $manager->flush();
                 $this->addFlash(
                     'success', 'Votre mot de passe a été modifié avec succès!'
                 );
+
                 return $this->redirectToRoute('app_user');
-            }else{
+            } else {
                 $this->addFlash(
                     'warning', 'Le mot de passe est incorrect');
             }
         }
-        return  $this->render('user/edit_password.html.twig',[
-            'form'=> $form->createView()
+
+        return $this->render('user/edit_password.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }

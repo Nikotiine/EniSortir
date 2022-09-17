@@ -25,9 +25,7 @@ class FormEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Verifie sur le formulaire est de type creation ou mise a jour
-     * @param FormEvent $event
-     * @return void
+     * Verifie sur le formulaire est de type creation ou mise a jour.
      */
     public function onPostSetData(FormEvent $event): void
     {

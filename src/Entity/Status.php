@@ -13,12 +13,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('wording')]
 class Status
 {
-    const CREATE ="Crée";
-    const OPEN ="Ouverte";
-    const CLOSE ="Cloturée";
-    const IN_PROGRESS ="Activité en cours";
-    const PAST="Passée";
-    const CANCELED="Annulée";
+    public const CREATE = 'Crée';
+    public const OPEN = 'Ouverte';
+    public const CLOSE = 'Cloturée';
+    public const IN_PROGRESS = 'Activité en cours';
+    public const PAST = 'Passée';
+    public const CANCELED = 'Annulée';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

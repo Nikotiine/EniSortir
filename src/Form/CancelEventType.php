@@ -10,37 +10,38 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+
 class CancelEventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name',TextType::class,[
-                'attr'=>[
-                    'class'=>'form-control',
+            ->add('name', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
                     'readonly' => true,
                 ],
-                'label'=>'Nom de la sortie',
-                'label_attr'=>[
-                    'class'=>'form-label'
-                ]
+                'label' => 'Nom de la sortie',
+                'label_attr' => [
+                    'class' => 'form-label',
+                ],
             ])
 
-            ->add('description',TextareaType::class,[
-                'attr'=>[
-                    'class'=>'form-control border border-danger'
+            ->add('description', TextareaType::class, [
+                'attr' => [
+                    'class' => 'form-control border border-danger',
                 ],
-                'label'=>'Motif d annulation',
-                'data'=>'',
-                'label_attr'=>[
-                'class'=>'form-label text-light'
+                'label' => 'Motif d annulation',
+                'data' => '',
+                'label_attr' => [
+                'class' => 'form-label text-light',
                 ],
                 'constraints' => [
                     new Assert\Length(['min' => 10]),
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('submit',SubmitType::class,[
+            ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-danger mt-4',
                 ],

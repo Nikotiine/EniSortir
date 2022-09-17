@@ -2,13 +2,9 @@
 
 namespace App\Service;
 
-use App\Entity\Campus;
-use App\Entity\User;
 use App\Repository\CampusRepository;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Vich\UploaderBundle\Event\Event;
 
 class EventService
 {
@@ -17,5 +13,4 @@ class EventService
                                 private EventRepository $repository)
     {
     }
-
 }

@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Entity\User;
 use App\Form\EventsListType;
 use App\Form\EventType;
 use App\Model\EventsFilterModel;
@@ -12,11 +11,9 @@ use App\Repository\EventRepository;
 use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
-use App\Service\EventService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,26 +28,25 @@ class EventController extends AbstractController
         UserRepository $userRepository,
     ): Response {
         $data = new EventsFilterModel();
-        $user=$userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+        $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $data->campus = $user->getCampus();
 
         $form = $this->createForm(EventsListType::class, $data);
         $form->handleRequest($request);
 
         $events = $eventRepository->getEventList($data, $user);
+
         return $this->render('event/lister.html.twig', [
             'events' => $events,
             'form' => $form->createView(),
         ]);
     }
 
-
-
     #[Route('/event/new', name: 'app_event_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request,
-                           StatusRepository $statusRepository,CityRepository $cityRepository,
-                           LocationRepository $locationRepository,EntityManagerInterface $manager):Response
+                           StatusRepository $statusRepository, CityRepository $cityRepository,
+                           LocationRepository $locationRepository, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
         $idLocation = $request->request->getInt('location');
@@ -98,7 +94,7 @@ class EventController extends AbstractController
         return $this->render('event/new_event.html.twig', [
             'form' => $form->createView(),
             'edit' => true,
-            'idEvent'=>$form->getData()->getId()
+            'idEvent' => $form->getData()->getId(),
         ]);
     }
 
@@ -111,7 +107,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/subscribe/{id}', name: 'app_event_subscribe', methods: ['GET'])]
-    public function subscribeEvent( Event $event, EntityManagerInterface $manager) : Response
+    public function subscribeEvent(Event $event, EntityManagerInterface $manager): Response
     {
         $event->addRegistration($this->getUser());
         $manager->persist($event);
@@ -119,11 +115,12 @@ class EventController extends AbstractController
         $this->addFlash(
             'success', 'Votre inscription est confirmée!'
         );
+
         return $this->redirectToRoute('app_event_list');
     }
 
     #[Route('/event/unsubscribe/{id}', name: 'app_event_unsubscribe', methods: ['GET'])]
-    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager) : Response
+    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager): Response
     {
         $event->removeEventsRegistration($this->getUser());
         $entityManager->persist($event);
@@ -131,8 +128,7 @@ class EventController extends AbstractController
         $this->addFlash(
             'success', 'Votre inscription est annulée!'
         );
+
         return $this->redirectToRoute('app_event_list');
     }
-
-
 }
