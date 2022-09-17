@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Entity\Status;
+use App\Entity\User;
 use App\Form\EventsListType;
 use App\Form\EventType;
 use App\Model\EventsFilterModel;
@@ -12,9 +12,11 @@ use App\Repository\EventRepository;
 use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
+use App\Service\EventService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +25,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class EventController extends AbstractController
 {
     #[Route('/event', name: 'app_event_list', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
     public function list(
         Request $request,
         EventRepository $eventRepository,
@@ -73,7 +74,7 @@ class EventController extends AbstractController
             $manager->flush();
         }
 
-        return $this->render('event/new_event.html.twig', parameters: [
+        return $this->render('event/new_event.html.twig', [
              'form' => $form->createView(),
              'edit' => false,
          ]);
@@ -88,7 +89,6 @@ class EventController extends AbstractController
             ['event_city' => $event->getLocation()->getCity()->getName()]
         );
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $event = $form->getData();
             $manager->persist($event);
@@ -109,4 +109,30 @@ class EventController extends AbstractController
             'event' => $event,
             ]);
     }
+
+    #[Route('/event/subscribe/{id}', name: 'app_event_subscribe', methods: ['GET'])]
+    public function subscribeEvent( Event $event, EntityManagerInterface $manager) : Response
+    {
+        $event->addRegistration($this->getUser());
+        $manager->persist($event);
+        $manager->flush();
+        $this->addFlash(
+            'success', 'Votre inscription est confirmée!'
+        );
+        return $this->redirectToRoute('app_event_list');
+    }
+
+    #[Route('/event/unsubscribe/{id}', name: 'app_event_unsubscribe', methods: ['GET'])]
+    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager) : Response
+    {
+        $event->removeEventsRegistration($this->getUser());
+        $entityManager->persist($event);
+        $entityManager->flush();
+        $this->addFlash(
+            'success', 'Votre inscription est annulée!'
+        );
+        return $this->redirectToRoute('app_event_list');
+    }
+
+
 }
