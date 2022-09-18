@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\Status;
 use App\Entity\User;
 use App\Model\EventsFilterModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -37,7 +38,7 @@ class EventRepository extends ServiceEntityRepository
         if (isset($data->searchBar)) {
             $queryBuilder
                 ->andWhere('e.name LIKE :searchBar')
-                ->setParameter('searchBar', '%'.$data->searchBar.'%');
+                ->setParameter('searchBar', '%' . $data->searchBar . '%');
         }
         if (isset($data->minDate)) {
             $queryBuilder->setParameter('minDate', $data->minDate);
@@ -91,5 +92,20 @@ class EventRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * Recupere les Events actifs
+     * @return array
+     */
+    public function getActiveEvents(array $params): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->join('e.status', 's')
+            ->andWhere('s.wording IN (:status)')
+            ->setParameter('status', $params)
+            ->getQuery()
+            ->getResult();
     }
 }
