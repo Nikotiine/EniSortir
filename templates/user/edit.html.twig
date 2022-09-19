@@ -1,9 +1,8 @@
-{% extends "base.html.twig" %}
+{#{% extends "base.html.twig" %}
 
 {% block body %}
     <div class="container">
-        <h1 class="mt-4">Modification de l'utilisateur   <span class="text-info">
-               </span></h1>
+        <h1 class="mt-4">Modification de l'utilisateur</h1>
 
         {{ form_start(form) }}
         <div class="form-group">
@@ -62,4 +61,15 @@
             modifier mot de passe</a>
         {{ form_end(form) }}
     </div>
+{% endblock %}  #}
+{% extends 'base.html.twig' %}
+{% block title %}Hello SortieController!{% endblock %}
+
+{% block body %}
+    {{ form(form) }}
+
+{% endblock %}
+{% block javascripts%}
+
+
 {% endblock %}

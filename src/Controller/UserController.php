@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/user/edit/{id}', name: 'user_edit', methods: ['GET', 'POST'])]
+    #[Route('/user/edit/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === currentUser")]
     public function edit(User $currentUser, Request $request, EntityManagerInterface $manager): Response
     {
@@ -31,7 +31,7 @@ class UserController extends AbstractController
             $this->addFlash(
                 'success', 'Votre profil a été modifié avec succès!'
             );
-           return $this->redirectToRoute('app_event_list');
+           return $this->redirectToRoute('app_login');
         }
 
         return $this->render('user/edit.html.twig',

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,11 +11,12 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+#[UniqueEntity('email')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\EntityListeners(['App\EntityListener\UserListener'])]
-#[UniqueEntity('email')]
 #[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -62,6 +62,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(max: 12)]
     private ?string $phoneNumber = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     #[ORM\Column]
     private ?bool $isActive = null;
 
@@ -77,8 +80,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isAdmin = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
 
     #[Vich\UploadableField(mapping: 'user_avatar', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
@@ -285,11 +286,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
+    /**
+     * @param string|null $plainPassword
+     */
     public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
@@ -310,12 +317,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
-
-      /*  if (null !== $imageFile) {
+        if (null !== $imageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this->updatedAt = new \DateTimeImmutable();
-        }*/
+        }
     }
 
     public function getImageFile(): ?File
@@ -332,6 +338,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->imageName;
     }
+
+
 
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
@@ -370,6 +378,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function __serialize(): array
+    {
+        return [
+           'id'=> $this->id,
+           'email'=> $this->email,
+           'password'=> $this->password
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->id=$data['id'];
+        $this->email = $data['email'];
+        $this->password =$data['password'];
+
     }
 
 
