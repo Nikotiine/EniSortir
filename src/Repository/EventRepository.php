@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\Status;
 use App\Entity\User;
 use App\Model\EventsFilterModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -37,7 +38,7 @@ class EventRepository extends ServiceEntityRepository
         if (isset($data->searchBar)) {
             $queryBuilder
                 ->andWhere('e.name LIKE :searchBar')
-                ->setParameter('searchBar', '%'.$data->searchBar.'%');
+                ->setParameter('searchBar', '%' . $data->searchBar . '%');
         }
         if (isset($data->minDate)) {
             $queryBuilder->setParameter('minDate', $data->minDate);
@@ -91,5 +92,39 @@ class EventRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * Récupère les événements actifs en base de donnée
+     * @return array
+     */
+    public function getActiveEvents(array $params): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e')
+            ->join('e.status', 's')
+            ->andWhere('s.wording IN (:status)')
+            ->setParameter('status', $params)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Récupère les événements actifs et le nombre d'inscriptions sur chaque événement
+     * @param array $params
+     * @return array
+     */
+    public function getOpenAndCloseEvents(array $params): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e as event')
+            ->join('e.status', 's')
+            ->join('e.registration', 'r')
+            ->addSelect( 'count(r) as totalUserRegistered')
+            ->andWhere('s.wording IN (:status)')
+            ->setParameter('status', $params)
+            ->groupBy('e')
+            ->getQuery()
+            ->getResult();
     }
 }

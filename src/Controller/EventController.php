@@ -12,6 +12,7 @@ use App\Repository\EventRepository;
 use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
+use App\Service\StatusServices;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -27,7 +28,9 @@ class EventController extends AbstractController
         Request $request,
         EventRepository $eventRepository,
         UserRepository $userRepository,
+        StatusServices $services
     ): Response {
+        $services->verifyActiveStatus();
         $data = new EventsFilterModel();
         $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $data->campus = $user->getCampus();
