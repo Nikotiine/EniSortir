@@ -24,6 +24,13 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    /**
+     * Récupère les sorties en fonction des critères de recherche sélectionnés
+     *
+     * @param EventsFilterModel $data Contient les critères de recherche choisis par l'utilisateur
+     * @param User $connectedUser Contient les informations relatives à l'utilisateur connecté
+     * @return Event[]
+     */
     public function getEventList(EventsFilterModel $data, User $connectedUser): array
     {
         $queryBuilder = $this->createQueryBuilder('e')
@@ -34,7 +41,7 @@ class EventRepository extends ServiceEntityRepository
             ->andwhere("stat.wording != :canceled")
             ->setParameter('canceled',Status::CANCELED)
             ->andWhere('e.startAt > :minDate ')
-            ->join('e.registration', 'reg')
+            ->leftJoin('e.registration', 'reg')
             ->addSelect('reg');
         if (isset($data->searchBar)) {
             $queryBuilder
@@ -44,7 +51,7 @@ class EventRepository extends ServiceEntityRepository
         if (isset($data->minDate)) {
             $queryBuilder->setParameter('minDate', $data->minDate);
         } else {
-            $queryBuilder->setParameter('minDate', new \DateTime('now'));
+            $queryBuilder->setParameter('minDate', new \DateTimeImmutable('-1 month'));
         }
         if (isset($data->maxDate)) {
             $queryBuilder
@@ -61,8 +68,8 @@ class EventRepository extends ServiceEntityRepository
                 ->andWhere('e.id IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
-
-        if ($data->isNotRegistred && !is_null($connectedUser->getEventsRegistration())) {
+       
+        if ($data->isNotRegistred && ($connectedUser->getEventsRegistration()->count() !=0)) {
             $queryBuilder
                 ->andWhere('e.id NOT IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());

@@ -12,8 +12,8 @@
     </thead>
     <tbody>
     {% for event in events %}
-        {% if (event.status.wording != 'Créer') or
-            (event.status.wording is same as ('Créer') and event.organizer==app.user) %}
+        {% if (event.status.wording != constant('App\\Entity\\Status::CREATE')) or
+            (event.status.wording is same as (constant('App\\Entity\\Status::CREATE')) and event.organizer==app.user) %}
             <h1></h1>
             <tr>
                 <th>{{ event.name }}</th>
@@ -27,8 +27,41 @@
                     <td></td>
                 {% endif %}
                 <td>{{ event.organizer.firstName }}</td>
-                <td>A faire aussi</td>
-{#                 TODO : route pour modification : /event/edit/{id}#}
+                <td>
+                    {% if event.status.wording == constant('App\\Entity\\Status::CREATE') %}
+                        <a href="{{ path('app_event_edit',{'id' : event.id}) }}">Modifier</a>
+                        <a href="{{ path('app_active_event', {'id': event.id}) }}">Publier</a>
+                    {% else %}
+                        <a href="{{ path('app_event_details',{'id':event.id}) }}">Afficher</a>
+                        {% if app.user == event.organizer and event.status.wording == constant('App\\Entity\\Status::OPEN') %}
+                            <a href="{{ path('app_cancel_event',{'id': event.id}) }}">Annuler</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if app.user != event.organizer %}
+                        {% if app.user in event.registration and
+                            event.status.wording != constant('App\\Entity\\Status::CLOSE') and
+                            event.status.wording != constant('App\\Entity\\Status::IN_PROGRESS') and
+                            event.status.wording != constant('App\\Entity\\Status::PAST')%}
+                                <a href="{{ path('app_event_unsubscribe', {'id': event.id}) }}">Se désister</a>
+                            {% elseif event.status.wording == constant('App\\Entity\\Status::OPEN') and
+                                event.registration.count < event.maxPeople %}
+                                <a href="{{ path('app_event_subscribe',{'id': event.id}) }}">S'inscrire</a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+{#  Si statut = crée
+        afficher <a>Modifier - Publier<a>
+    Sinon
+        afficher <a>Afficher</a>
+        si app.user = event.organizer et statut = ouverte
+            afficher Annuler
+    si app.user != event.organizer
+        Si inscrit et statut différent de "en cours" et statut différent de "passée"
+            afficher se désister
+        sinon
+            si status "ouverte" et event.registration.count<event.maxPeople
+                afficher s'inscrire
+#}
             </tr>
         {% endif %}
     {% endfor %}

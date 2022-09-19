@@ -114,7 +114,8 @@ class AppFixtures extends Fixture
                 ->setMaxPeople(mt_rand(1, 49))
                 ->setLocation($locations[mt_rand(0, count($locations) - 1)])
                 ->setDescription($this->faker->text(75))
-                ->setStatus($status[mt_rand(0, 1)]);
+//                ->setStatus($status[mt_rand(0, 1)]);
+                ->setStatus($status[mt_rand(0, 5)]);
             $events[] = $event;
             $manager->persist($event);
         }

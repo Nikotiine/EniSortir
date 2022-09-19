@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class EventsFilterModel
 {
@@ -13,9 +14,11 @@ class EventsFilterModel
     public $searchBar = '';
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\GreaterThan(new \DateTimeImmutable('-1 month'))]
     public $minDate;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\GreaterThan(propertyPath: 'minDate')]
     public $maxDate;
 
     #[ORM\Column(type: 'boolean')]
