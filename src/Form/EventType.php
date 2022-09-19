@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Symfony\Component\Validator\Constraints as Assert;
 class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -52,6 +52,9 @@ class EventType extends AbstractType
                     'class' => 'form-label mt-3',
                 ],
                 'html5' => false,
+                'constraints'=>[
+                   new Assert\GreaterThanOrEqual('tomorrow')
+            ]
             ])
             ->add('deadLineInscriptionAt', DateTimeType::class, [
                 'attr' => [
@@ -63,6 +66,9 @@ class EventType extends AbstractType
                     'class' => 'form-label mt-3',
                 ],
                 'html5' => false,
+                'constraints'=>[
+                    new Assert\GreaterThanOrEqual('now')
+                ]
             ])
             ->add('maxPeople', IntegerType::class, [
                 'attr' => [

@@ -1,9 +1,19 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-
+Eni_sortir Ajouter sortie
 {% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success mt-2" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('failed') %}
+        <div class="alert alert-danger mt-2" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
 
 {{ form_start(form) }}
     <div class="row w-75 mx-auto mt-5">
@@ -20,10 +30,12 @@
             <select class="form-select" id="location" name="location" disabled>
                 <option value="0">choisir un lieu</option>
             </select>
+
                 {% else %}
             </label>
            {{ form_label(form.location)  }} {{ form_widget(form.location)}}
                 {% endif %}
+            <a class="btn btn-primary" href="{{ path('app_location_new',{origin:app.request.attributes.get('_route')}) }}">Pas dans la liste ? </a>
         </div>
         <div class="col-6">{{ form_label(form.maxPeople) }}{{ form_widget(form.maxPeople) }}</div>
         <div class="col-6" id="info">
@@ -38,6 +50,10 @@
             {% if edit == true %}
             <a class="btn btn-light mt-4" href="{{ path('app_cancel_event',{id:idEvent}) }}">Supprimer la sortie</a>
             {% endif %}
+            {% if activate == true %}
+                <a class="btn bg-secondary mt-4" href="{{ path('app_active_event',{id:idEvent}) }}">Activer la sortie</a>
+            {% endif %}
+
         </div>
 
     </div>

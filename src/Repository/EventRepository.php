@@ -61,7 +61,7 @@ class EventRepository extends ServiceEntityRepository
                 ->andWhere('e.id IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
-       
+
         if ($data->isNotRegistred && !is_null($connectedUser->getEventsRegistration())) {
             $queryBuilder
                 ->andWhere('e.id NOT IN (:connectedUserRegistration)')

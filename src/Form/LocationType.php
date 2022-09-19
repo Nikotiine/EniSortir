@@ -17,6 +17,16 @@ class LocationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('city', EntityType::class, [
+                'class' => City::class,
+                'label' => 'Les villes',
+                'label_attr' => [
+                    'class' => 'form-label mt-4',
+                ],
+                'choice_label' => 'name',
+                'multiple' => false,
+                'expanded' => false,
+            ])
             ->add('name', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -54,7 +64,7 @@ class LocationType extends AbstractType
                     'scale' => '6',
                     'maxlength' => '10',
                 ],
-                'label' => 'Lattitude',
+                'label' => 'Latitude',
                 'required' => false,
                 'empty_data' => '0',
                 'label_attr' => [
@@ -81,16 +91,7 @@ class LocationType extends AbstractType
                     new Assert\Length(['max' => 10]),
                 ],
             ])
-            ->add('city', EntityType::class, [
-                'class' => City::class,
-                'label' => 'Les villes',
-                'label_attr' => [
-                    'class' => 'form-label mt-4',
-                    ],
-                'choice_label' => 'name',
-                'multiple' => false,
-                'expanded' => false,
-                ])
+
         ;
     }
 

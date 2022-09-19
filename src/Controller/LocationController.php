@@ -12,21 +12,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LocationController extends AbstractController
 {
-    #[Route('/location', name: 'app_location')]
-    public function index(): Response
-    {
-        return $this->render('location/index.html.twig', [
-            'controller_name' => 'LocationController',
-        ]);
-    }
 
-    #[Route('/location/new', name: 'app_location_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/location/new/{origin}', name: 'app_location_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager,$origin): Response
     {
+
         $location = new Location();
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        $route = $request->server->get("HTTP_REFERER");
+        if($form->isSubmitted() && $form->isValid())
+        {
             $location = $form->getData();
             $entityManager->persist($location);
             $entityManager->flush();
@@ -34,7 +30,9 @@ class LocationController extends AbstractController
                 'success', 'Lieu a été créé avec succès!'
             );
 
-            return $this->redirectToRoute('app_location');
+
+
+            return $this->redirectToRoute($origin);
         }
 
         return $this->render('location/new_location.html.twig', [

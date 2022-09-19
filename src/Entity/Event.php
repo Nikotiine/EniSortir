@@ -28,6 +28,7 @@ class Event
     #[ORM\Column]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
+    #[Assert\GreaterThan(propertyPath: 'deadLineInscriptionAt')]
     private ?\DateTimeImmutable $startAt = null;
 
     #[ORM\Column]
@@ -39,7 +40,8 @@ class Event
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Assert\GreaterThan(propertyPath: 'startAt')]
+    #[Assert\NotBlank()]
+    #[Assert\NotNull()]
     private ?\DateTimeImmutable $deadLineInscriptionAt = null;
 
     #[ORM\Column]

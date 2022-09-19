@@ -7,6 +7,13 @@
 
         {{ form_start(form) }}
         <div class="form-group">
+            {{ form_label(form.city) }}
+            {{ form_widget(form.city) }}
+            <div class="form_error">
+                {{ form_errors(form.city) }}
+            </div>
+        </div>
+        <div class="form-group">
             {{ form_label(form.name) }}
             {{ form_widget(form.name) }}
             <div class="form_error">
@@ -34,17 +41,11 @@
                 {{ form_errors(form.longitude) }}
             </div>
         </div>
-        <div class="form-group">
-            {{ form_label(form.city) }}
-            {{ form_widget(form.city) }}
-            <div class="form_error">
-                {{ form_errors(form.city) }}
-            </div>
-        </div>
+
         <div class="d-flex">
             <button type="submit" class="btn btn-primary">Créer un lieu</button>
             <a class="btn bg-secondary me-2" href="javascript:history.go(-1)">Annuler</a>
         </div>
-
+        {{ form_end(form) }}
     </div>
 {% endblock %}

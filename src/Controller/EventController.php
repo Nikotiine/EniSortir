@@ -7,11 +7,9 @@ use App\Entity\Status;
 use App\Form\EventsListType;
 use App\Form\EventType;
 use App\Model\EventsFilterModel;
-use App\Repository\CityRepository;
 use App\Repository\EventRepository;
-use App\Repository\LocationRepository;
-use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
+use App\Service\EventService;
 use App\Service\StatusServices;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -50,34 +48,34 @@ class EventController extends AbstractController
     #[Route('/event/new', name: 'app_event_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request,
-                           StatusRepository $statusRepository, CityRepository $cityRepository,
-                           LocationRepository $locationRepository, EntityManagerInterface $manager): Response
+                           UserRepository $userRepository,
+                           EntityManagerInterface $manager,
+                           EventService $service): Response
     {
-        $user = $this->getUser();
+        $user = $userRepository->findOneBy([
+            'email'=>$this->getUser()->getUserIdentifier()
+        ]);
         $idLocation = $request->request->getInt('location');
         $event = new Event();
-        $campus = $user->getCampus();
-        dump($campus);
-        $event->setOrganizer($user);
-        $event->setStatus($statusRepository->findOneBy([
-            'wording' => Status::CREATE,
-        ]));
+        $event = $service->initFormNewEvent($event,$user);
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $location = $locationRepository->findOneBy([
-                'id' => $idLocation,
-            ]);
-            $event->setLocation($location);
             $event = $form->getData();
-            $event->setCampus($campus);
+            $event = $service->formIsValid($event,$idLocation,$user);
             $manager->persist($event);
             $manager->flush();
+            $this->addFlash(
+                'success', 'Votre sortie est enregistrer!'
+            );
+           return $this->redirectToRoute('app_event_edit',['id'=>$event->getId()]);
+
         }
 
         return $this->render('event/new_event.html.twig', [
              'form' => $form->createView(),
              'edit' => false,
+            'activate'=>false
          ]);
     }
 
@@ -85,7 +83,12 @@ class EventController extends AbstractController
     #[Security("is_granted('ROLE_USER') and user === event.getOrganizer()")]
     public function edit(Event $event, EntityManagerInterface $manager, Request $request): Response
     {
-        dump($event->getLocation()->getCity()->getName());
+        //Permet d'afficher le bouton d'activation de la sortie
+        $activate = false;
+        if (str_contains(Status::CREATE,$event->getStatus()->getWording())){
+            $activate = true;
+        }
+
         $form = $this->createForm(EventType::class, $event,
             ['event_city' => $event->getLocation()->getCity()->getName()]
         );
@@ -100,6 +103,7 @@ class EventController extends AbstractController
             'form' => $form->createView(),
             'edit' => true,
             'idEvent' => $form->getData()->getId(),
+            'activate'=>$activate
         ]);
     }
 
@@ -121,7 +125,6 @@ class EventController extends AbstractController
         $this->addFlash(
             'success', 'Votre inscription est confirmée!'
         );
-
         return $this->redirectToRoute('app_event_list');
     }
 
