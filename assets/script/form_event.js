@@ -1,3 +1,4 @@
+
 const loc = document.getElementById('location');
 const selectedCity = document.getElementById('event_city');
 
@@ -10,6 +11,7 @@ selectedCity.addEventListener('change',(e)=>{
         loc.setAttribute('disabled','true')
     }
 })
+
 function getAssociatedLocation(idVille) {
     let zip = 0 ;
     fetch('https://127.0.0.1:8000/api/location/'+idVille).then((res)=>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Status;
 use App\Form\EventsListType;
 use App\Form\EventType;
 use App\Model\EventsFilterModel;
@@ -107,9 +108,10 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/subscribe/{id}', name: 'app_event_subscribe', methods: ['GET'])]
-    public function subscribeEvent(Event $event, EntityManagerInterface $manager): Response
+    public function subscribeEvent(Event $event, EntityManagerInterface $manager , UserRepository $userRepository): Response
     {
-        $event->addRegistration($this->getUser());
+        $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
+        $event->addRegistration($user);
         $manager->persist($event);
         $manager->flush();
         $this->addFlash(
@@ -120,9 +122,10 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/unsubscribe/{id}', name: 'app_event_unsubscribe', methods: ['GET'])]
-    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager): Response
+    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager ,UserRepository $userRepository): Response
     {
-        $event->removeEventsRegistration($this->getUser());
+        $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
+        $event->removeRegistration($user);
         $entityManager->persist($event);
         $entityManager->flush();
         $this->addFlash(
