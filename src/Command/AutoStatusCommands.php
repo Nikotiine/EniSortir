@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\Event;
 use App\Entity\Status;
 use App\Entity\User;
 use App\Repository\EventRepository;
@@ -43,21 +44,33 @@ class AutoStatusCommands
 
     }
 
+    /**
+     * Vérifie automatiquement le nombre d'inscriptions sur chaque événement en status ouvert et clôturé
+     * @return void
+     */
     public function verifyCheckRegistration(): void
     {
 
-        $params = [ Status::OPEN , Status::CLOSE];
-        $events = $this->eventRepository->getActiveEvents($params);
-       // dump($events);
+        $params = [Status::OPEN, Status::CLOSE];
+        $events = $this->eventRepository->getOpenAndCloseEvents($params);
         foreach ($events as $event) {
-            // Trouvez le nbe d'inscrit et le comparer au max
-
-            $totalRegistration = $event->getRegistration();
-            dump($totalRegistration);
-            $maxRegistration = $event->getMaxPeople();
-            dump($maxRegistration);
-            // si max == nbe inscrit =< status cloturer
-            // si max < nb inscritp status open
+            $maxRegistration = $event[Event::SELECTED_EVENT]->getMaxPeople();
+            $totalRegistration = $event[Event::TOTAL_USER_REGISTERED];
+            // Si le nombre d'inscrits est égale au nombre de places disponible, alors le status passe en CLOSE
+            if ($totalRegistration == $maxRegistration) {
+                $event[Event::SELECTED_EVENT]->setStatus($this->statusRepository->findOneBy([
+                    'wording' => Status::CLOSE
+                ]));
+            }
+            // Si le nombre d'inscrits est inférieur au nombre de places disponible, alors le status passe en OPEN
+            if ($totalRegistration < $maxRegistration) {
+                $event[Event::SELECTED_EVENT]->setStatus($this->statusRepository->findOneBy([
+                    'wording' => Status::OPEN
+                ]));
+            }
+            $this->manager->persist($event[Event::SELECTED_EVENT]);
+            $this->manager->flush();
         }
     }
+
 }

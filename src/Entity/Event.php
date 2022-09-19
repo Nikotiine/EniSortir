@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
 {
+    const TOTAL_USER_REGISTERED = 'totalUserRegistered';
+    const SELECTED_EVENT = 'event';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -42,14 +42,14 @@ class ImportUsersCSV extends Command
 
     public function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        $io = new SymfonyStyle($input, $output);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output, $data): int
     {
         $this->createUsers();
 
-        return Command::SUCCES;
+        return $data['SUCCES'];
     }
 
     private function getDataFromFile(): array

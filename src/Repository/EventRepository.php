@@ -95,7 +95,7 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Recupere les Events actifs
+     * Récupère les événements actifs en base de donnée
      * @return array
      */
     public function getActiveEvents(array $params): array
@@ -105,6 +105,25 @@ class EventRepository extends ServiceEntityRepository
             ->join('e.status', 's')
             ->andWhere('s.wording IN (:status)')
             ->setParameter('status', $params)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Récupère les événements actifs et le nombre d'inscriptions sur chaque événement
+     * @param array $params
+     * @return array
+     */
+    public function getOpenAndCloseEvents(array $params): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e as event')
+            ->join('e.status', 's')
+            ->join('e.registration', 'r')
+            ->addSelect( 'count(r) as totalUserRegistered')
+            ->andWhere('s.wording IN (:status)')
+            ->setParameter('status', $params)
+            ->groupBy('e')
             ->getQuery()
             ->getResult();
     }
