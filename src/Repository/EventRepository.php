@@ -24,6 +24,13 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    /**
+     * Récupère les sorties en fonction des critères de recherche sélectionnés
+     *
+     * @param EventsFilterModel $data Contient les critères de recherche choisis par l'utilisateur
+     * @param User $connectedUser Contient les informations relatives à l'utilisateur connecté
+     * @return Event[]
+     */
     public function getEventList(EventsFilterModel $data, User $connectedUser): array
     {
         $queryBuilder = $this->createQueryBuilder('e')
@@ -44,7 +51,7 @@ class EventRepository extends ServiceEntityRepository
         if (isset($data->minDate)) {
             $queryBuilder->setParameter('minDate', $data->minDate);
         } else {
-            $queryBuilder->setParameter('minDate', new \DateTime('now'));
+            $queryBuilder->setParameter('minDate', new \DateTimeImmutable('-1 month'));
         }
         if (isset($data->maxDate)) {
             $queryBuilder
@@ -63,7 +70,6 @@ class EventRepository extends ServiceEntityRepository
         }
        
         if ($data->isNotRegistred && ($connectedUser->getEventsRegistration()->count() !=0)) {
-//        if ($data->isNotRegistred ){
             $queryBuilder
                 ->andWhere('e.id NOT IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
