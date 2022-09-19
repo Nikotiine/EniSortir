@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} | Profil Participant {% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid pt-4">
+
+    <h1>Profil participant</h1>
+
+    <div class="d-flex flex-lg-row">
+        <div class="col-6">
+            <table class="table table-borderless">
+                <tbody>
+                <tr>
+                    <th class="col-4">Nom :</th>
+                    <td>{{ user.lastName }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Prénom :</th>
+                    <td>{{ user.firstName }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Pseudo :</th>
+                    <td>{{ user.pseudo }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Email :</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Campus :</th>
+                    <td>{{ user.campus }}</td>
+                </tr>
+                <tr>
+                    <th class="col-4">Image :</th>
+                    <td>{{ user.imageFile }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+{% endblock %}

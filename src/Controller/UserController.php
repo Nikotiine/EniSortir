@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserModificationType;
 use App\Form\UserPasswordType;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,7 @@ class UserController extends AbstractController
                 'success', 'Votre profil a été modifié avec succès!'
             );
 
-            return $this->redirectToRoute('app_user');
+            return $this->redirectToRoute('user_edit', ['id'=>$currentUser->getId()]);
         }
 
         return $this->render('user/edit.html.twig',
@@ -55,7 +56,7 @@ class UserController extends AbstractController
                     'success', 'Votre mot de passe a été modifié avec succès!'
                 );
 
-                return $this->redirectToRoute('app_user');
+                return $this->redirectToRoute('app_user_showprofiluser');
             } else {
                 $this->addFlash(
                     'warning', 'Le mot de passe est incorrect');
@@ -64,6 +65,13 @@ class UserController extends AbstractController
 
         return $this->render('user/edit_password.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/user/profil/{id}','app_user_profil',methods:['GET'])]
+    public function showProfilUser (User $user) : Response {
+        return $this->render('user/profil.html.twig', parameters: [
+            'user'=>$user
         ]);
     }
 }

@@ -84,7 +84,6 @@ class EventController extends AbstractController
     #[Security("is_granted('ROLE_USER') and user === event.getOrganizer()")]
     public function edit(Event $event, EntityManagerInterface $manager, Request $request): Response
     {
-        dump($event->getLocation()->getCity()->getName());
         $form = $this->createForm(EventType::class, $event,
             ['event_city' => $event->getLocation()->getCity()->getName()]
         );
