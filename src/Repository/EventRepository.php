@@ -34,7 +34,7 @@ class EventRepository extends ServiceEntityRepository
             ->andwhere("stat.wording != :canceled")
             ->setParameter('canceled',Status::CANCELED)
             ->andWhere('e.startAt > :minDate ')
-            ->join('e.registration', 'reg')
+            ->leftJoin('e.registration', 'reg')
             ->addSelect('reg');
         if (isset($data->searchBar)) {
             $queryBuilder
@@ -62,7 +62,8 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
        
-        if ($data->isNotRegistred && !is_null($connectedUser->getEventsRegistration())) {
+        if ($data->isNotRegistred && ($connectedUser->getEventsRegistration()->count() !=0)) {
+//        if ($data->isNotRegistred ){
             $queryBuilder
                 ->andWhere('e.id NOT IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());

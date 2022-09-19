@@ -37,6 +37,7 @@ class EventController extends AbstractController
         $form = $this->createForm(EventsListType::class, $data);
         $form->handleRequest($request);
         $data = $form->getData();
+        dump($user->getEventsRegistration()->count());
         dump($data);
         $events = $eventRepository->getEventList($data, $user);
         dump($events);
