@@ -58,7 +58,7 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('app_user');
             } else {
                 $this->addFlash(
-                    'warning', 'Le mot de passe est incorrect');
+                    'failed', 'Le mot de passe est incorrect');
             }
         }
 

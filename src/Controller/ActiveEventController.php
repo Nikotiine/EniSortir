@@ -7,6 +7,7 @@ use App\Entity\Status;
 use App\Repository\StatusRepository;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ActiveEventController extends AbstractController
 {
     #[Route('/event/active/{id}', name: 'app_active_event')]
+    #[IsGranted('ROLE_USER')]
     public function active(Event $event,EntityManagerInterface $manager,StatusRepository $statusRepository): Response
     {
         $status = $event->getStatus()->getWording();

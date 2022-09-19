@@ -25,7 +25,6 @@ class CancelEventController extends AbstractController
         // Si le status de la sortie est different de Creer ou Ouverte , redirection sur acceuil avec message d'erreur
         if (!str_contains(Status::CREATE, $status) && !str_contains(Status::OPEN, $status)) {
             $this->addFlash('failed', 'Annulation impossible');
-
             return $this->redirectToRoute('app_event_list');
         }
         $form = $this->createForm(CancelEventType::class, $event);
@@ -38,7 +37,6 @@ class CancelEventController extends AbstractController
             $manager->persist($event);
             $manager->flush();
             $this->addFlash('success', 'Sortie Annulee');
-
             return $this->redirectToRoute('app_event_list');
         }
 

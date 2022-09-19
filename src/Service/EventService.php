@@ -5,19 +5,14 @@ namespace App\Service;
 use App\Entity\Event;
 use App\Entity\Status;
 use App\Entity\User;
-use App\Repository\CampusRepository;
-use App\Repository\EventRepository;
 use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
-use App\Repository\UserRepository;
-use Symfony\Component\Security\Core\User\UserInterface;
+
 
 class EventService
 {
-    public function __construct(private UserRepository $userRepository,
-                               private StatusRepository $statusRepository,
-                                private LocationRepository $locationRepository,
-                                private EventRepository $repository)
+    public function __construct(private StatusRepository $statusRepository,
+                                private LocationRepository $locationRepository,)
     {
     }
 

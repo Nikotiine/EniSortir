@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Location;
 use App\Form\LocationType;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,13 +15,12 @@ class LocationController extends AbstractController
 {
 
     #[Route('/location/new/{origin}', name: 'app_location_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request, EntityManagerInterface $entityManager,$origin): Response
     {
-
         $location = new Location();
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
-        $route = $request->server->get("HTTP_REFERER");
         if($form->isSubmitted() && $form->isValid())
         {
             $location = $form->getData();
@@ -29,9 +29,6 @@ class LocationController extends AbstractController
             $this->addFlash(
                 'success', 'Lieu a été créé avec succès!'
             );
-
-
-
             return $this->redirectToRoute($origin);
         }
 
