@@ -106,15 +106,10 @@ class UserModificationType extends AbstractType
             'multiple' => false,
             'expanded' => false,
             ])
-            ->add('imageFile', VichImageType::class, [
-                'attr' => [
-                    'class' => 'bg-secondary mb-3',
-                ],
-                'label' => 'Photo de profil',
-                'label_attr' => [
-                    'class' => 'form-label mt-3 mb-2',
-                ],
+            ->add('imageFile',VichImageType::class,[
+                'required'=>false,
             ])
+
         ;
     }
 
