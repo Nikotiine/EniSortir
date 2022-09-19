@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Status;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,6 +51,7 @@ class AutoStatusCommands
        // dump($events);
         foreach ($events as $event) {
             // Trouvez le nbe d'inscrit et le comparer au max
+
             $totalRegistration = $event->getRegistration();
             dump($totalRegistration);
             $maxRegistration = $event->getMaxPeople();
