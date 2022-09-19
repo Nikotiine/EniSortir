@@ -13,7 +13,7 @@ class StatusServices
     }
     public function verifyActiveStatus(): void
     {
-   // $this->commands->autoUpdatedStatus();
+    $this->commands->autoUpdatedStatus();
     $this->commands->verifyCheckRegistration();
     }
 

@@ -18,7 +18,10 @@ class AutoStatusCommands
     {
     }
 
-
+    /**
+     * Met a jour les status des events en foonction de la date du moment 
+     * @return void
+     */
     public function autoUpdatedStatus(): void
     {
         $params = [Status::CREATE, Status::IN_PROGRESS, Status::OPEN, Status::CLOSE];
