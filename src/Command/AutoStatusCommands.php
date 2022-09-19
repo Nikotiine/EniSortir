@@ -19,7 +19,7 @@ class AutoStatusCommands
     }
 
     /**
-     * Met a jour les status des events en foonction de la date du moment 
+     * Met a jour les status des events en foonction de la date du moment
      * @return void
      */
     public function autoUpdatedStatus(): void

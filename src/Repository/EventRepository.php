@@ -29,9 +29,10 @@ class EventRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('e')
             ->andWhere('e.campus = :campus')
             ->setParameter('campus', $data->campus)
-            ->leftJoin('e.status', 'stat')
+            ->join('e.status', 'stat')
             ->addSelect('stat')
-            ->andwhere("stat.wording != 'Annulée'")
+            ->andwhere("stat.wording != :canceled")
+            ->setParameter('canceled',Status::CANCELED)
             ->andWhere('e.startAt > :minDate ')
             ->join('e.registration', 'reg')
             ->addSelect('reg');
@@ -60,15 +61,18 @@ class EventRepository extends ServiceEntityRepository
                 ->andWhere('e.id IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
+       
         if ($data->isNotRegistred && !is_null($connectedUser->getEventsRegistration())) {
             $queryBuilder
                 ->andWhere('e.id NOT IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
         if ($data->isPassed) {
-            $queryBuilder->andWhere("stat.wording = 'Passée'");
+            $queryBuilder->andWhere("stat.wording = :past")
+            ->setParameter('past',Status::PAST);
         } else {
-            $queryBuilder->andWhere("stat.wording != 'Passée'");
+            $queryBuilder->andWhere("stat.wording != :past")
+                ->setParameter('past',Status::PAST);;
         }
 
         return $queryBuilder

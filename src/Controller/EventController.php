@@ -34,11 +34,12 @@ class EventController extends AbstractController
         $data = new EventsFilterModel();
         $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $data->campus = $user->getCampus();
-
         $form = $this->createForm(EventsListType::class, $data);
         $form->handleRequest($request);
-
+        $data = $form->getData();
+        dump($data);
         $events = $eventRepository->getEventList($data, $user);
+        dump($events);
 
         return $this->render('event/lister.html.twig', [
             'events' => $events,
