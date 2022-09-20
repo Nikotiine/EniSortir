@@ -21,7 +21,7 @@ selectedCity.addEventListener('change',(e)=>{
 
 function getAssociatedLocation(idVille) {
     let zip = 0 ;
-    fetch('https://127.0.0.1:8000/api/location/'+idVille).then((res)=>
+    fetch(`${urlApi}/location/`+idVille).then((res)=>
         res.json()
     ).then((data)=>{
         console.log(data)
@@ -36,7 +36,7 @@ function getAssociatedLocation(idVille) {
         const infos = document.getElementById('info');
         let idLocation = e.target.value;
 
-        fetch('https://127.0.0.1:8000/api/detail/'+idLocation).then((res)=>
+        fetch(`${urlApi}/detail/`+idLocation).then((res)=>
             res.json()
         ).then((data)=>{
             console.log(data);

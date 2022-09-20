@@ -58,17 +58,15 @@ class EventController extends AbstractController
         $user = $userRepository->findOneBy([
             'email'=>$this->getUser()->getUserIdentifier()
         ]);
+        $title = 'Ajout d\'une nouvelle sortie';
         $idLocation = $request->request->getInt('location');
         $event = new Event();
         $event = $service->initFormNewEvent($event,$user);
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
-
-
         $location = new Location();
         $formLocation = $this->createForm(LocationType::class, $location);
         $formLocation->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $event = $form->getData();
             $event = $service->formIsValid($event,$idLocation,$user);
@@ -79,13 +77,13 @@ class EventController extends AbstractController
             );
            return $this->redirectToRoute('app_event_edit',['id'=>$event->getId()]);
         }
-
         return $this->render('event/new_event.html.twig', [
              'form' => $form->createView(),
              'formLocation'=> $formLocation->createView(),
              'edit' => false,
              'activate'=>false,
-            'idEvent'=>null
+             'idEvent'=>null,
+             'title'=>$title
          ]);
     }
 
@@ -99,6 +97,7 @@ class EventController extends AbstractController
             $this->addFlash('failed', 'Modification impossible');
             return $this->redirectToRoute('app_event_list');
         }
+        $title = 'Edition d\'une sortie';
         $location = new Location();
         $formLocation = $this->createForm(LocationType::class, $location);
         $formLocation->handleRequest($request);
@@ -119,6 +118,8 @@ class EventController extends AbstractController
             'idEvent' => $form->getData()->getId(),
             'activate'=>true,
             'formLocation'=> $formLocation->createView(),
+            'title'=>$title
+
         ]);
     }
 

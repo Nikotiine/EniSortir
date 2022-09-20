@@ -14,7 +14,7 @@ Eni_sortir Ajouter sortie
             {{ message }}
         </div>
     {% endfor %}
-<h1 class="text-center text-primary mt-5">Ajout d'une nouvelle sortie</h1>
+<h1 class="text-center text-primary mt-5">{{ title }} </h1>
 {{ form_start(form) }}
     <div class="row w-75 mx-auto mt-5">
         <div class="col-12">{{ form_label(form.name) }}{{ form_widget(form.name) }}</div>
@@ -76,7 +76,9 @@ Eni_sortir Ajouter sortie
 {% block javascripts %}
     {{ parent() }}
 {{ encore_entry_script_tags('event') }}
-
+<script>
+    const urlApi = "{{ app_url_api }}"
+</script>
 {% endblock %}
 
 
