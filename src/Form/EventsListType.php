@@ -40,7 +40,9 @@ class EventsListType extends AbstractType
                     'class' => 'form-control',
                     'type' => 'datetime-local',
                 ],
+                'placeholder'    =>  '15/12/2022',
                 'required' => false,
+                'widget'    =>  'single_text',
                 ])
             ->add('maxDate', DateType::class, [
                 'attr' => [
@@ -48,6 +50,7 @@ class EventsListType extends AbstractType
                     'type' => 'datetime-local',
                 ],
                 'required' => false,
+                'widget'    =>  'single_text',
             ])
             ->add('isOrganizer', CheckboxType::class, [
                 'attr' => [
