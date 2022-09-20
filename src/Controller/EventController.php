@@ -126,6 +126,11 @@ class EventController extends AbstractController
     #[Security("event.getRegistration().count() < event.getMaxPeople()")]
     public function subscribeEvent(Event $event, EntityManagerInterface $manager , UserRepository $userRepository): Response
     {
+        if($event->getDeadLineInscriptionAt()<new \DateTimeImmutable() ||
+                            $event->getStatus()->getWording()!= Status::OPEN){
+            $this->addFlash('failed', "Les inscriptions pour cette sortie ne sont pas autorisées.");
+            return $this->redirectToRoute('app_event_list');
+        }
         $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
         $event->addRegistration($user);
         $manager->persist($event);
@@ -139,6 +144,11 @@ class EventController extends AbstractController
     #[Route('/event/unsubscribe/{id}', name: 'app_event_unsubscribe', methods: ['GET'])]
     public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager ,UserRepository $userRepository): Response
     {
+        if($event->getStatus()->getWording()!= Status::OPEN &&
+            $event->getStatus()->getWording()!= Status::CLOSE){
+            $this->addFlash('failed', "Impossible de se désincrire de cette sortie.");
+            return $this->redirectToRoute('app_event_list');
+        }
         $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
         $event->removeRegistration($user);
         $entityManager->persist($event);
