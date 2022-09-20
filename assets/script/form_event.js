@@ -1,6 +1,13 @@
 
 const loc = document.getElementById('location');
 const selectedCity = document.getElementById('event_city');
+const formLocation = document.getElementById('formLocation');
+
+formLocation.addEventListener('submit',(e)=>{
+  //  e.preventDefault();
+    console.log(e)
+
+})
 
 selectedCity.addEventListener('change',(e)=>{
     let idVille = e.target.value;
@@ -34,8 +41,9 @@ function getAssociatedLocation(idVille) {
         ).then((data)=>{
             console.log(data);
             infos.innerHTML =
-                `<div><p class="text-primary"> Rue :${data.street}</p> </div>
+                `<div class="mt-5"><h5>Information sur le lieu de la sortie</h5> </div>
                      <div>
+                     <p class="text-primary"> Rue :${data.street}</p>
                         <p class="text-primary">code postal :${zip}</p>
                     </div>
                     <div>

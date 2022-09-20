@@ -7,18 +7,19 @@ use App\Form\LocationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LocationController extends AbstractController
 {
 
-    #[Route('/location/new/{origin}', name: 'app_location_new', methods: ['GET', 'POST'])]
+    #[Route('/location/new/{origin}', name: 'app_location_new', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function new(Request $request, EntityManagerInterface $entityManager,$origin): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,$origin): RedirectResponse
     {
         $location = new Location();
+        $idEditEvent = $request->request->getInt('idOrigin');
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
@@ -29,11 +30,16 @@ class LocationController extends AbstractController
             $this->addFlash(
                 'success', 'Lieu a été créé avec succès!'
             );
-            return $this->redirectToRoute($origin);
-        }
+            if($idEditEvent !==0){
+                return $this->redirectToRoute($origin,['id'=>$idEditEvent]);
+            }
+           return $this->redirectToRoute($origin);
 
-        return $this->render('location/new_location.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        }
+        if($idEditEvent !==0){
+            return $this->redirectToRoute($origin,['id'=>$idEditEvent]);
+        }
+        return $this->redirectToRoute($origin);
+
     }
 }

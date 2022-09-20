@@ -51,7 +51,7 @@ class EventType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-label mt-3',
                 ],
-                'html5' => false,
+                'date_widget'=>'single_text',
                 'constraints'=>[
                    new Assert\GreaterThanOrEqual('tomorrow')
             ]
@@ -65,7 +65,7 @@ class EventType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-label mt-3',
                 ],
-                'html5' => false,
+                'date_widget'=>'single_text',
                 'constraints'=>[
                     new Assert\GreaterThanOrEqual('now')
                 ]
