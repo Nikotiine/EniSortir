@@ -65,15 +65,15 @@ class EventRepository extends ServiceEntityRepository
         }
         if ($data->isRegistred) {
             $queryBuilder
-                ->andWhere('e.id IN (:connectedUserRegistration)')
-                ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
+                ->andWhere(':connectedUser MEMBER OF e.registration')
+                ->setParameter('connectedUser', $connectedUser);
         }
-       
-        if ($data->isNotRegistred && ($connectedUser->getEventsRegistration()->count() !=0)) {
+        if ($data->isNotRegistred) {
             $queryBuilder
-                ->andWhere('e.id NOT IN (:connectedUserRegistration)')
-                ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
+                ->andWhere(':connectedUser NOT MEMBER OF e.registration')
+                ->setParameter('connectedUser', $connectedUser);
         }
+
         if ($data->isPassed) {
             $queryBuilder->andWhere("stat.wording = :past")
             ->setParameter('past',Status::PAST);
