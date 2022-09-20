@@ -7,7 +7,10 @@ use App\Entity\Status;
 use App\Form\EventsListType;
 use App\Form\EventType;
 use App\Model\EventsFilterModel;
+use App\Repository\CityRepository;
 use App\Repository\EventRepository;
+use App\Repository\LocationRepository;
+use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use App\Service\EventService;
 use App\Service\StatusServices;
@@ -32,12 +35,12 @@ class EventController extends AbstractController
         $data = new EventsFilterModel();
         $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $data->campus = $user->getCampus();
+
         $form = $this->createForm(EventsListType::class, $data);
         $form->handleRequest($request);
         $data = $form->getData();
         dump($data);
         $events = $eventRepository->getEventList($data, $user);
-        dump($events);
 
         return $this->render('event/lister.html.twig', [
             'events' => $events,
@@ -61,6 +64,10 @@ class EventController extends AbstractController
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $location = $locationRepository->findOneBy([
+                'id' => $idLocation,
+            ]);
+            $event->setLocation($location);
             $event = $form->getData();
             $event = $service->formIsValid($event,$idLocation,$user);
             $manager->persist($event);
@@ -103,7 +110,6 @@ class EventController extends AbstractController
             'form' => $form->createView(),
             'edit' => true,
             'idEvent' => $form->getData()->getId(),
-            'activate'=>$activate
         ]);
     }
 
@@ -116,22 +122,23 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/subscribe/{id}', name: 'app_event_subscribe', methods: ['GET'])]
-    public function subscribeEvent(Event $event, EntityManagerInterface $manager , UserRepository $userRepository): Response
+    public function subscribeEvent(Event $event, EntityManagerInterface $manager, UserRepository $userRepository): Response
     {
-        $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
+        $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $event->addRegistration($user);
         $manager->persist($event);
         $manager->flush();
         $this->addFlash(
             'success', 'Votre inscription est confirmée!'
         );
+
         return $this->redirectToRoute('app_event_list');
     }
 
     #[Route('/event/unsubscribe/{id}', name: 'app_event_unsubscribe', methods: ['GET'])]
-    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager ,UserRepository $userRepository): Response
+    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
-        $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
+        $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $event->removeRegistration($user);
         $entityManager->persist($event);
         $entityManager->flush();

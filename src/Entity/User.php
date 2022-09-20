@@ -13,9 +13,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+#[UniqueEntity('email')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\EntityListeners(['App\EntityListener\UserListener'])]
-#[UniqueEntity('email')]
 #[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -30,7 +30,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
     private ?string $email = null;
-    // a supprimer
     #[ORM\Column]
     private array $roles = [];
 
@@ -61,6 +60,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 12, nullable: true)]
     #[Assert\Length(max: 12)]
     private ?string $phoneNumber = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
     private ?bool $isActive = null;
@@ -305,12 +307,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
-
-        /* if (null !== $imageFile) {
-             // It is required that at least one field changes if you are using doctrine
-             // otherwise the event listeners won't be called and the file is lost
-             $this->updatedAt = new \DateTimeImmutable();
-         }*/
+        if (null !== $imageFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
     public function getImageFile(): ?File
@@ -326,6 +325,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     /**
@@ -353,5 +364,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * override serialise pour ne pas serialise la photo de profil
+     * @return array
+     */
+    public function __serialize(): array
+    {
+        return [
+           'id' => $this->id,
+           'email' => $this->email,
+           'password' => $this->password,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->id = $data['id'];
+        $this->email = $data['email'];
+        $this->password = $data['password'];
     }
 }

@@ -6,14 +6,8 @@
             {{ message }}
         </div>
     {% endfor %}
-    {% for message in app.flashes('failed') %}
-        <div class="alert alert-danger mt-2" role="alert">
-            {{ message }}
-        </div>
-    {% endfor %}
     <div class="container">
-        <h1 class="mt-4">Modification de l'utilisateur   <span class="text-info">
-               </span></h1>
+        <h1 class="mt-4">Modification de l'utilisateur</h1>
 
         {{ form_start(form) }}
         <div class="form-group">
@@ -68,7 +62,7 @@
         </div>
         <button class=" btn btn-primary" type="submit">Enregistrer</button>
         <a class="btn bg-secondary me-2" href="javascript:history.go(-1)">Annuler</a>
-        <a href="{{ path('app_user_editpassword', {id:app.user.id}) }}" class="btn btn-light">
+        <a href="{{ path('app_user_edit-password', {id:app.user.id}) }}" class="btn btn-light">
             modifier mot de passe</a>
         {{ form_end(form) }}
     </div>

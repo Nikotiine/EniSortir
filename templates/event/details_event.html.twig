@@ -79,15 +79,17 @@
             <thead>
             <tr>
                 <th>Pseudo</th>
-                <th>Nom</th>
+                <th>Nom/Prénom</th>
+                <th>Contact</th>
             </tr>
             </thead>
             <tbody>
 
             {% for registration in event.registration %}
                 <tr>
-                    <td><a href="{{ path('app_user',{'pseudo':registration.pseudo}) }}">{{ registration.pseudo }}</a></td>
+                    <td><a href="{{ path('app_user_showprofiluser',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
                     <td>{{ registration.firstname }}{{ registration.lastname| upper }}</td>
+                    <td><a>envoyer un message</a></td>
                 </tr>
             {% endfor %}
 

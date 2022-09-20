@@ -15,7 +15,6 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\YamlEncoder;
 
 class ImportUsersCSV extends Command
-
 {
     private EntityManagerInterface $entityManager;
     private string $dataDirectory;
@@ -23,8 +22,8 @@ class ImportUsersCSV extends Command
     private SymfonyStyle $io;
 
     public function __construct(EntityManagerInterface $entityManager,
-                                string                 $dataDirectory,
-                                UserRepository         $userRepository)
+                                string $dataDirectory,
+                                UserRepository $userRepository)
     {
         parent::__construct();
         $this->dataDirectory = $dataDirectory;
@@ -54,7 +53,7 @@ class ImportUsersCSV extends Command
 
     private function getDataFromFile(): array
     {
-        $file = $this->dataDirectory . 'random-users.csv';
+        $file = $this->dataDirectory.'random-users.csv';
         $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
         $normalizers = [new ObjetNormalizer()];
         $encoders = [
@@ -72,6 +71,7 @@ class ImportUsersCSV extends Command
         if (array_key_exists('results', $data)) {
             return $data['resultas'];
         }
+
         return $data;
     }
 
@@ -80,13 +80,13 @@ class ImportUsersCSV extends Command
         $this->io->section('Création des utilisateurs à partir du fichier');
         $userCreated = 0;
 
-        foreach ($this->getDataFromFile() as $row){
-            if (array_key_exists('email',$row)&&!empty($row['email'])){
+        foreach ($this->getDataFromFile() as $row) {
+            if (array_key_exists('email', $row) && !empty($row['email'])) {
                 $user = $this->userRepository->findOneBy([
-                    'email'=>$row['email']
+                    'email' => $row['email'],
                 ]);
 
-                if (!$user){
+                if (!$user) {
                     $user = new User();
 
                     $user->setPseudo($row['pseudo'])
@@ -98,18 +98,18 @@ class ImportUsersCSV extends Command
                         ->setIsActive(true);
                     $this->entityManager->persist($user);
 
-                    $userCreated++;
+                    ++$userCreated;
                 }
             }
         }
 
         $this->entityManager->flush();
 
-        if($userCreated > 1){
+        if ($userCreated > 1) {
             $string = "{$userCreated} utilisateurs crées en base de données;";
-        }elseif ($userCreated === 1){
-            $string = " 1 utilisateur a été crée en base de données;";
-        }else{
+        } elseif (1 === $userCreated) {
+            $string = ' 1 utilisateur a été crée en base de données;';
+        } else {
             $string = "Aucun utilisateur n'a été crée en base de données;";
         }
 

@@ -14,7 +14,7 @@
                     <a class="nav-link active" aria-current="page" href="{{ path('app_event_list') }}">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('user_edit',{id:app.user.id}) }}">Profil</a>
+                    <a class="nav-link" href="{{ path('app_user_edit',{id:app.user.id}) }}">Profil</a>
                 </li>
                 {% if 'ROLE_ADMIN' in app.user.roles %}
                     <li>

@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserModificationType;
 use App\Form\UserPasswordType;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/user/edit/{id}', name: 'user_edit', methods: ['GET', 'POST'])]
+    #[Route('/user/edit/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === currentUser")]
     public function edit(User $currentUser, Request $request, EntityManagerInterface $manager): Response
     {
@@ -29,41 +30,45 @@ class UserController extends AbstractController
                 'success', 'Votre profil a été modifié avec succès!'
             );
 
-            return $this->redirectToRoute('app_user');
+            return $this->redirectToRoute('app_user_edit', ['id' => $currentUser->getId()]);
         }
 
         return $this->render('user/edit.html.twig',
-            [
-                'form' => $form->createView(),
-            ]);
+            ['form' => $form->createView()]);
     }
 
-    #[Route('/user/edit-password/{id}', 'app_user_edit-password', methods: ['GET', 'POST'])]
+    #[Route('/user/edit-password/{id}', name: 'app_user_edit-password', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === currentUser")]
-    public function editPassword(User $currentUser, Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager): Response
+    public function editPassword(User $currentUser,
+                                 Request $request,
+                                 UserPasswordHasherInterface $hasher,
+                                 EntityManagerInterface $manager): Response
     {
         $form = $this->createForm(UserPasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($hasher->isPasswordValid($currentUser, $form->getData()['plainPassword'])) {
-                $currentUser->setPassword(
-                    $hasher->hashPassword($currentUser, $form->getData()['newPassword'])
-                );
+                $currentUser->setUpdatedAt(new \DateTimeImmutable());
+                $currentUser->setPlainPassword($form->getData()["newPassword"]);
                 $manager->persist($currentUser);
                 $manager->flush();
                 $this->addFlash(
                     'success', 'Votre mot de passe a été modifié avec succès!'
                 );
-
-                return $this->redirectToRoute('app_user');
-            } else {
-                $this->addFlash(
-                    'failed', 'Le mot de passe est incorrect');
+                return $this->redirectToRoute('app_user_edit',['id'=>$currentUser->getId()]);
             }
         }
 
         return $this->render('user/edit_password.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+    #[IsGranted('ROLE_USER')]
+    #[Route('/user/profil/{id}', name: 'app_user_profil', methods: ['GET'])]
+    public function showProfilUser(User $user): Response
+    {
+        return $this->render('user/profil.html.twig', parameters: [
+                    'user' => $user,
         ]);
     }
 }
