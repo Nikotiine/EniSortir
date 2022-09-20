@@ -12,8 +12,6 @@
     </thead>
     <tbody>
     {% for event in events %}
-        {% if (event.status.wording != constant('App\\Entity\\Status::CREATE')) or
-            (event.status.wording is same as (constant('App\\Entity\\Status::CREATE')) and event.organizer==app.user) %}
             <h1></h1>
             <tr>
                 <th>{{ event.name }}</th>
@@ -51,7 +49,6 @@
                     {% endif %}
                 </td>
             </tr>
-        {% endif %}
     {% endfor %}
     </tbody>
 </table>
