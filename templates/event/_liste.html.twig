@@ -35,17 +35,15 @@
                             <a href="{{ path('app_cancel_event',{'id': event.id}) }}">Annuler</a>
                         {% endif %}
                     {% endif %}
-                    {% if app.user != event.organizer %}
-                        {% if app.user in event.registration and
-                            event.status.wording != constant('App\\Entity\\Status::CLOSE') and
-                            event.status.wording != constant('App\\Entity\\Status::IN_PROGRESS') and
-                            event.status.wording != constant('App\\Entity\\Status::PAST')and
-                            event.status.wording != constant('App\\Entity\\Status::CANCELED')%}
-                                <a href="{{ path('app_event_unsubscribe', {'id': event.id}) }}">Se désister</a>
-                            {% elseif event.status.wording == constant('App\\Entity\\Status::OPEN') and
-                                event.registration.count < event.maxPeople %}
-                                <a href="{{ path('app_event_subscribe',{'id': event.id}) }}">S'inscrire</a>
-                        {% endif %}
+                    {% if app.user in event.registration and
+                        event.status.wording != constant('App\\Entity\\Status::CLOSE') and
+                        event.status.wording != constant('App\\Entity\\Status::IN_PROGRESS') and
+                        event.status.wording != constant('App\\Entity\\Status::PAST')and
+                        event.status.wording != constant('App\\Entity\\Status::CANCELED')%}
+                            <a href="{{ path('app_event_unsubscribe', {'id': event.id}) }}">Se désister</a>
+                        {% elseif event.status.wording == constant('App\\Entity\\Status::OPEN') and
+                            event.registration.count < event.maxPeople %}
+                            <a href="{{ path('app_event_subscribe',{'id': event.id}) }}">S'inscrire</a>
                     {% endif %}
                 </td>
             </tr>
