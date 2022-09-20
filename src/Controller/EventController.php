@@ -22,6 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class EventController extends AbstractController
 {
     #[Route('/event', name: 'app_event_list', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function list(
         Request $request,
         EventRepository $eventRepository,
@@ -107,6 +108,7 @@ class EventController extends AbstractController
         ]);
     }
 
+    // TODO :: bloquer l'affichage des sorties antérieures à 1 mois ?(Christophe)
     #[Route('/event/details/{id}', name: 'app_event_details', methods: ['GET'])]
     public function detailEvent(Event $event): Response
     {
@@ -116,6 +118,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/subscribe/{id}', name: 'app_event_subscribe', methods: ['GET'])]
+    #[Security("event.getRegistration().count() < event.getMaxPeople()")]
     public function subscribeEvent(Event $event, EntityManagerInterface $manager , UserRepository $userRepository): Response
     {
         $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);

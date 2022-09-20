@@ -60,13 +60,13 @@ class AutoStatusCommands
             $maxRegistration = $event[Event::SELECTED_EVENT]->getMaxPeople();
             $totalRegistration = $event[Event::TOTAL_USER_REGISTERED];
             // Si le nombre d'inscrits est égale au nombre de places disponible, alors le status passe en CLOSE
-            if ($totalRegistration == $maxRegistration) {
+            if ($totalRegistration == $maxRegistration && $event[Event::SELECTED_EVENT]->getStatus()->getWording()!=Status::CLOSE) {
                 $event[Event::SELECTED_EVENT]->setStatus($this->statusRepository->findOneBy([
                     'wording' => Status::CLOSE
                 ]));
             }
             // Si le nombre d'inscrits est inférieur au nombre de places disponible, alors le status passe en OPEN
-            if ($totalRegistration < $maxRegistration) {
+            if ($totalRegistration < $maxRegistration && $event[Event::SELECTED_EVENT]->getStatus()->getWording()!=Status::OPEN ) {
                 $event[Event::SELECTED_EVENT]->setStatus($this->statusRepository->findOneBy([
                     'wording' => Status::OPEN
                 ]));
