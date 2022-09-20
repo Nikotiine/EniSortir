@@ -56,6 +56,9 @@ class UserController extends AbstractController
                     'success', 'Votre mot de passe a été modifié avec succès!'
                 );
                 return $this->redirectToRoute('app_user_edit',['id'=>$currentUser->getId()]);
+            }else {
+                $this->addFlash(
+                    'failed', 'Le mot de passe est invalide!');
             }
         }
 
