@@ -41,7 +41,8 @@
                         {% if app.user in event.registration and
                             event.status.wording != constant('App\\Entity\\Status::CLOSE') and
                             event.status.wording != constant('App\\Entity\\Status::IN_PROGRESS') and
-                            event.status.wording != constant('App\\Entity\\Status::PAST')%}
+                            event.status.wording != constant('App\\Entity\\Status::PAST')and
+                            event.status.wording != constant('App\\Entity\\Status::CANCELED')%}
                                 <a href="{{ path('app_event_unsubscribe', {'id': event.id}) }}">Se désister</a>
                             {% elseif event.status.wording == constant('App\\Entity\\Status::OPEN') and
                                 event.registration.count < event.maxPeople %}
@@ -49,19 +50,6 @@
                         {% endif %}
                     {% endif %}
                 </td>
-{#  Si statut = crée
-        afficher <a>Modifier - Publier<a>
-    Sinon
-        afficher <a>Afficher</a>
-        si app.user = event.organizer et statut = ouverte
-            afficher Annuler
-    si app.user != event.organizer
-        Si inscrit et statut différent de "en cours" et statut différent de "passée"
-            afficher se désister
-        sinon
-            si status "ouverte" et event.registration.count<event.maxPeople
-                afficher s'inscrire
-#}
             </tr>
         {% endif %}
     {% endfor %}

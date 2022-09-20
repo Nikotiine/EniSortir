@@ -38,8 +38,6 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('campus', $data->campus)
             ->join('e.status', 'stat')
             ->addSelect('stat')
-            ->andwhere("stat.wording != :canceled")
-            ->setParameter('canceled',Status::CANCELED)
             ->andWhere('e.startAt > :minDate ')
             ->leftJoin('e.registration', 'reg')
             ->addSelect('reg');
