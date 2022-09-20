@@ -21,7 +21,11 @@
         {% block body %}
 
         {% endblock %}
-    {% block footer %}{% endblock %}
+    {% block footer %}
+    <footer>
+        {% include('components/_footer.html.twig') %}
+    </footer>
+    {% endblock %}
 
     </body>
 

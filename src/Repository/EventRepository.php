@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\Status;
 use App\Entity\User;
 use App\Model\EventsFilterModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

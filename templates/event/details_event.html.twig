@@ -87,7 +87,7 @@
 
             {% for registration in event.registration %}
                 <tr>
-                    <td><a href="{{ path('app_user_showprofiluser',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
+                    <td><a href="{{ path('app_user_profil',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
                     <td>{{ registration.firstname }}{{ registration.lastname| upper }}</td>
                     <td><a>envoyer un message</a></td>
                 </tr>
