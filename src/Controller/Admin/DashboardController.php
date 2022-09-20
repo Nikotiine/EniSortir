@@ -12,35 +12,34 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\WebLink\Link;
 
 class DashboardController extends AbstractDashboardController
 {
     public function __construct(private readonly AdminUrlGenerator $adminUrlGenerator
-    ) {
+    )
+    {
     }
 
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        $url = $this->adminUrlGenerator
+       /* $url = $this->adminUrlGenerator
             ->setController(UserCrudController::class)
-            ->generateUrl();
+            ->generateUrl();*/
 
-        return $this->redirect($url);
+        return $this->render('admin/dashboard.html.twig');
     }
 
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('ENI-Sortir Administration');
+            ->setTitle('ENI-Sortie')
+            ->renderContentMaximized();
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::section(
-            'Dashboard',
-            icon: 'fa fa-home'
-        );
         yield MenuItem::linkToCrud(
             'Utilisateurs',
             'fa fa-users',
@@ -57,8 +56,8 @@ class DashboardController extends AbstractDashboardController
             City::class
         );
         yield MenuItem::linkToCrud(
-            'Evenements',
-            'fa fa-calendar-days',
+            'Sorties',
+            'fa fa-home',
             Event::class
         );
     }

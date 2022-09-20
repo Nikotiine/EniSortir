@@ -7,6 +7,8 @@ use App\Repository\CampusRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -63,7 +65,7 @@ class ImportUsersCSV extends Command
 
     private function getDataFromFile(): array
     {
-        $file = $this->dataDirectory . '/users.csv';
+        $file = $this->dataDirectory . '/user.csv';
         $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
 
         $normalizers = [new ObjectNormalizer()];
@@ -72,7 +74,7 @@ class ImportUsersCSV extends Command
             new CsvEncoder(),
         ];
         $serializer = new Serializer($normalizers, $encoders);
-        $context = [CsvEncoder::DELIMITER_KEY => ';'];
+        $context = [CsvEncoder::DELIMITER_KEY => ','];
 
         $fileString = file_get_contents($file);
 
@@ -82,25 +84,25 @@ class ImportUsersCSV extends Command
 
     private function createUsers(): void
     {
-        $this->io->section('CREATION DES UTILISATEURS A PARTIR DU FICHIER');
+        $this->io->section('Création des utilisateurs depuis un fichier CSV');
         $userCreated = 0;
 
         foreach ($this->getDataFromFile() as $row) {
-            if (array_key_exists('pseudo', $row) && !empty($row['pseudo'])) {
+            if (array_key_exists('email', $row) && !empty($row['email'])) {
                 $user = $this->userRepository->findOneBy([
-                    'pseudo' => $row['pseudo']
+                    'email' => $row['email']
                 ]);
                 if ($user) {
                     $user = new user();
-                    $user->setPseudo($row['pseudo'])
-                        ->setEmail($row['email'])
-                        ->setCampus($this->campusRepository->findOneBy(['id' => $row['campus_id']]))
+                    $user->setCampus($this->campusRepository->findOneBy(['id' => $row['campus_id']]))
+                        ->setEmail($row['email'] )
+                        ->setPassword($this->userPasswordHasherInterface->hashPassword($user, 'password'))
                         ->setLastName($row['last_name'])
                         ->setFirstName($row['first_name'])
+                        ->setPseudo($row['pseudo'])
                         ->setPhoneNumber($row['phone_number'])
                         ->setIsActive(true)
-                        ->setIsAdmin(true)
-                        ->setPassword($this->userPasswordHasherInterface->hashPassword($user, 'password'));
+                        ->setIsAdmin(true);
 
                     $this->entityManager->persist($user);
                     $userCreated++;

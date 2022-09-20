@@ -42,7 +42,7 @@ class UserCrudController extends AbstractCrudController
             AssociationField::new('campus')
                 ->setCrudController(CampusCrudController::class),
             BooleanField::new('isActive', 'Actif'),
-            BooleanField::new('IsAdmin', 'Admin')
+            BooleanField::new('IsAdmin', 'admin')
                 ->hideOnDetail(),
         ];
     }
