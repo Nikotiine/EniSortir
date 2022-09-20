@@ -36,9 +36,10 @@ class EventController extends AbstractController
         $form = $this->createForm(EventsListType::class, $data);
         $form->handleRequest($request);
         $data = $form->getData();
-        dump($data);
-        $events = $eventRepository->getEventList($data, $user);
-        dump($events);
+        $events=[];
+        if($form->isSubmitted() && $form->isValid()){
+            $events = $eventRepository->getEventList($data, $user);
+        }
 
         return $this->render('event/lister.html.twig', [
             'events' => $events,
@@ -108,10 +109,14 @@ class EventController extends AbstractController
         ]);
     }
 
-    // TODO :: bloquer l'affichage des sorties antérieures à 1 mois ?(Christophe)
     #[Route('/event/details/{id}', name: 'app_event_details', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function detailEvent(Event $event): Response
     {
+        if($event->getStartAt()< new \DateTimeImmutable('-1 month')){
+            $this->addFlash('failed', 'Sortie archivée, affichage impossible');
+            return $this->redirectToRoute('app_event_list');
+        }
         return $this->render(view: 'event/details_event.html.twig', parameters: [
             'event' => $event,
             ]);
