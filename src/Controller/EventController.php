@@ -110,9 +110,9 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/subscribe/{id}', name: 'app_event_subscribe', methods: ['GET'])]
-    public function subscribeEvent(Event $event, EntityManagerInterface $manager , UserRepository $userRepository): Response
+    public function subscribeEvent(Event $event, EntityManagerInterface $manager, UserRepository $userRepository): Response
     {
-        $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
+        $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $event->addRegistration($user);
         $manager->persist($event);
         $manager->flush();
@@ -124,9 +124,9 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/unsubscribe/{id}', name: 'app_event_unsubscribe', methods: ['GET'])]
-    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager ,UserRepository $userRepository): Response
+    public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
-        $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
+        $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $event->removeRegistration($user);
         $entityManager->persist($event);
         $entityManager->flush();

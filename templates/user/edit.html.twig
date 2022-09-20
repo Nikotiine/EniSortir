@@ -1,6 +1,11 @@
-{#{% extends "base.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success mt-2" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="container">
         <h1 class="mt-4">Modification de l'utilisateur</h1>
 
@@ -61,15 +66,4 @@
             modifier mot de passe</a>
         {{ form_end(form) }}
     </div>
-{% endblock %}  #}
-{% extends 'base.html.twig' %}
-{% block title %}Hello SortieController!{% endblock %}
-
-{% block body %}
-    {{ form(form) }}
-
-{% endblock %}
-{% block javascripts%}
-
-
 {% endblock %}

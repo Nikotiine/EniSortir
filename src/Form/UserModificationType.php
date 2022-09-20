@@ -7,7 +7,6 @@ use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -107,8 +106,7 @@ class UserModificationType extends AbstractType
             'multiple' => false,
             'expanded' => false,
             ])
-            ->add('imageFile',VichImageType::class)
-            ->add('submit',SubmitType::class)
+            ->add('imageFile', VichImageType::class)
 
         ;
     }

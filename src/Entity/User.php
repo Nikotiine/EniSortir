@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[UniqueEntity('email')]
@@ -80,7 +79,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isAdmin = null;
 
-
     #[Vich\UploadableField(mapping: 'user_avatar', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
 
@@ -90,14 +88,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'registration')]
     private Collection $eventsRegistration;
 
-
     public function __construct()
     {
         $this->events = new ArrayCollection();
         $this->setIsActive(true);
         $this->setIsAdmin(false);
         $this->eventsRegistration = new ArrayCollection();
-
     }
 
     public function getId(): ?int
@@ -286,17 +282,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    /**
-     * @param string|null $plainPassword
-     */
     public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
@@ -318,8 +308,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->imageFile = $imageFile;
         if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
             $this->updatedAt = new \DateTimeImmutable();
         }
     }
@@ -338,8 +326,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->imageName;
     }
-
-
 
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
@@ -380,22 +366,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * override serialise pour ne pas serialise la photo de profil
+     * @return array
+     */
     public function __serialize(): array
     {
         return [
-           'id'=> $this->id,
-           'email'=> $this->email,
-           'password'=> $this->password
+           'id' => $this->id,
+           'email' => $this->email,
+           'password' => $this->password,
         ];
     }
 
     public function __unserialize(array $data): void
     {
-        $this->id=$data['id'];
+        $this->id = $data['id'];
         $this->email = $data['email'];
-        $this->password =$data['password'];
-
+        $this->password = $data['password'];
     }
-
-
 }
