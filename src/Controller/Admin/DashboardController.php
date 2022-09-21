@@ -24,9 +24,9 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-       /* $url = $this->adminUrlGenerator
-            ->setController(UserCrudController::class)
-            ->generateUrl();*/
+        /* $url = $this->adminUrlGenerator
+             ->setController(UserCrudController::class)
+             ->generateUrl();*/
 
         return $this->render('admin/dashboard.html.twig');
     }
@@ -52,13 +52,18 @@ class DashboardController extends AbstractDashboardController
         );
         yield MenuItem::linkToCrud(
             'Villes',
-            'fa fa-calendar-days',
+            'fa fa-city',
             City::class
         );
         yield MenuItem::linkToCrud(
             'Sorties',
-            'fa fa-home',
+            'fa fa-calendar-days',
             Event::class
+        );
+        yield MenuItem::linkToRoute(
+            'Retour au site',
+            'fa fa-home',
+            'app_event_list'
         );
     }
 }
