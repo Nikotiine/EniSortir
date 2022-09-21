@@ -3,18 +3,21 @@
 {% block title %} {{ parent() }} | Afficher Sortie {% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success mt-2" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+<div class="container-fluid mt-4 p-3 mx-auto w-75">
 
-<div class="container-fluid pt-4">
-
-    <h1>Afficher une sortie</h1>
-
-    <div class="d-flex flex-lg-row">
+    <h1>Detail de la sortie <span class="text-light">{{ event.name }}</span></h1>
+    <div class="d-flex flex-lg-row mt-3">
         <div class="col-6">
             <table class="table table-borderless">
                 <tbody>
                 <tr>
-                    <th class="col-4">Nom de la sortie :</th>
-                    <td>{{ event.name }}</td>
+                    <th class="col-4">Campus :</th>
+                    <td>{{ event.campus.name }}</td>
                 </tr>
                 <tr>
                     <th class="col-4">Date et heure de la sortie :</th>
@@ -32,21 +35,13 @@
                     <th class="col-4">Durée :</th>
                     <td>{{ event.duration }} minutes</td>
                 </tr>
-                <tr>
-                    <th class="col-4">Description et infos :</th>
-                    <td>{{ event.description }}</td>
-                </tr>
                 </tbody>
             </table>
         </div>
-
         <div class="col-6">
             <table class="table table-borderless">
                 <tbody>
-                <tr>
-                    <th class="col-4">Campus :</th>
-                    <td>{{ event.campus.name }}</td>
-                </tr>
+
                 <tr>
                     <th class="col-4">Lieu :</th>
                     <td>{{ event.location.name }}</td>
@@ -67,12 +62,16 @@
                     <th class="col-4">Longitude :</th>
                     <td>{{ event.location.longitude }}</td>
                 </tr>
+                <tr>
+                    <th class="col-4">Description et infos :</th>
+                    <td>{{ event.description }}</td>
+                </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <h4>Liste des participants inscrits</h4>
-    <div class="col-3 max" style="max-height: 17rem;overflow: auto">
+    <h4 class="mt-4 text-light">Liste des participants inscrits</h4>
+    <div class="col-6 max" style="max-height: 17rem;overflow: auto">
         <table class="table table-striped" >
             <thead>
             <tr>
@@ -84,15 +83,23 @@
             <tbody>
             {% for registration in event.registration %}
                 <tr>
-
-                        <td><a href="{{ path('app_user_profil',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
-                        <td>{{ registration.firstname }}{{ registration.lastname| upper }}</td>
-                        <td><a>envoyer un message</a></td>
-
+                    <td><a href="{{ path('app_user_profil',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
+                    <td>{{ registration.firstname }} - {{ registration.lastname| upper }}</td>
+                    <td>
+                        <button type="button" data-registration="{{registration.email}}" data-user-registration="{{ registration.firstname }}" class="btn btn-link registration-button" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                               Contacter
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+</div>
+    {% include('contact/_event_contact.html.twig') %}
 
+{% endblock %}
+{% block javascripts%}
+    {{ parent() }}
+    {{ encore_entry_script_tags('detail') }}
 {% endblock %}

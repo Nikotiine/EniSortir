@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use App\Entity\Event;
 use App\Entity\Location;
 use App\Entity\Status;
+use App\Form\ContactType;
 use App\Form\EventsListType;
 use App\Form\EventType;
 use App\Form\LocationType;
@@ -12,6 +14,7 @@ use App\Model\EventsFilterModel;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use App\Service\EventService;
+use App\Service\MailService;
 use App\Service\StatusServices;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class EventController extends AbstractController
@@ -124,16 +128,31 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/event/details/{id}', name: 'app_event_details', methods: ['GET'])]
+    /**
+     * @throws TransportExceptionInterface
+     */
+    #[Route('/event/details/{id}', name: 'app_event_details', methods: ['GET','POST'])]
     #[IsGranted('ROLE_USER')]
-    public function detailEvent(Event $event): Response
+    public function detailEvent(Event $event , Request $request ,MailService $mailService): Response
     {
         if($event->getStartAt()< new \DateTimeImmutable('-1 month')){
             $this->addFlash('failed', 'Sortie archivée, affichage impossible');
             return $this->redirectToRoute('app_event_list');
         }
+        $contact = new Contact();
+        $form = $this->createForm(ContactType::class,$contact);
+        $form->handleRequest($request);
+        if($form->isSubmitted()){
+            $contact = $form->getData();
+            $contact->setSubject($event->getName());
+            $contact->setEmail($this->getUser()->getUserIdentifier());
+            $to =$request->request->get('email');
+            $mailService->sendEmail($contact->getEmail(),$to,$contact->getSubject(),['contact' => $contact]);
+            $this->addFlash('success', 'Email envoyé');
+        }
         return $this->render(view: 'event/details_event.html.twig', parameters: [
             'event' => $event,
+            'form'=>$form->createView()
             ]);
     }
 
