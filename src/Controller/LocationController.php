@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\Location;
 use App\Form\LocationType;
+use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,6 +42,7 @@ class LocationController extends AbstractController
     #[Route('/location/mapping/{id}', name:'app_location_mapping', methods : ['GET', 'POST'])]
     public function mapping(Location $location, Event $event) : Response
     {
+
         return $this->render('location/mapping_location.html.twig', [
             'location'=>$location,
             'event'=>$event,

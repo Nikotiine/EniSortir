@@ -23,6 +23,7 @@
         "autoprefixer": "^10.4.8",
         "bootstrap": "^5.2.1",
         "leaflet": "^1.8.0",
+        "leaflet.markercluster": "^1.5.3",
         "postcss-loader": "^7.0.1",
         "prettier": "^2.7.1"
     }
