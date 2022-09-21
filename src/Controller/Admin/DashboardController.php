@@ -20,11 +20,6 @@ use Symfony\Component\WebLink\Link;
 
 class DashboardController extends AbstractDashboardController
 {
-    protected $UserRepository;
-    protected $EventRepository;
-    protected $CampusRepository;
-    protected $CityRepository;
-
     public function __construct(
         UserRepository   $userRepository,
         EventRepository  $eventRepository,
@@ -47,10 +42,10 @@ class DashboardController extends AbstractDashboardController
              ->generateUrl();*/
 
         return $this->render('admin/dashboard.html.twig', [
-                'countAllUser' =>$this->UserRepository->countAllUser(),
-            'countAllCampus' =>$this->CampusRepository->countAllCampus(),
-            'countAllCity' => $this->CityRepository->countAllCity(),
-            'countAllEvent' => $this->EventRepository->countAllEvent()
+                'countAllUser' => $this->UserRepository->countAllUser(),
+                'countAllCampus' => $this->CampusRepository->countAllCampus(),
+                'countAllCity' => $this->CityRepository->countAllCity(),
+                'countAllEvent' => $this->EventRepository->countAllEvent()
             ]
         );
     }
@@ -58,7 +53,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('ENI-Sortie')
+            ->setTitle('DashBoard ENI-Sortie')
             ->renderContentMaximized();
     }
 
