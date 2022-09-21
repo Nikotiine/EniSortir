@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Location;
 use App\Form\LocationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +35,15 @@ class LocationController extends AbstractController
 
         return $this->render('location/new_location.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/location/mapping/{id}', name:'app_location_mapping', methods : ['GET', 'POST'])]
+    public function mapping(Location $location, Event $event) : Response
+    {
+        return $this->render('location/mapping_location.html.twig', [
+            'location'=>$location,
+            'event'=>$event,
         ]);
     }
 }
