@@ -80,4 +80,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function getEmails(User $organizer):array
+{
+    return $this->createQueryBuilder('u')
+        ->select('u.email')
+        ->join('u.eventsRegistration','r')
+        ->where('r.organizer = :organizer')
+        ->setParameter('organizer',$organizer)
+        ->getQuery()
+        ->getResult();
+
+}
 }

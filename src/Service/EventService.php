@@ -3,8 +3,10 @@
 namespace App\Service;
 
 use App\Entity\Event;
+use App\Entity\Location;
 use App\Entity\Status;
 use App\Entity\User;
+use App\Form\LocationType;
 use App\Repository\LocationRepository;
 use App\Repository\StatusRepository;
 
@@ -51,5 +53,7 @@ class EventService
         ]));
         return $event;
     }
+
+
 
 }

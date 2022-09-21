@@ -25,14 +25,15 @@ class MailService
      */
     public function sendEmail(
         string $from,
+        string $to,
         string $subject,
         array $context
     ): void {
         $email = (new TemplatedEmail())
             ->from($from)
-            ->to('contact.enisortir@gmail.com')
+            ->to($to)
             ->subject($subject)
-            ->htmlTemplate('utils/email.html.twig')
+            ->htmlTemplate('_utils/email_template.html.twig')
             ->context($context);
         $this->mailer->send($email);
     }

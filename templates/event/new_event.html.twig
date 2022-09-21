@@ -14,37 +14,34 @@ Eni_sortir Ajouter sortie
             {{ message }}
         </div>
     {% endfor %}
-
+<h1 class="text-center text-primary mt-5">{{ title }} </h1>
 {{ form_start(form) }}
     <div class="row w-75 mx-auto mt-5">
-        <div class="col-6">{{ form_label(form.name) }}{{ form_widget(form.name) }}</div>
+        <div class="col-12">{{ form_label(form.name) }}{{ form_widget(form.name) }}</div>
         <div class="col-6">{{ form_label(form.campus) }}{{ form_widget(form.campus, { 'attr': {'disabled': true} }) }}</div>
-        <div class="col-6">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
-
         <div class="col-6">{{ form_label(form.city)  }} {{ form_widget(form.city)}}</div>
-
-        <div class="col-6">{{ form_label(form.deadLineInscriptionAt) }}{{ form_widget(form.deadLineInscriptionAt) }}</div>
-        <div class="col-6">
+        <div class="col-3">{{ form_label(form.startAt) }}{{ form_widget(form.startAt) }}</div>
+        <div class="col-3">{{ form_label(form.deadLineInscriptionAt) }}{{ form_widget(form.deadLineInscriptionAt) }}</div>
+        <div class="col-6 d-flex align-items-end justify-content-around">
             <label>Lieux
                 {% if edit == false%}
-            <select class="form-select" id="location" name="location" disabled>
+            <select class="form-select mt-3" id="location" name="location" disabled>
                 <option value="0">choisir un lieu</option>
             </select>
-
                 {% else %}
-            </label>
-           {{ form_label(form.location)  }} {{ form_widget(form.location)}}
+                    {{ form_label(form.location)  }} {{ form_widget(form.location)}}
                 {% endif %}
-            <a class="btn btn-primary" href="{{ path('app_location_new',{origin:app.request.attributes.get('_route')}) }}">Pas dans la liste ? </a>
-        </div>
-        <div class="col-6">{{ form_label(form.maxPeople) }}{{ form_widget(form.maxPeople) }}</div>
-        <div class="col-6" id="info">
+            </label>
+            <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalLieux">
+                Ajouter un lieu
+            </button>
 
         </div>
-        <div class="col-6" >{{ form_label(form.duration) }}{{ form_widget(form.duration) }}
+        <div class="col-3">{{ form_label(form.maxPeople) }}{{ form_widget(form.maxPeople) }}</div>
+        <div class="col-3" >{{ form_label(form.duration) }}{{ form_widget(form.duration) }}</div>
 
-        </div>
-        <div class="col-6">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
+        <div class="col-12">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
+        <div class="col-12 d-flex flex-column align-items-center" id="info"></div>
         <div class="d-flex justify-content-end">
             {{ form_label(form.submit) }}{{ form_widget(form.submit) }}
             {% if edit == true %}
@@ -60,12 +57,28 @@ Eni_sortir Ajouter sortie
 
     {{ form_end(form) }}
 
+    <!-- Modal -->
+    <div class="modal fade" id="modalLieux" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="exampleModalLabel">Ajout d'un lieu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include('location/_add_location.html.twig') %}
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
 {{ encore_entry_script_tags('event') }}
-
+<script>
+    const urlApi = "{{ app_url_api }}"
+</script>
 {% endblock %}
 
 

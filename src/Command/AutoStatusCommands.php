@@ -43,7 +43,6 @@ class AutoStatusCommands
                 $event->setStatus($statusPast);
             }
             $this->manager->persist($event);
-
         }
 
         $this->manager->flush();
@@ -55,7 +54,7 @@ class AutoStatusCommands
      */
     public function verifyCheckRegistration(): void
     {
-
+        $now = new \DateTimeImmutable();
         $params = [Status::OPEN, Status::CLOSE];
         $events = $this->eventRepository->getOpenAndCloseEvents($params);
         $statusClose =$this->statusRepository->findOneBy([
@@ -64,20 +63,28 @@ class AutoStatusCommands
         $statusOpen = $this->statusRepository->findOneBy([
             'wording' => Status::OPEN
         ]);
+
         foreach ($events as $event) {
             $maxRegistration = $event[Event::SELECTED_EVENT]->getMaxPeople();
             $totalRegistration = $event[Event::TOTAL_USER_REGISTERED];
+
             // Si le nombre d'inscrits est égale au nombre de places disponible, alors le status passe en CLOSE
-            if ($totalRegistration == $maxRegistration && $event[Event::SELECTED_EVENT]->getStatus()->getWording()!=Status::CLOSE) {
+            if (($totalRegistration == $maxRegistration &&
+                str_contains( $event[Event::SELECTED_EVENT]->getStatus()->getWording(),Status::OPEN))
+                || $event[Event::SELECTED_EVENT]->getDeadLineInscriptionAt()<$now)
+               {
                 $event[Event::SELECTED_EVENT]->setStatus($statusClose);
-            }
+                }
+
             // Si le nombre d'inscrits est inférieur au nombre de places disponible, alors le status passe en OPEN
-            if ($totalRegistration < $maxRegistration && $event[Event::SELECTED_EVENT]->getStatus()->getWording()!=Status::OPEN ) {
+            if ($totalRegistration < $maxRegistration &&
+                str_contains($event[Event::SELECTED_EVENT]->getStatus()->getWording(),Status::CLOSE)
+                && $event[Event::SELECTED_EVENT]->getDeadLineInscriptionAt()>$now) {
                 $event[Event::SELECTED_EVENT]->setStatus($statusOpen);
             }
             $this->manager->persist($event[Event::SELECTED_EVENT]);
-            $this->manager->flush();
         }
+        $this->manager->flush();
     }
 
 }

@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Location;
 use App\Entity\Status;
 use App\Form\EventsListType;
 use App\Form\EventType;
+use App\Form\LocationType;
 use App\Model\EventsFilterModel;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
@@ -56,11 +58,15 @@ class EventController extends AbstractController
         $user = $userRepository->findOneBy([
             'email'=>$this->getUser()->getUserIdentifier()
         ]);
+        $title = 'Ajout d\'une nouvelle sortie';
         $idLocation = $request->request->getInt('location');
         $event = new Event();
         $event = $service->initFormNewEvent($event,$user);
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
+        $location = new Location();
+        $formLocation = $this->createForm(LocationType::class, $location);
+        $formLocation->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $event = $form->getData();
             $event = $service->formIsValid($event,$idLocation,$user);
@@ -70,13 +76,14 @@ class EventController extends AbstractController
                 'success', 'Votre sortie est enregistrer!'
             );
            return $this->redirectToRoute('app_event_edit',['id'=>$event->getId()]);
-
         }
-
         return $this->render('event/new_event.html.twig', [
              'form' => $form->createView(),
+             'formLocation'=> $formLocation->createView(),
              'edit' => false,
-            'activate'=>false
+             'activate'=>false,
+             'idEvent'=>null,
+             'title'=>$title
          ]);
     }
 
@@ -85,10 +92,15 @@ class EventController extends AbstractController
     public function edit(Event $event, EntityManagerInterface $manager, Request $request): Response
     {
         //Permet d'afficher le bouton d'activation de la sortie
-        $activate = false;
-        if (str_contains(Status::CREATE,$event->getStatus()->getWording())){
-            $activate = true;
+
+        if (!str_contains(Status::CREATE,$event->getStatus()->getWording())){
+            $this->addFlash('failed', 'Modification impossible');
+            return $this->redirectToRoute('app_event_list');
         }
+        $title = 'Edition d\'une sortie';
+        $location = new Location();
+        $formLocation = $this->createForm(LocationType::class, $location);
+        $formLocation->handleRequest($request);
 
         $form = $this->createForm(EventType::class, $event,
             ['event_city' => $event->getLocation()->getCity()->getName()]
@@ -104,7 +116,10 @@ class EventController extends AbstractController
             'form' => $form->createView(),
             'edit' => true,
             'idEvent' => $form->getData()->getId(),
-            'activate'=>$activate
+            'activate'=>true,
+            'formLocation'=> $formLocation->createView(),
+            'title'=>$title
+
         ]);
     }
 
