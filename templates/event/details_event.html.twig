@@ -71,11 +71,9 @@
             </table>
         </div>
     </div>
-    <div class="col-3">
-
-        <h4>Liste des participants inscrits</h4>
-
-        <table class="table table-striped">
+    <h4>Liste des participants inscrits</h4>
+    <div class="col-3 max" style="max-height: 17rem;overflow: auto">
+        <table class="table table-striped" >
             <thead>
             <tr>
                 <th>Pseudo</th>
@@ -84,18 +82,17 @@
             </tr>
             </thead>
             <tbody>
-
             {% for registration in event.registration %}
                 <tr>
-                    <td><a href="{{ path('app_user_profil',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
-                    <td>{{ registration.firstname }}{{ registration.lastname| upper }}</td>
-                    <td><a>envoyer un message</a></td>
+
+                        <td><a href="{{ path('app_user_profil',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
+                        <td>{{ registration.firstname }}{{ registration.lastname| upper }}</td>
+                        <td><a>envoyer un message</a></td>
+
                 </tr>
             {% endfor %}
-
             </tbody>
         </table>
-
     </div>
 
 {% endblock %}

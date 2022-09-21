@@ -9,7 +9,14 @@
     <h1>Profil participant</h1>
 
     <div class="d-flex flex-lg-row">
-        <div class="col-6">
+        <div class="container">
+            <table>
+                <img src="{{ vich_uploader_asset(user, 'imageFile') }}" width="320" alt="photo de profil">
+            </table>
+
+        </div>
+
+        <div class="col-6" >
             <table class="table table-borderless">
                 <tbody>
                 <tr>
@@ -32,12 +39,11 @@
                     <th class="col-4">Campus :</th>
                     <td>{{ user.campus }}</td>
                 </tr>
-                <tr>
-                    <th class="col-4">Image :</th>
-                    <img src="{{ vich_uploader_asset(user, 'imageFile') }}" width="320" alt="photo de profil">
-                </tr>
                 </tbody>
             </table>
+            <a href="{{ path('app_event_list')}}" class="btn btn-info">
+                Retour</a>
         </div>
+    </div>
 
 {% endblock %}
