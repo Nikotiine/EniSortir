@@ -38,6 +38,13 @@ class LocationRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function countAllLocation(): array
+    {
+        $queryBuilder = $this->createQueryBuilder('l');
+        $queryBuilder->select('COUNT(l.id) as value');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 
 //    /**
 //     * @return Location[] Returns an array of Location objects

@@ -2,24 +2,18 @@
 {% block page_title %}
     <h1 class="display-2">Administration </h1>
 {% endblock %}
-  {% block content %}
-<h1 class="text-center">Bienvenue dans l'interface d'administration du site ENI-Sortie<br>
-    Vous pourrez, d'ici, gerer les utilisateurs, en créer ou en supprimer.</h1>>
-        <div class="row">
-            <div class="col-6 alert-success">
-                <span class="display-3"> {{ countAllUser['value'] }} </span>Utilisateurs actuellement inscrits
-            </div>
-            <div class="col-6 alert-dark">
-                <span class="display-3"> {{ countAllCampus['value'] }} </span>Campus qui jouent le jeu :)
-            </div>
-            <div class="col-6 alert-dark">
-                <span class="display-3"> {{ countAllEvent['value'] }} </span>Sorties déjà organiser !
-            </div>
-            <div class="col-6 alert-dark">
-                <span class="display-3"> {{ countAllCity['value'] }} </span>Villes sont déjà arpenté par nos sorteurs
-                !
-            </div>
-        </div>
-    {% endblock content %}
+
+   {% block content %}
+
+
+       {{ encore_entry_script_tags('app') }}
+       <div class="row w-50 mx-auto mt-3">
+           <div class="col-12">
+               {{ render_chart(chart) }}
+           </div>
+       </div>
+   {% endblock content %}
+
+
 
 

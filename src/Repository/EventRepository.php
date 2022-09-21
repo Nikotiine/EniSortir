@@ -39,14 +39,14 @@ class EventRepository extends ServiceEntityRepository
             ->join('e.status', 'stat')
             ->addSelect('stat')
             ->andwhere("stat.wording != :canceled")
-            ->setParameter('canceled',Status::CANCELED)
+            ->setParameter('canceled', Status::CANCELED)
             ->andWhere('e.startAt > :minDate ')
             ->leftJoin('e.registration', 'reg')
             ->addSelect('reg');
         if (isset($data->searchBar)) {
             $queryBuilder
                 ->andWhere('e.name LIKE :searchBar')
-                ->setParameter('searchBar', '%'.$data->searchBar.'%');
+                ->setParameter('searchBar', '%' . $data->searchBar . '%');
         }
         if (isset($data->minDate)) {
             $queryBuilder->setParameter('minDate', $data->minDate);
@@ -68,18 +68,18 @@ class EventRepository extends ServiceEntityRepository
                 ->andWhere('e.id IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
-       
-        if ($data->isNotRegistred && ($connectedUser->getEventsRegistration()->count() !=0)) {
+
+        if ($data->isNotRegistred && ($connectedUser->getEventsRegistration()->count() != 0)) {
             $queryBuilder
                 ->andWhere('e.id NOT IN (:connectedUserRegistration)')
                 ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
         }
         if ($data->isPassed) {
             $queryBuilder->andWhere("stat.wording = :past")
-            ->setParameter('past',Status::PAST);
+                ->setParameter('past', Status::PAST);
         } else {
             $queryBuilder->andWhere("stat.wording != :past")
-                ->setParameter('past',Status::PAST);;
+                ->setParameter('past', Status::PAST);;
         }
 
         return $queryBuilder
@@ -136,10 +136,11 @@ class EventRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countAllEvent(){
+    public function countAllEvent(): array
+    {
         $queryBuilder = $this->createQueryBuilder('e');
         $queryBuilder->select('COUNT(e.id) as value');
 
-        return $queryBuilder->getQuery()->getOneOrNullResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 }
