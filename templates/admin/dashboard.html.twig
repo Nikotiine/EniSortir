@@ -2,8 +2,35 @@
 {% block page_title %}
     <div class="jumbotron">
         <h1 class="display-4">Administration</h1>
-        <p class="lead">Bienvenue dans l'interface d'administration du site ENI-Sortie</p>
+        <p class="lead">Bienvenue dans l'interface d'administration du site ENI-Sortie<br><br>
+            Vous pourrez, d'ici, gerer les utilisateurs, en créer ou en supprimer.</p>
     </div>
 {% endblock %}
+  {% block content %}
+      <div class="container">
+          <div class="row">
+              <h1> Tableau de bord ENI-Sortie.</h1><br>
+              <h2>Retrouvez quelques informations importantes ici.</h2>
+          </div>
+          <div class="row mt-3">
+              <div class="col-6 alert-success">
+                  <span class="display-3"> {{ countAllUser['value'] }} </span>Utilisateurs actuellement inscrits
+              </div>
+              <div class="col-6 alert-dark">
+                  <span class="display-3"> {{ countAllCampus['value'] }} </span>Campus qui jouent le jeu :)
+              </div>
+              <div class="col-6 alert-dark">
+                  <span class="display-3"> {{ countAllEvent['value'] }} </span>Sorties déjà organiser !
+              </div>
+              <div class="col-6 alert-dark">
+                  <span class="display-3"> {{ countAllCity['value'] }} </span>Villes sont déjà arpenté par nos sorteurs
+                  !
+              </div>
+              {# <div class="col-6 alert-dark">
+                      <span class="display-3"> {{ countAllCity['value'] }} </span>Villes enregistrées
+                  </div> #}
+          </div>
+      </div>
+  {% endblock content %}
 
 

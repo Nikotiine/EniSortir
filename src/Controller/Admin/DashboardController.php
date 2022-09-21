@@ -6,6 +6,10 @@ use App\Entity\Campus;
 use App\Entity\City;
 use App\Entity\Event;
 use App\Entity\User;
+use App\Repository\CampusRepository;
+use App\Repository\CityRepository;
+use App\Repository\EventRepository;
+use App\Repository\UserRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -16,9 +20,23 @@ use Symfony\Component\WebLink\Link;
 
 class DashboardController extends AbstractDashboardController
 {
-    public function __construct(private readonly AdminUrlGenerator $adminUrlGenerator
+    protected $UserRepository;
+    protected $EventRepository;
+    protected $CampusRepository;
+    protected $CityRepository;
+
+    public function __construct(
+        UserRepository   $userRepository,
+        EventRepository  $eventRepository,
+        CampusRepository $campusRepository,
+        CityRepository   $cityRepository,
     )
     {
+        $this->UserRepository = $userRepository;
+        $this->EventRepository = $eventRepository;
+        $this->CampusRepository = $campusRepository;
+        $this->CityRepository = $cityRepository;
+
     }
 
     #[Route('/admin', name: 'admin')]
@@ -28,7 +46,13 @@ class DashboardController extends AbstractDashboardController
              ->setController(UserCrudController::class)
              ->generateUrl();*/
 
-        return $this->render('admin/dashboard.html.twig');
+        return $this->render('admin/dashboard.html.twig', [
+                'countAllUser' =>$this->UserRepository->countAllUser(),
+            'countAllCampus' =>$this->CampusRepository->countAllCampus(),
+            'countAllCity' => $this->CityRepository->countAllCity(),
+            'countAllEvent' => $this->EventRepository->countAllEvent()
+            ]
+        );
     }
 
     public function configureDashboard(): Dashboard
