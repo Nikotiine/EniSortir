@@ -34,15 +34,18 @@ class EventRepository extends ServiceEntityRepository
     public function getEventList(EventsFilterModel $data, User $connectedUser): array
     {
         $queryBuilder = $this->createQueryBuilder('e')
-            ->andWhere('e.campus = :campus')
-            ->setParameter('campus', $data->campus)
             ->join('e.status', 'stat')
             ->addSelect('stat')
-            ->andwhere("stat.wording != :canceled")
-            ->setParameter('canceled',Status::CANCELED)
-            ->andWhere('e.startAt > :minDate ')
             ->leftJoin('e.registration', 'reg')
-            ->addSelect('reg');
+            ->addSelect('reg')
+            ->andWhere('stat.wording != :cree')
+            ->orWhere('stat.wording = :cree and e.organizer= :connectedUser')
+            ->setParameter('cree', Status::CREATE)
+            ->setParameter('connectedUser', $connectedUser)
+            ->andWhere('e.campus = :campus')
+            ->setParameter('campus', $data->campus)
+            ->andWhere('e.startAt > :minDate ')
+            ->addOrderBy('e.startAt');
         if (isset($data->searchBar)) {
             $queryBuilder
                 ->andWhere('e.name LIKE :searchBar')
@@ -60,26 +63,20 @@ class EventRepository extends ServiceEntityRepository
         }
         if ($data->isOrganizer) {
             $queryBuilder
-                ->andWhere('e.organizer = :connectedUser')
-                ->setParameter('connectedUser', $connectedUser);
+                ->andWhere('e.organizer = :connectedUser');
         }
         if ($data->isRegistred) {
             $queryBuilder
-                ->andWhere('e.id IN (:connectedUserRegistration)')
-                ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
+                ->andWhere(':connectedUser MEMBER OF e.registration');
         }
-       
-        if ($data->isNotRegistred && ($connectedUser->getEventsRegistration()->count() !=0)) {
+        if ($data->isNotRegistred) {
             $queryBuilder
-                ->andWhere('e.id NOT IN (:connectedUserRegistration)')
-                ->setParameter('connectedUserRegistration', $connectedUser->getEventsRegistration());
+                ->andWhere(':connectedUser NOT MEMBER OF e.registration');
         }
+
         if ($data->isPassed) {
             $queryBuilder->andWhere("stat.wording = :past")
             ->setParameter('past',Status::PAST);
-        } else {
-            $queryBuilder->andWhere("stat.wording != :past")
-                ->setParameter('past',Status::PAST);;
         }
 
         return $queryBuilder

@@ -38,9 +38,10 @@ class EventController extends AbstractController
         $form = $this->createForm(EventsListType::class, $data);
         $form->handleRequest($request);
         $data = $form->getData();
-        dump($data);
-        $events = $eventRepository->getEventList($data, $user);
-        dump($events);
+        $events=[];
+        if($form->isSubmitted() && $form->isValid()){
+            $events = $eventRepository->getEventList($data, $user);
+        }
 
         return $this->render('event/lister.html.twig', [
             'events' => $events,
@@ -123,10 +124,14 @@ class EventController extends AbstractController
         ]);
     }
 
-    // TODO :: bloquer l'affichage des sorties antérieures à 1 mois ?(Christophe)
     #[Route('/event/details/{id}', name: 'app_event_details', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function detailEvent(Event $event): Response
     {
+        if($event->getStartAt()< new \DateTimeImmutable('-1 month')){
+            $this->addFlash('failed', 'Sortie archivée, affichage impossible');
+            return $this->redirectToRoute('app_event_list');
+        }
         return $this->render(view: 'event/details_event.html.twig', parameters: [
             'event' => $event,
             ]);
@@ -136,6 +141,11 @@ class EventController extends AbstractController
     #[Security("event.getRegistration().count() < event.getMaxPeople()")]
     public function subscribeEvent(Event $event, EntityManagerInterface $manager , UserRepository $userRepository): Response
     {
+        if($event->getDeadLineInscriptionAt()<new \DateTimeImmutable() ||
+                            $event->getStatus()->getWording()!= Status::OPEN){
+            $this->addFlash('failed', "Les inscriptions pour cette sortie ne sont pas autorisées.");
+            return $this->redirectToRoute('app_event_list');
+        }
         $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
         $event->addRegistration($user);
         $manager->persist($event);
@@ -149,6 +159,11 @@ class EventController extends AbstractController
     #[Route('/event/unsubscribe/{id}', name: 'app_event_unsubscribe', methods: ['GET'])]
     public function unsubscribeEvent(Event $event, EntityManagerInterface $entityManager ,UserRepository $userRepository): Response
     {
+        if($event->getStatus()->getWording()!= Status::OPEN &&
+            $event->getStatus()->getWording()!= Status::CLOSE){
+            $this->addFlash('failed', "Impossible de se désincrire de cette sortie.");
+            return $this->redirectToRoute('app_event_list');
+        }
         $user = $userRepository->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
         $event->removeRegistration($user);
         $entityManager->persist($event);

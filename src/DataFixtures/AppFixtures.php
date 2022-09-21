@@ -105,17 +105,28 @@ class AppFixtures extends Fixture
         $events = [];
         for ($i = 0; $i < 20; ++$i) {
             $event = new Event();
+            $dateStartAt = \DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('-1 week', '+3 week', 'Europe/Paris'));
+            $dateDeadLine = $dateStartAt->modify('-3 days');
             $event->setName($this->faker->sentence(3))
-                ->setStartAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('now', '+3 week', 'Europe/Paris')))
-                ->setDeadLineInscriptionAt(\DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('+1 week', '+2 week', 'Europe/Paris')))
+                ->setStartAt($dateStartAt)
+                ->setDeadLineInscriptionAt($dateDeadLine)
                 ->setCampus($allCampus[mt_rand(0, count($allCampus) - 1)])
                 ->setOrganizer($users[mt_rand(0, count($users) - 1)])
                 ->setDuration(mt_rand(10, 180))
-                ->setMaxPeople(mt_rand(1, 49))
+                ->setMaxPeople(mt_rand(9, 49))
                 ->setLocation($locations[mt_rand(0, count($locations) - 1)])
-                ->setDescription($this->faker->text(75))
-//                ->setStatus($status[mt_rand(0, 1)]);
-                ->setStatus($status[mt_rand(0, 5)]);
+                ->setDescription($this->faker->text(75));
+            if ($dateStartAt < new \DateTimeImmutable()){
+                $event->setStatus($status[4]);
+            }else{
+                if($dateDeadLine < new \DateTimeImmutable()){
+                    $event->setStatus($status[3]);
+                }else{
+                    while( in_array(($r= mt_rand(0,5)), array(2,3,4))){
+                    }
+                        $event->setStatus($status[$r]);
+                }
+            }
             $events[] = $event;
             $manager->persist($event);
         }

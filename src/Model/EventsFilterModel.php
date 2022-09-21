@@ -14,11 +14,14 @@ class EventsFilterModel
     public $searchBar = '';
 
     #[ORM\Column(type: 'datetime')]
-    #[Assert\GreaterThan(new \DateTimeImmutable('-1 month'))]
+    #[Assert\GreaterThan(
+        new \DateTimeImmutable('-1 month'),
+        message : "Vous ne pouvez pas consulter les sorties de plus d'1 mois"
+    )]
     public $minDate;
 
     #[ORM\Column(type: 'datetime')]
-    #[Assert\GreaterThan(propertyPath: 'minDate')]
+    #[Assert\GreaterThanOrEqual(propertyPath: 'minDate', message: "Cette date doit être supérieure ou égale à la date de début")]
     public $maxDate;
 
     #[ORM\Column(type: 'boolean')]

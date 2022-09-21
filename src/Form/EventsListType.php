@@ -11,8 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\PropertyAccess\PropertyPath;
-use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class EventsListType extends AbstractType
 {
@@ -40,7 +39,9 @@ class EventsListType extends AbstractType
                     'class' => 'form-control',
                     'type' => 'datetime-local',
                 ],
+                'placeholder'    =>  '15/12/2022',
                 'required' => false,
+                'widget'    =>  'single_text',
                 ])
             ->add('maxDate', DateType::class, [
                 'attr' => [
@@ -48,6 +49,7 @@ class EventsListType extends AbstractType
                     'type' => 'datetime-local',
                 ],
                 'required' => false,
+                'widget'    =>  'single_text',
             ])
             ->add('isOrganizer', CheckboxType::class, [
                 'attr' => [
