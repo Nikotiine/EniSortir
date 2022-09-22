@@ -8,7 +8,7 @@
             {{ message }}
         </div>
     {% endfor %}
-<div class="container-fluid mt-4 p-3 mx-auto w-75">
+<div class="container-fluid mt-4 p-3 mx-auto event-detail">
 
     <h1>Detail de la sortie <span class="text-light">{{ event.name }}</span></h1>
     <div class="d-flex flex-lg-row mt-3">
@@ -71,7 +71,7 @@
         </div>
     </div>
     <h4 class="mt-4 text-light">Liste des participants inscrits</h4>
-    <div class="col-6 max" style="max-height: 17rem;overflow: auto">
+    <div class="col-6 max detail-event-user" style="max-height: 17rem;overflow: auto">
         <table class="table table-striped" >
             <thead>
             <tr>

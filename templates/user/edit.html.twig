@@ -60,10 +60,12 @@
                 {{ form_errors(form.imageFile) }}
             </div>
         </div>
-        <button class=" btn btn-primary" type="submit">Enregistrer</button>
-        <a class="btn bg-secondary me-2" href="javascript:history.go(-1)">Annuler</a>
-        <a href="{{ path('app_user_edit-password', {id:app.user.id}) }}" class="btn btn-light">
-            modifier mot de passe</a>
+        <div class="d-flex mt-4 justify-content-end">
+            <a class="btn bg-secondary me-2" href="{{ path('app_event_list') }}">Annuler</a>
+            <a href="{{ path('app_user_edit-password', {id:app.user.id}) }}" class="btn btn-danger me-2">modifier mot de passe</a>
+            <button class="btn btn-primary" type="submit">Enregistrer</button>
+        </div>
+
         {{ form_end(form) }}
     </div>
 {% endblock %}

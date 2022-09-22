@@ -107,13 +107,14 @@ class EventController extends AbstractController
         $location = new Location();
         $formLocation = $this->createForm(LocationType::class, $location);
         $formLocation->handleRequest($request);
-
+        $campus = $event->getCampus();
         $form = $this->createForm(EventType::class, $event,
             ['event_city' => $event->getLocation()->getCity()->getName()]
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $event = $form->getData();
+            $event->setCampus($campus);
             $manager->persist($event);
             $manager->flush();
         }

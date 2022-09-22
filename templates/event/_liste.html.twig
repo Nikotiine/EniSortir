@@ -1,4 +1,5 @@
-<table class="table mt-5">
+<h2 class="d-lg-none filter-title">Mes sorties</h2>
+<table class="table mt-5 event-table">
     <thead>
     <tr>
         <th scope="col">Nom de la sortie</th>
@@ -8,11 +9,11 @@
         <th scope="col" class="d-none d-lg-table-cell">etat</th>
         <th scope="col" class="d-none d-lg-table-cell">inscrit</th>
         <th scope="col" class="d-none d-lg-table-cell">organisateur</th>
-        <th scope="col" class="d-none d-lg-table-cell">action</th>
+        <th scope="col" class="">action</th>
         <th class="d-lg-none">lieu</th>
     </thead>
     <tbody>
-            <h2 class="d-lg-none">Mes sorties</h2>
+
     {% for event in events %}
             <tr>
                 <th>{{ event.name }}</th>
@@ -26,7 +27,7 @@
                     <td class="d-none d-lg-table-cell"></td>
                 {% endif %}
                 <td class="d-none d-lg-table-cell">{{ event.organizer.firstName }}</td>
-                <td class="d-none d-lg-table-cell">
+                <td class="">
                     {% if event.status.wording == constant('App\\Entity\\Status::CREATE') %}
                         <a href="{{ path('app_event_edit',{'id' : event.id}) }}">Modifier</a>
                         <a href="{{ path('app_active_event', {'id': event.id}) }}">Publier</a>

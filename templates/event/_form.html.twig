@@ -1,8 +1,8 @@
-<h2>Filtrer les sorties</h2>
+<h2 class="filter-title">Filtrer les sorties</h2>
 {{ form_start(form) }}
-<div class="d-flex col-12 justify-content-around">
+<div class="d-flex row justify-content-around event-filter">
     <div class="col-5">
-        <div>
+        <div class="d-none d-lg-block">
             {{  form_label(form.campus) }}
             {{ form_widget(form.campus) }}
         </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
     </div>
-    <div class="col-3 d-flex flex-column m-auto">
+    <div class="col-3 d-flex flex-column m-auto event-filter-checkbox">
         <div>
         {{ form_widget(form.isOrganizer) }}
         {{ form_label(form.isOrganizer) }}
@@ -42,6 +42,9 @@
         {{ form_label(form.isPassed) }}
         </div>
     </div>
-    <button type="submit" class="btn btn-primary my-auto col-2">Rechercher</button>
+    <div class="col-2">
+        <button type="submit" class="btn btn-primary my-auto">Rechercher</button>
+    </div>
+
 </div>
 {{ form_end(form) }}

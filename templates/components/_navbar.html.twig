@@ -4,6 +4,9 @@
             <img src="{{ asset('build/images/logo.png') }}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
 
         </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             {% if is_granted("IS_AUTHENTICATED_FULLY") %}
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -21,8 +24,9 @@
                         <a class="nav-link" href="{{ path('admin') }}" >Administration</a>
                     </li>
                 {% endif %}
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_event_new') }}">Ajouter Sortie</a>
+                    <a class="nav-link d-none d-xs-block" href="{{ path('app_event_new') }}">Ajouter Sortie</a>
                 </li>
                 <li class="nav-item">
                     <a class="btn btn-danger" href="{{ path('app_logout') }}">Logout</a>
