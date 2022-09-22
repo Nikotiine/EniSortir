@@ -8,7 +8,7 @@
 
     <h1 class="text-center">Profil participant</h1>
 
-    <div class="d-flex flex-lg-row mt-5">
+    <div class="d-lg-table-cell flex-lg-row mt-2"">
         <div class="container">
             <table>
                 {% if user.imageName is not empty %}
@@ -18,23 +18,23 @@
 
         </div>
 
-        <div class="col-6" >
+        <div class="col-8" >
             <table class="table table-borderless">
                 <tbody>
                 <tr>
-                    <th class="col-4">Nom :</th>
+                    <th>Nom :</th>
                     <td>{{ user.lastName }}</td>
                 </tr>
                 <tr>
-                    <th class="col-4">Prénom :</th>
+                    <th>Prénom :</th>
                     <td>{{ user.firstName }}</td>
                 </tr>
                 <tr>
-                    <th class="col-4">Pseudo :</th>
+                    <th class="d-flex flex-lg-row">Pseudo :</th>
                     <td>{{ user.pseudo }}</td>
                 </tr>
                 <tr>
-                    <th class="col-4">Email :</th>
+                    <th class="col-3">Email :</th>
                     <td>{{ user.email }}</td>
                 </tr>
                 <tr>

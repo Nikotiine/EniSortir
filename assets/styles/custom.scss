@@ -29,29 +29,34 @@ img{
   .event-filter>div.col-5{
     width: 90%;
   }
-  .event-filter>.event-filter-checkbox{
-   display: grid!important;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    padding: 1rem;
-  }
-  .event-table{
-    width: 90% !important;
-    margin: auto!important;
-    & h2{
+  @media screen and (max-width: 480px) {
+    .event-filter > div.col-4 {
+      width: 90%;
+    }
+    .event-filter > .event-filter-checkbox {
+      display: grid !important;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      padding: 1rem;
+    }
+    .event-table {
+      width: 90% !important;
+      margin: auto !important;
+
+      & h2 {
+        text-align: center;
+      }
+    }
+    .filter-title {
       text-align: center;
+      margin-top: 2rem;
+    }
+    .event-filter > div.col-2 {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .event-detail {
+      max-width: 100%;
     }
   }
-  .filter-title{
-    text-align: center;
-    margin-top: 2rem;
-  }
-  .event-filter>div.col-2{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  .event-detail{
-    max-width: 100%;
-  }
-}

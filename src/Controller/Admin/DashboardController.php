@@ -61,8 +61,7 @@ class DashboardController extends AbstractDashboardController
     {
         return Dashboard::new()
             ->setTitle('DashBoard ENI-Sortie')
-            ->setTitle('<img src="assets/images/logo.png" class="img-fluid d-block mx-auto" style="
-            max-width:200px; width:200%;"><h2 class="mt-3 fw-bold text-white text-center">ENI-Sortie</h2 >')
+            ->setTitle('<h2 class="mt-3 fw-bold text-white text-center">ENI-Sortie</h2 >')
             ->renderContentMaximized();
     }
 
