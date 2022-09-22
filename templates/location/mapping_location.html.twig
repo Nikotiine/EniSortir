@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} | Affichage d'un lieu {% endblock %}
+{% block stylesheets%}
+    {{ parent() }}
+{% endblock %}
+{% block header %}
+
+{% endblock %}
+{% block body %}
+    <div class="container-fluid pt-4">
+    <h1>Emplacement du lieu </h1>
+    </div>
+    <div id="map" style="width: 600px; height: 500px; position: relative">
+    </div>
+{% endblock %}
+{% block footer %}
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}{{ encore_entry_script_tags('map') }}
+{% endblock %}
