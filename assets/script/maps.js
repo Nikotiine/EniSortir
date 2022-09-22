@@ -1,5 +1,6 @@
 import * as L from "leaflet";
 (function init(){
+
     // Initialisation de la Carte
     let map = L.map('map').setView([latitude ,longitude], 11);
 
@@ -12,16 +13,18 @@ import * as L from "leaflet";
 
     //Personnalisation du Marqueur (il faut regler le décalage de l icone par rapport au bord avec iconAnchor
     // et la Popup avec popupAnchor
-        let icon = L.icon({
+       let icon = L.icon({
             iconUrl : '/build/images/icon.png',
             iconSize : [50,50],
             iconAnchor : [25,50],
             popupAnchor : [0,-50]
         })
     //Placement du Marqueur
-        let marker = L.marker([latitude,longitude], {icon:icon}).addTo(map);
+        let marker = L.marker([latitude,longitude],{icon:icon}).addTo(map);
     //Attribution de son Popup
-        marker.bindPopup("<p>Fiesta</p>");
+        marker.bindPopup(
+            'point de rdv'
+        );
 }())
 
 

@@ -10,6 +10,12 @@ img{
 .event-detail{
   max-width: 75%;
 }
+.map{
+  width: 400px;
+  height: 280px;
+  position: relative;
+  margin-bottom: 3rem;
+}
 @media screen and (max-width: 1024px){
   .event-filter{
     flex-direction: column;
@@ -23,6 +29,10 @@ img{
   }
   .detail-event-user{
     width: 100% !important;
+  }
+  .map{
+
+   margin-bottom: 3rem;
   }
 }
 
@@ -72,5 +82,8 @@ img{
       max-width: 100%;
 
     }
-
+    .map{
+      max-width: 320px;
+      margin-bottom: 3rem;
+    }
   }

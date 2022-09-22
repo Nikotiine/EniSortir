@@ -77,6 +77,8 @@
         </tr>
     </table>
     <h4 class="mt-4 text-light">Liste des participants inscrits</h4>
+    <div class="row">
+        <div class="col-6 map"> {% include ('location/mapping_location.html.twig') %}</div>
     <div class="col-6 max detail-event-user" style="max-height: 17rem;overflow: auto">
 
         <h4>Liste des participants inscrits</h4>
@@ -104,8 +106,9 @@
             </tbody>
         </table>
     </div>
-    <div class="col-6"> {% include ('location/mapping_location.html.twig') %}</div>
 
+
+    </div>
 </div>
     {% include('contact/_event_contact.html.twig') %}
 
@@ -118,8 +121,10 @@
 
 
     <script>
+      
     const latitude = {{ event.location.latitude }}
     const longitude = {{ event.location.longitude }}
+
     </script>
 
 {% endblock %}
