@@ -27,6 +27,11 @@ class AppFixtures extends Fixture
         // Creation des campus
         $allCampus = [];
         $allCampusName = ['SAINT-HERBLAIN', 'CHARTRES DE BRETAGNE', 'LA ROCHE SUR YON'];
+        $eventNames= ['Sortie piscine','Aller boire un verre','Faire de l\'escalade','Soiree jeux de societé',
+            'Boire un cafe','Apprendre la couture','Cours de Yoga','Decouverte de JAVA','Developper une webapp',
+            'Comprendre C++','Utiliser un framework Javascript','Detente au sona','Rando roller','Journee alpinisme',
+            'Soiree billard','Soiree bowling','Manif contre Macron','Soiree biere foot','Rencontre a la fistiniere',
+            'Rasso tunnig et run du vendredi'];
         foreach ($allCampusName as $name) {
             $campus = new Campus();
             $campus->setName($name);
@@ -56,8 +61,8 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 20; ++$i) {
             $location = new Location();
             $location->setName($this->faker->title())
-            ->setLongitude($this->faker->longitude())
-            ->setLatitude($this->faker->longitude())
+            ->setLongitude($this->faker->longitude(0,7))
+            ->setLatitude($this->faker->latitude(45,50))
             ->setCity($citys[mt_rand(0, count($citys) - 1)])
             ->setStreet($this->faker->streetName());
             $locations[] = $location;
@@ -88,6 +93,18 @@ class AppFixtures extends Fixture
             $users[] = $user;
             $manager->persist($user);
         }
+        $coach = new User();
+        $coach->setFirstName('Phillipe')
+            ->setLastName('ENI')
+            ->setEmail('pmontembault@campus-eni.fr')
+            ->setCampus($allCampus[mt_rand(0, count($allCampus) - 1)])
+            ->setIsAdmin(true)
+            ->setIsActive(true)
+            ->setPseudo('CoachEniPhp')
+            ->setPhoneNumber('0606060606');
+        $coach->setPlainPassword('totototo');
+        $users[] = $coach;
+        $manager->persist($coach);
         // Creation des users inactifs
         for ($i = 0; $i < 5; ++$i) {
             $unactiveUser = new User();
@@ -107,7 +124,7 @@ class AppFixtures extends Fixture
             $event = new Event();
             $dateStartAt = \DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('-1 week', '+3 week', 'Europe/Paris'));
             $dateDeadLine = $dateStartAt->modify('-3 days');
-            $event->setName($this->faker->sentence(3))
+            $event->setName($eventNames[$i])
                 ->setStartAt($dateStartAt)
                 ->setDeadLineInscriptionAt($dateDeadLine)
                 ->setCampus($allCampus[mt_rand(0, count($allCampus) - 1)])
@@ -123,8 +140,9 @@ class AppFixtures extends Fixture
                     $event->setStatus($status[3]);
                 }else{
                     while( in_array(($r= mt_rand(0,5)), array(2,3,4))){
+
                     }
-                        $event->setStatus($status[$r]);
+                    $event->setStatus($status[$r]);
                 }
             }
             $events[] = $event;
