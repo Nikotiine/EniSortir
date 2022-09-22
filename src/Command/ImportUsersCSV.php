@@ -92,7 +92,7 @@ class ImportUsersCSV extends Command
                 $user = $this->userRepository->findOneBy([
                     'email' => $row['email']
                 ]);
-                if ($user) {
+                if (!$user) {
                     $user = new user();
                     $user->setCampus($this->campusRepository->findOneBy(['id' => $row['campus_id']]))
                         ->setEmail($row['email'] )

@@ -1,31 +1,32 @@
-<table class="table">
+<table class="table mt-5">
     <thead>
     <tr>
         <th scope="col">Nom de la sortie</th>
         <th scope="col">Date de sortie</th>
-        <th scope="col">Cloture inscription</th>
-        <th scope="col">inscrit/place</th>
-        <th scope="col">etat</th>
-        <th scope="col">inscrit</th>
-        <th scope="col">organisateur</th>
-        <th scope="col">action</th>
+        <th scope="col" class="d-none d-lg-table-cell">Cloture inscription</th>
+        <th scope="col" class="d-none d-lg-table-cell">inscrit/place</th>
+        <th scope="col" class="d-none d-lg-table-cell">etat</th>
+        <th scope="col" class="d-none d-lg-table-cell">inscrit</th>
+        <th scope="col" class="d-none d-lg-table-cell">organisateur</th>
+        <th scope="col" class="d-none d-lg-table-cell">action</th>
+        <th class="d-lg-none">lieu</th>
     </thead>
     <tbody>
+            <h2 class="d-lg-none">Mes sorties</h2>
     {% for event in events %}
-            <h1></h1>
             <tr>
                 <th>{{ event.name }}</th>
                 <td>{{ event.startAt | date("d/m/Y - H\\Hi") }}</td>
-                <td>{{ event.deadLineInscriptionAt | date("d/m/Y") }}</td>
-                <td>{{ event.registration.count }} / {{ event.maxPeople }}</td>
-                <td>{{ event.status.wording }}</td>
+                <td class="d-none d-lg-table-cell">{{ event.deadLineInscriptionAt | date("d/m/Y") }}</td>
+                <td class="d-none d-lg-table-cell">{{ event.registration.count }} / {{ event.maxPeople }}</td>
+                <td class="d-none d-lg-table-cell">{{ event.status.wording }}</td>
                 {% if app.user in event.registration %}
-                    <td>X</td>
+                    <td class="d-none d-lg-table-cell">X</td>
                 {% else %}
-                    <td></td>
+                    <td class="d-none d-lg-table-cell"></td>
                 {% endif %}
-                <td>{{ event.organizer.firstName }}</td>
-                <td>
+                <td class="d-none d-lg-table-cell">{{ event.organizer.firstName }}</td>
+                <td class="d-none d-lg-table-cell">
                     {% if event.status.wording == constant('App\\Entity\\Status::CREATE') %}
                         <a href="{{ path('app_event_edit',{'id' : event.id}) }}">Modifier</a>
                         <a href="{{ path('app_active_event', {'id': event.id}) }}">Publier</a>
@@ -46,6 +47,8 @@
                             <a href="{{ path('app_event_subscribe',{'id': event.id}) }}">S'inscrire</a>
                     {% endif %}
                 </td>
+                <td class="d-lg-none">{{ event.location.name }}</td>
+
             </tr>
     {% endfor %}
     </tbody>
