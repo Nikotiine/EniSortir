@@ -71,6 +71,9 @@
             </table>
         </div>
     </div>
+    <div class="class">
+        {% include ('location/mapping_location.html.twig') %}
+    </div>
     <div class="col-3">
 
         <h4>Liste des participants inscrits</h4>
@@ -95,7 +98,16 @@
 
             </tbody>
         </table>
+</div>
 
-    </div>
+{% endblock %}
+
+  {% block javascripts%}
+    {{ parent() }}
+    <script>
+    const latitude = {{ event.location.latitude }}
+    const longitude = {{ event.location.longitude }}
+
+</script>
 
 {% endblock %}

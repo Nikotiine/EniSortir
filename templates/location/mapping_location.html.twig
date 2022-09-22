@@ -2,37 +2,22 @@
 
 {% block title %} {{ parent() }} | Affichage d'un lieu {% endblock %}
 {% block stylesheets%}
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-              integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-              crossorigin=""/>
-        <link rel="stylesheet" href=https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css>
-        <link rel="stylesheet" href=https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css>
+    {{ parent() }}
 {% endblock %}
+{% block header %}
 
+{% endblock %}
 {% block body %}
-
     <div class="container-fluid pt-4">
-
-    <h1>Affichage d'un lieu </h1>
-
-        {{ event.location.name }} : { "lattitude" :{{ event.location.latitude }} , "longitude" : {{ event.location.longitude }}}
+    <h1>Emplacement du lieu </h1>
     </div>
-
     <div id="map" style="width: 600px; height: 500px; position: relative">
-
     </div>
+{% endblock %}
+{% block footer %}
 
-    <!-- Pour charger la librairie -->
-    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
-            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
-            crossorigin=""></script>
-    <!-- Pour Clustériser -->
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-<script>
-
-</script>
 {% endblock %}
 
 {% block javascripts %}
-{{ parent() }} {{ encore_entry_script_tags('map') }}
+{{ parent() }}{{ encore_entry_script_tags('map') }}
 {% endblock %}
