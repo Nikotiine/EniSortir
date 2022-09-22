@@ -2,16 +2,24 @@
 
 namespace App\Controller;
 
+use App\Command\ImportUsersCSV;
 use App\Entity\User;
 use App\Form\UserModificationType;
 use App\Form\UserPasswordType;
+use App\Repository\CampusRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
+use PhpParser\Node\Expr\ShellExec;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
@@ -73,5 +81,55 @@ class UserController extends AbstractController
         return $this->render('user/profil.html.twig', parameters: [
                     'user' => $user,
         ]);
+    }
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/user/uploadCsv', name: 'app_user_upload_csv', methods: ['GET','POST'])]
+    public function uploadCsv(
+        Request $request,
+        UserRepository $userRepository,
+        CampusRepository $campusRepository,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface $entityManager): Response
+    {
+        $file = $request->files->get('csvFile');
+        if(isset($file)){
+            try {
+
+                $handle = fopen($file, "r");
+                $lineNumber = 1;
+                while (($raw_string = fgets($handle)) !== false) {
+                    $row = str_getcsv($raw_string);
+                    if($lineNumber!=1){
+                        $user = $userRepository->findOneBy(['email'=>$row[2]]);
+                        if(!$user){
+                            $user = new user();
+                            $user->setCampus($campusRepository->findOneBy(['id' => $row[1]]))
+                                ->setEmail($row[2])
+                                ->setPassword($userPasswordHasher->hashPassword($user, 'password'))
+                                ->setLastName($row[5])
+                                ->setFirstName($row[6])
+                                ->setPseudo($row[7])
+                                ->setPhoneNumber($row[8])
+                                ->setIsActive(true)
+                                ->setIsAdmin(true);
+                            $entityManager->persist($user);
+                        }
+                    }
+                    $lineNumber++;
+                }
+                $entityManager->flush();
+                fclose($handle);
+                $this->addFlash(
+                    'success', 'Votre fichier a été chargé avec succès!'
+                );
+            }catch (\Exception $e){
+                $this->addFlash(
+                    'failed', 'Erreur lors du chargement du fichier!'
+                );
+            } finally {
+                return $this->redirectToRoute('admin');
+            }
+        }
+        return $this->render('user/uploadCsv.html.twig');
     }
 }
