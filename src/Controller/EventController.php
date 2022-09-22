@@ -128,6 +128,7 @@ class EventController extends AbstractController
             'title'=>$title
 
         ]);
+
     }
 
     /**

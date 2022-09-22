@@ -25,10 +25,7 @@ img{
     width: 100% !important;
   }
 }
-@media screen and (max-width: 480px){
-  .event-filter>div.col-5{
-    width: 90%;
-  }
+
   @media screen and (max-width: 480px) {
     .event-filter > div.col-4 {
       width: 90%;
@@ -47,6 +44,21 @@ img{
         text-align: center;
       }
     }
+    .event-detail-flex{
+      flex-direction: column;
+      justify-content: flex-start;
+
+      & div.col-6{
+        width: 100%;
+        font-size: 0.8rem;
+      }
+
+      & div.col-6 > table > tbody > tr > th {
+        margin-top: 0!important;
+      }
+
+    }
+
     .filter-title {
       text-align: center;
       margin-top: 2rem;
@@ -58,5 +70,7 @@ img{
     }
     .event-detail {
       max-width: 100%;
+
     }
+
   }
