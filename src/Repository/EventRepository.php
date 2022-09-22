@@ -133,4 +133,11 @@ class EventRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function countAllEvent(): array
+    {
+        $queryBuilder = $this->createQueryBuilder('e');
+        $queryBuilder->select('COUNT(e.id) as value');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

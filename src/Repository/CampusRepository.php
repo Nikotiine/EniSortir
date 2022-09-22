@@ -39,6 +39,14 @@ class CampusRepository extends ServiceEntityRepository
         }
     }
 
+    public function countAllCampus(): array
+    {
+        $queryBuilder = $this->createQueryBuilder('c');
+        $queryBuilder->select('COUNT(c.id) as value');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Campus[] Returns an array of Campus objects
 //     */

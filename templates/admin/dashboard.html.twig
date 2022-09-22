@@ -1,11 +1,19 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 {% block page_title %}
-    <div class="jumbotron">
-        <h1 class="display-4">Administration</h1>
-        <p class="lead">Bienvenue dans l'interface d'administration du site ENI-Sortie</p>
-        <button type="button" href="{{ path('app_login', {'/': '/'}) }}" class="btn btn-primary btn-lg">Retour au site</button>
-
-    </div>
+    <h1 class="display-2">Administration </h1>
 {% endblock %}
+
+   {% block content %}
+
+
+       {{ encore_entry_script_tags('app') }}
+       <div class="row w-50 mx-auto mt-3">
+           <div class="col-12">
+               {{ render_chart(chart) }}
+           </div>
+       </div>
+   {% endblock content %}
+
+
 
 

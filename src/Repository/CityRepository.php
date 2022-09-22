@@ -39,6 +39,14 @@ class CityRepository extends ServiceEntityRepository
         }
     }
 
+    public function countAllCity(): array
+    {
+        $queryBuilder = $this->createQueryBuilder('v');
+        $queryBuilder->select('COUNT(v.id) as value');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return City[] Returns an array of City objects
 //     */

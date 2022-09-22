@@ -2,6 +2,7 @@
     "devDependencies": {
         "@hotwired/stimulus": "^3.0.0",
         "@symfony/stimulus-bridge": "^3.2.0",
+        "@symfony/ux-chartjs": "file:vendor/symfony/ux-chartjs/Resources/assets",
         "@symfony/webpack-encore": "^3.0.0",
         "core-js": "^3.23.0",
         "file-loader": "^6.2.0",
@@ -22,6 +23,7 @@
         "@prettier/plugin-php": "^0.18.9",
         "autoprefixer": "^10.4.8",
         "bootstrap": "^5.2.1",
+        "chart.js": "^3.4.1",
         "csv-file-validator": "^2.0.0",
         "postcss-loader": "^7.0.1",
         "prettier": "^2.7.1"
