@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Campus;
 use App\Entity\Event;
 use App\Entity\Status;
 use App\Entity\User;
@@ -38,6 +39,8 @@ class EventRepository extends ServiceEntityRepository
             ->addSelect('stat')
             ->leftJoin('e.registration', 'reg')
             ->addSelect('reg')
+            ->join('e.location', 'loc')
+            ->addSelect('loc')
             ->andWhere('stat.wording != :cree')
             ->orWhere('stat.wording = :cree and e.organizer= :connectedUser')
             ->setParameter('cree', Status::CREATE)
@@ -105,12 +108,14 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Récupère les événements actifs en base de donnée.
      */
-    public function getActiveEvents(array $params): array
+    public function getActiveEvents(array $params,Campus $campus): array
     {
         return $this->createQueryBuilder('e')
             ->select('e')
             ->join('e.status', 's')
             ->andWhere('s.wording IN (:status)')
+            ->andWhere('e.campus = :campus')
+            ->setParameter('campus',$campus)
             ->setParameter('status', $params)
             ->getQuery()
             ->getResult();

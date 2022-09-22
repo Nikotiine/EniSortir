@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Command\AutoStatusCommands;
+use App\Entity\Campus;
 
 class StatusServices
 {
@@ -10,9 +11,9 @@ class StatusServices
     {
     }
 
-    public function verifyActiveStatus(): void
+    public function verifyActiveStatus(Campus $campus): void
     {
-        $this->commands->autoUpdatedStatus();
+        $this->commands->autoUpdatedStatus($campus);
         $this->commands->verifyCheckRegistration();
     }
 }

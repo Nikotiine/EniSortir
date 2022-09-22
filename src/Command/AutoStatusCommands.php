@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\Campus;
 use App\Entity\Event;
 use App\Entity\Status;
 use App\Entity\User;
@@ -22,11 +23,11 @@ class AutoStatusCommands
      * Met a jour les status des events en foonction de la date du moment
      * @return void
      */
-    public function autoUpdatedStatus(): void
+    public function autoUpdatedStatus(Campus $campus): void
     {
         $params = [Status::CREATE, Status::IN_PROGRESS, Status::OPEN, Status::CLOSE];
         $now = new \DateTimeImmutable();
-        $events = $this->eventRepository->getActiveEvents($params);
+        $events = $this->eventRepository->getActiveEvents($params,$campus);
         $statusInProgress = $this->statusRepository->findOneBy([
             'wording' => Status::IN_PROGRESS
         ]);

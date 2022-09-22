@@ -35,9 +35,10 @@ class EventController extends AbstractController
         UserRepository $userRepository,
         StatusServices $services
     ): Response {
-        $services->verifyActiveStatus();
-        $data = new EventsFilterModel();
         $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+        $services->verifyActiveStatus($user->getCampus());
+        $data = new EventsFilterModel();
+
         $data->campus = $user->getCampus();
         $form = $this->createForm(EventsListType::class, $data);
         $form->handleRequest($request);
