@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -88,10 +89,10 @@ class DashboardController extends AbstractDashboardController
             'fa fa - calendar - days',
             Event::class
         );
-        yield MenuItem::linkToRoute(
+        yield MenuItem::linkToUrl(
             'Retour au site',
             'fa fa - home',
-            'app_event_list'
+            '/event'
         );
     }
 }
