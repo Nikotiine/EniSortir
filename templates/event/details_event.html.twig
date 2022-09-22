@@ -79,12 +79,6 @@
     <h4 class="mt-4 text-light">Liste des participants inscrits</h4>
     <div class="col-6 max detail-event-user" style="max-height: 17rem;overflow: auto">
 
-
-
-<div class="class">
-        {% include ('location/mapping_location.html.twig') %}
-    </div>
-            <div class="col-3">
         <h4>Liste des participants inscrits</h4>
 
         <table class="table table-striped">
@@ -101,13 +95,17 @@
                 <tr>
                     <td><a href="{{ path('app_user_profil',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
                     <td>{{ registration.firstname }}{{ registration.lastname| upper }}</td>
-                    <td><a>envoyer un message</a></td>
+                    <td>   <button type="button" data-registration="{{registration.email}}" data-user-registration="{{ registration.firstname }}" class="btn btn-link registration-button" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                            Contacter
+                        </button></td>
                 </tr>
             {% endfor %}
 
             </tbody>
         </table>
     </div>
+    <div class="col-6"> {% include ('location/mapping_location.html.twig') %}</div>
+
 </div>
     {% include('contact/_event_contact.html.twig') %}
 
