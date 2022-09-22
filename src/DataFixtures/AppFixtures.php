@@ -32,6 +32,9 @@ class AppFixtures extends Fixture
             'Comprendre C++','Utiliser un framework Javascript','Detente au sona','Rando roller','Journee alpinisme',
             'Soiree billard','Soiree bowling','Manif contre Macron','Soiree biere foot','Rencontre a la fistiniere',
             'Rasso tunnig et run du vendredi'];
+        $locationName=['Piscine des bains','Barberousse','Mur de l\'angoisse','Cafe des jeux','Central perk','Singer institut','Parc Paul Mistral',
+            'Campus ENI','En ligne sur teams','Poly-technique','En ligne sur OCR','Au bains douches','Grand boulevard','Mont aiguille',
+            'Au 109','Bowling center','Champs Elysée','Au PMU de nogent','A la FISTINIERE','MacDo de Villejuif'];
         foreach ($allCampusName as $name) {
             $campus = new Campus();
             $campus->setName($name);
@@ -60,7 +63,7 @@ class AppFixtures extends Fixture
         $locations = [];
         for ($i = 0; $i < 20; ++$i) {
             $location = new Location();
-            $location->setName($this->faker->title())
+            $location->setName($locationName[$i])
             ->setLongitude($this->faker->longitude(0,7))
             ->setLatitude($this->faker->latitude(45,50))
             ->setCity($citys[mt_rand(0, count($citys) - 1)])
@@ -131,7 +134,7 @@ class AppFixtures extends Fixture
                 ->setOrganizer($users[mt_rand(0, count($users) - 1)])
                 ->setDuration(mt_rand(10, 180))
                 ->setMaxPeople(mt_rand(9, 49))
-                ->setLocation($locations[mt_rand(0, count($locations) - 1)])
+                ->setLocation($locations[$i])
                 ->setDescription($this->faker->text(75));
             if ($dateStartAt < new \DateTimeImmutable()){
                 $event->setStatus($status[4]);
