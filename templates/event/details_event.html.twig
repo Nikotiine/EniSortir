@@ -8,7 +8,7 @@
             {{ message }}
         </div>
     {% endfor %}
-<div class="container-fluid mt-7 p-3 mx-auto event-detail">
+<div class="container-fluid mt-5 p-3 mx-auto event-detail">
 
     <h1>Detail de la sortie <span class="text-light">{{ event.name }}</span></h1>
     <div class="d-flex flex-lg-row mt-1 event-detail-flex">
@@ -70,47 +70,38 @@
             </table>
         </div>
     </div>
-    <table>
-        <tr>
-            <th class="d-flex flex-lg-row mt-2">Description et infos :</th>
-            <td class="d-flex mt-2">{{ event.description }}</td>
-        </tr>
-    </table>
-    <h4 class="mt-4 text-light">Liste des participants inscrits</h4>
+
     <div class="row">
-        <div class="col-6 map"> {% include ('location/mapping_location.html.twig') %}</div>
-    <div class="col-6 max detail-event-user" style="max-height: 17rem;overflow: auto">
 
-        <h4>Liste des participants inscrits</h4>
-
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Pseudo</th>
-                <th>Nom/Prénom</th>
-                <th>Contact</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {% for registration in event.registration %}
+        <div class="col-6  detail-event-user">
+            <h4 class="mt-4 text-light">Liste des participants inscrits</h4>
+            <div class="wrapper-table">
+                <table class="table table-striped">
+                <thead>
                 <tr>
-                    <td><a href="{{ path('app_user_profil',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
-                    <td>{{ registration.firstname }}{{ registration.lastname| upper }}</td>
-                    <td>   <button type="button" data-registration="{{registration.email}}" data-user-registration="{{ registration.firstname }}" class="btn btn-link registration-button" data-bs-toggle="modal" data-bs-target="#exampleModal" >
-                            Contacter
-                        </button></td>
+                    <th>Pseudo</th>
+                    <th>Nom/Prénom</th>
+                    <th>Contact</th>
                 </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
-    </div>
-
-
+                </thead>
+                <tbody>
+                {% for registration in event.registration %}
+                    <tr>
+                        <td><a href="{{ path('app_user_profil',{'id':registration.id}) }}">{{ registration.pseudo ? registration.pseudo : 'non renseigné'}}</a></td>
+                        <td>{{ registration.firstname }} {{ registration.lastname| upper }}</td>
+                        <td>   <button type="button" data-registration="{{registration.email}}" data-user-registration="{{ registration.firstname }}" class="btn btn-link registration-button" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                                Contacter
+                            </button></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+             <div class="col-6 map"> {% include ('location/mapping_location.html.twig') %}</div>
     </div>
 </div>
-    {% include('contact/_event_contact.html.twig') %}
+   {% include('contact/_event_contact.html.twig') %}
 
 {% endblock %}
 {% block javascripts%}

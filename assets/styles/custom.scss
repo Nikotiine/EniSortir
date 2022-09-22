@@ -8,13 +8,21 @@ img{
   max-width: 320px;
 }
 .event-detail{
-  max-width: 75%;
+  max-width: 90%;
 }
 .map{
-  width: 400px;
-  height: 280px;
+  width: 480px;
+  height: 320px;
   position: relative;
-  margin-bottom: 3rem;
+  margin: 0 auto 3rem auto;
+
+}
+.detail-event-user{
+  .wrapper-table{
+    max-height: 20rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 }
 @media screen and (max-width: 1024px){
   .event-filter{
@@ -31,7 +39,6 @@ img{
     width: 100% !important;
   }
   .map{
-
    margin-bottom: 3rem;
   }
 }
@@ -68,7 +75,9 @@ img{
       }
 
     }
-
+.wrapper-table>table>tbody>tr>td{
+  font-size: 0.8rem;
+}
     .filter-title {
       text-align: center;
       margin-top: 2rem;
@@ -83,7 +92,11 @@ img{
 
     }
     .map{
+      width: 100% !important;
       max-width: 320px;
       margin-bottom: 3rem;
+      h1.text-center{
+        margin-top: 1rem !important;
+      }
     }
   }
