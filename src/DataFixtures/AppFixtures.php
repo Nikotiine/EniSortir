@@ -101,18 +101,6 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
-        $coach = new User();
-        $coach->setFirstName('Phillipe')
-            ->setLastName('ENI')
-            ->setEmail('pmontembault@campus-eni.fr')
-            ->setCampus($allCampus[mt_rand(0, count($allCampus) - 1)])
-            ->setIsAdmin(true)
-            ->setIsActive(true)
-            ->setPseudo('CoachEniPhp')
-            ->setPhoneNumber('0606060606');
-        $coach->setPlainPassword('totototo');
-        $users[] = $coach;
-        $manager->persist($coach);
         // Creation des users inactifs
         for ($i = 0; $i < 5; ++$i) {
             $unactiveUser = new User();

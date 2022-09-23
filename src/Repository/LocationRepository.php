@@ -39,36 +39,16 @@ class LocationRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Compte le nombre de lieux differents
+     * @return array
+     */
     public function countAllLocation(): array
     {
-        $queryBuilder = $this->createQueryBuilder('l');
-        $queryBuilder->select('COUNT(l.id) as value');
-
-        return $queryBuilder->getQuery()->getResult();
+       return $this->createQueryBuilder('l')
+           ->select('COUNT(l.id) as value')
+           ->getQuery()
+           ->getResult();
     }
 
-//    /**
-//     * @return Location[] Returns an array of Location objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('l')
-//            ->andWhere('l.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('l.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Location
-//    {
-//        return $this->createQueryBuilder('l')
-//            ->andWhere('l.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

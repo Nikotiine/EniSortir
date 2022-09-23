@@ -98,24 +98,19 @@
                 </table>
             </div>
         </div>
-             <div class="col-6 map"> {% include ('location/mapping_location.html.twig') %}</div>
+             <div class="col-6 map"> {% include ('event/_map.html.twig') %}</div>
     </div>
 </div>
    {% include('contact/_event_contact.html.twig') %}
 
 {% endblock %}
+
 {% block javascripts%}
     {{ parent() }}
     {{ encore_entry_script_tags('detail') }}
-
-
-
-
     <script>
-      
-    const latitude = {{ event.location.latitude }}
-    const longitude = {{ event.location.longitude }}
-
+        const latitude = {{ event.location.latitude }}
+        const longitude = {{ event.location.longitude }}
     </script>
 
 {% endblock %}
