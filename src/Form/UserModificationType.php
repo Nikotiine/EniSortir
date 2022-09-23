@@ -75,6 +75,7 @@ class UserModificationType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
+                'required'=>false,
                 'constraints' => [
                     new Assert\Length(['max' => 12]),
                 ],
