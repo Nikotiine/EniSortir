@@ -71,7 +71,7 @@ class UserModificationType extends AbstractType
                     'class' => 'form-control',
                     'maxlength' => '12',
                 ],
-                'label' => 'telephone',
+                'label' => 'Telephone',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -85,7 +85,7 @@ class UserModificationType extends AbstractType
                     'minlength' => '2',
                     'maxlength' => '180',
                 ],
-                'label' => 'email',
+                'label' => 'Email',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],

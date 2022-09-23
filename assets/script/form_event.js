@@ -26,7 +26,7 @@ function getAssociatedLocation(idVille) {
     ).then((data)=>{
         console.log(data)
         zip = data[0];
-        let option ="<option value='0'>Choisir un lieux</option>";
+        let option ="<option value='0'>Choisir un lieu</option>";
         data[1].map(loc=>{
             option += `<option value="${ loc.id }">${ loc.name }</option>`
         })

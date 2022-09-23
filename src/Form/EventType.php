@@ -78,7 +78,7 @@ class EventType extends AbstractType
                     'min' => 1,
                     'max' => 99,
                 ],
-                'label' => 'Nombre max de personne',
+                'label' => 'Nombre maxium de personnes',
                 'label_attr' => [
                     'class' => 'form-label mt-3',
                 ],
@@ -87,7 +87,7 @@ class EventType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                 ],
-                'label' => 'description de la sortie',
+                'label' => 'Description de la sortie',
                 'label_attr' => [
                     'class' => 'form-label mt-3',
                 ],
@@ -98,7 +98,7 @@ class EventType extends AbstractType
                     'min' => 1,
                     'max' => 99999,
                 ],
-                'label' => 'Duree',
+                'label' => 'Durée de la sortie',
                 'label_attr' => [
                     'class' => 'form-label mt-3',
                 ],
