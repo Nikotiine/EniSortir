@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\City;
 use App\Entity\Location;
-use App\EventSubscriber\FormLocationSubscriber;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -93,13 +92,12 @@ class LocationType extends AbstractType
                     new Assert\Length(['max' => 10]),
                 ],
             ])
-            ->add('submit',SubmitType::class,[
-                'label'=>'Ajouter un lieu',
+            ->add('submit', SubmitType::class, [
+                'label' => 'Ajouter un lieu',
                 'attr' => [
                     'class' => 'btn btn-primary mt-4',
                 ],
             ])
-
 
         ;
     }

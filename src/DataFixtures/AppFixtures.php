@@ -24,17 +24,16 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-
-       //version "realiste" des noms de sortie
-        $eventNames= ['Sortie piscine','Aller boire un verre','Faire de l\'escalade','Soiree jeux de societé',
-            'Boire un cafe','Apprendre la couture','Cours de Yoga','Decouverte de JAVA','Developper une webapp',
-            'Comprendre C++','Utiliser un framework Javascript','Detente au sona','Rando roller','Journee alpinisme',
-            'Soiree billard','Soiree bowling','Exposition de photo','Soiree biere foot','Rencontre cinema de montagne',
-            'Rasso tunnig et run du vendredi'];
-        //version "realiste" des lieux de sortie
-        $locationName=['Piscine des bains','Barberousse','Mur de l\'angoisse','Cafe des jeux','Central perk','Singer institut','Parc Paul Mistral',
-            'Campus ENI','En ligne sur teams','Poly-technique','En ligne sur OCR','Au bains douches','Grand boulevard','Mont aiguille',
-            'Au 109','Bowling center','Musée du quai Branly','Au PMU de nogent','Palais des sport','MacDo de Villejuif'];
+        // version "realiste" des noms de sortie
+        $eventNames = ['Sortie piscine', 'Aller boire un verre', 'Faire de l\'escalade', 'Soiree jeux de societé',
+            'Boire un cafe', 'Apprendre la couture', 'Cours de Yoga', 'Decouverte de JAVA', 'Developper une webapp',
+            'Comprendre C++', 'Utiliser un framework Javascript', 'Detente au sona', 'Rando roller', 'Journee alpinisme',
+            'Soiree billard', 'Soiree bowling', 'Exposition de photo', 'Soiree biere foot', 'Rencontre cinema de montagne',
+            'Rasso tunnig et run du vendredi', ];
+        // version "realiste" des lieux de sortie
+        $locationName = ['Piscine des bains', 'Barberousse', 'Mur de l\'angoisse', 'Cafe des jeux', 'Central perk', 'Singer institut', 'Parc Paul Mistral',
+            'Campus ENI', 'En ligne sur teams', 'Poly-technique', 'En ligne sur OCR', 'Au bains douches', 'Grand boulevard', 'Mont aiguille',
+            'Au 109', 'Bowling center', 'Musée du quai Branly', 'Au PMU de nogent', 'Palais des sport', 'MacDo de Villejuif', ];
 
         // Creation des campus
         $allCampus = [];
@@ -69,8 +68,8 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 20; ++$i) {
             $location = new Location();
             $location->setName($locationName[$i])
-            ->setLongitude($this->faker->longitude(0,7))
-            ->setLatitude($this->faker->latitude(45,50))
+            ->setLongitude($this->faker->longitude(0, 7))
+            ->setLatitude($this->faker->latitude(45, 50))
             ->setCity($citys[$i])
             ->setStreet($this->faker->streetName());
             $locations[] = $location;
@@ -152,13 +151,13 @@ class AppFixtures extends Fixture
                 ->setMaxPeople(mt_rand(5, 49))
                 ->setLocation($locations[$i])
                 ->setDescription($this->faker->text(75));
-            if ($dateStartAt < new \DateTimeImmutable()){
+            if ($dateStartAt < new \DateTimeImmutable()) {
                 $event->setStatus($status[4]);
-            }else{
-                if($dateDeadLine < new \DateTimeImmutable()){
+            } else {
+                if ($dateDeadLine < new \DateTimeImmutable()) {
                     $event->setStatus($status[3]);
-                }else{
-                    $event->setStatus($status[ mt_rand(1,2)]);
+                } else {
+                    $event->setStatus($status[mt_rand(1, 2)]);
                 }
             }
             $events[] = $event;

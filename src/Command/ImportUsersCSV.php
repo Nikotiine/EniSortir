@@ -7,8 +7,6 @@ use App\Repository\CampusRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\Input;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -29,8 +27,8 @@ class ImportUsersCSV extends Command
 
     private UserPasswordHasherInterface $userPasswordHasherInterface;
 
-    public function __construct(EntityManagerInterface      $entityManager, string $dataDirectory,
-                                UserRepository              $userRepository, CampusRepository $campusRepository,
+    public function __construct(EntityManagerInterface $entityManager, string $dataDirectory,
+                                UserRepository $userRepository, CampusRepository $campusRepository,
                                 UserPasswordHasherInterface $userPasswordHasherInterface)
     {
         parent::__construct();
@@ -39,7 +37,6 @@ class ImportUsersCSV extends Command
         $this->userRepository = $userRepository;
         $this->campusRepository = $campusRepository;
         $this->userPasswordHasherInterface = $userPasswordHasherInterface;
-
     }
 
     protected static $defaultName = 'app:create-user';
@@ -65,7 +62,7 @@ class ImportUsersCSV extends Command
 
     private function getDataFromFile(): array
     {
-        $file = $this->dataDirectory . '/user.csv';
+        $file = $this->dataDirectory.'/user.csv';
         $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
 
         $normalizers = [new ObjectNormalizer()];
@@ -79,7 +76,6 @@ class ImportUsersCSV extends Command
         $fileString = file_get_contents($file);
 
         return $serializer->decode($fileString, $fileExtension, $context);
-
     }
 
     private function createUsers(): void
@@ -90,12 +86,12 @@ class ImportUsersCSV extends Command
         foreach ($this->getDataFromFile() as $row) {
             if (array_key_exists('email', $row) && !empty($row['email'])) {
                 $user = $this->userRepository->findOneBy([
-                    'email' => $row['email']
+                    'email' => $row['email'],
                 ]);
                 if (!$user) {
                     $user = new user();
                     $user->setCampus($this->campusRepository->findOneBy(['id' => $row['campus_id']]))
-                        ->setEmail($row['email'] )
+                        ->setEmail($row['email'])
                         ->setPassword($this->userPasswordHasherInterface->hashPassword($user, 'password'))
                         ->setLastName($row['last_name'])
                         ->setFirstName($row['first_name'])
@@ -105,7 +101,7 @@ class ImportUsersCSV extends Command
                         ->setIsAdmin(true);
 
                     $this->entityManager->persist($user);
-                    $userCreated++;
+                    ++$userCreated;
                 }
             }
         }
@@ -114,10 +110,10 @@ class ImportUsersCSV extends Command
 
         if ($userCreated > 1) {
             $string = "{$userCreated} utilisateurs créés en base de données.";
-        } elseif ($userCreated === 1) {
-            $string = "Un utilisateur a été créé en base de données";
+        } elseif (1 === $userCreated) {
+            $string = 'Un utilisateur a été créé en base de données';
         } else {
-            $string = "aucun utilisateur créé";
+            $string = 'aucun utilisateur créé';
         }
 
         $this->io->success($string);

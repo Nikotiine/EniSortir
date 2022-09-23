@@ -21,7 +21,7 @@ class EventsFilterModel
     public $minDate;
 
     #[ORM\Column(type: 'datetime')]
-    #[Assert\GreaterThanOrEqual(propertyPath: 'minDate', message: "Cette date doit être supérieure ou égale à la date de début")]
+    #[Assert\GreaterThanOrEqual(propertyPath: 'minDate', message: 'Cette date doit être supérieure ou égale à la date de début')]
     public $maxDate;
 
     #[ORM\Column(type: 'boolean')]

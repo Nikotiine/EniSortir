@@ -26,10 +26,11 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère les sorties en fonction des critères de recherche sélectionnés
+     * Récupère les sorties en fonction des critères de recherche sélectionnés.
      *
-     * @param EventsFilterModel $data Contient les critères de recherche choisis par l'utilisateur
-     * @param User $connectedUser Contient les informations relatives à l'utilisateur connecté
+     * @param EventsFilterModel $data          Contient les critères de recherche choisis par l'utilisateur
+     * @param User              $connectedUser Contient les informations relatives à l'utilisateur connecté
+     *
      * @return Event[]
      */
     public function getEventList(EventsFilterModel $data, User $connectedUser): array
@@ -78,8 +79,8 @@ class EventRepository extends ServiceEntityRepository
         }
 
         if ($data->isPassed) {
-            $queryBuilder->andWhere("stat.wording = :past")
-            ->setParameter('past',Status::PAST);
+            $queryBuilder->andWhere('stat.wording = :past')
+            ->setParameter('past', Status::PAST);
         }
 
         return $queryBuilder
@@ -108,14 +109,14 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Récupère les événements actifs en base de donnée.
      */
-    public function getActiveEvents(array $params,Campus $campus): array
+    public function getActiveEvents(array $params, Campus $campus): array
     {
         return $this->createQueryBuilder('e')
             ->select('e')
             ->join('e.status', 's')
             ->andWhere('s.wording IN (:status)')
             ->andWhere('e.campus = :campus')
-            ->setParameter('campus',$campus)
+            ->setParameter('campus', $campus)
             ->setParameter('status', $params)
             ->getQuery()
             ->getResult();

@@ -38,6 +38,7 @@ class LocationRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
     public function countAllLocation(): array
     {
         $queryBuilder = $this->createQueryBuilder('l');

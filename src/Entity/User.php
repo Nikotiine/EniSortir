@@ -367,8 +367,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * override serialise pour ne pas serialise la photo de profil
-     * @return array
+     * override serialise pour ne pas serialise la photo de profil.
      */
     public function __serialize(): array
     {

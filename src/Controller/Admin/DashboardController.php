@@ -15,26 +15,20 @@ use App\Service\ChartService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class DashboardController extends AbstractDashboardController
 {
-
     public function __construct(
-
-        private ChartService       $chartService,
-        private UserRepository     $userRepository,
-        private CampusRepository   $campusRepository,
-        private EventRepository    $eventRepository,
-        private CityRepository     $cityRepository,
+        private ChartService $chartService,
+        private UserRepository $userRepository,
+        private CampusRepository $campusRepository,
+        private EventRepository $eventRepository,
+        private CityRepository $cityRepository,
         private LocationRepository $locationRepository,
-    )
-    {
-
+    ) {
     }
 
     #[Route('/admin', name: 'admin')]
@@ -51,8 +45,8 @@ class DashboardController extends AbstractDashboardController
         $data = [$totalUser[0]['value'], $totalCampus[0]['value'], $totalCity[0]['value'], $totalEvents[0]['value'], $totalLocation[0]['value']];
         $labels = ['Utilisateurs', 'Campus', 'Villes', 'Sorties', 'Lieux'];
         $chart = $this->chartService->polarAreaChart($data, $labels);
-        return $this->render('admin/dashboard.html.twig', [
 
+        return $this->render('admin/dashboard.html.twig', [
                 'chart' => $chart,
             ]
         );

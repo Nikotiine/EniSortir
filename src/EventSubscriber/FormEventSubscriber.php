@@ -7,7 +7,6 @@ use App\Entity\Location;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Form\Event\PreSubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
@@ -22,7 +21,6 @@ class FormEventSubscriber implements EventSubscriberInterface
     {
         return [
             FormEvents::POST_SET_DATA => 'onPostSetData',
-
         ];
     }
 
@@ -102,5 +100,4 @@ class FormEventSubscriber implements EventSubscriberInterface
                 ]);
         }
     }
-
 }
