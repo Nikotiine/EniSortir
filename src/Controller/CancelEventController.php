@@ -12,10 +12,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CancelEventController extends AbstractController
 {
+    /**
+     * @throws TransportExceptionInterface
+     */
     #[Route('/event/cancel/{id}', name: 'app_cancel_event', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === event.getOrganizer()")]
     public function cancelEvent(Event $event,
@@ -30,7 +34,6 @@ class CancelEventController extends AbstractController
         // Si le status de la sortie est different de Creer ou Ouverte , redirection sur acceuil avec message d'erreur
         if (!str_contains(Status::CREATE, $status) && !str_contains(Status::OPEN, $status)) {
             $this->addFlash('failed', 'Annulation impossible');
-
             return $this->redirectToRoute('app_event_list');
         }
         $form = $this->createForm(CancelEventType::class, $event);
@@ -45,7 +48,6 @@ class CancelEventController extends AbstractController
             $manager->persist($event);
             $manager->flush();
             $this->addFlash('success', 'Sortie Annulee');
-
             return $this->redirectToRoute('app_event_list');
         }
 

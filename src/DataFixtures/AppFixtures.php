@@ -70,7 +70,7 @@ class AppFixtures extends Fixture
             $location->setName($locationName[$i])
             ->setLongitude($this->faker->longitude(0, 7))
             ->setLatitude($this->faker->latitude(45, 50))
-            ->setCity($citys[$i])
+            ->setCity($citys[mt_rand(0, count($citys) - 1)])
             ->setStreet($this->faker->streetName());
             $locations[] = $location;
             $manager->persist($location);
@@ -100,17 +100,7 @@ class AppFixtures extends Fixture
             $users[] = $user;
             $manager->persist($user);
         }
-        $niko = new User();
-        $niko->setFirstName('niko')
-            ->setLastName('las')
-            ->setEmail('niko@niko.fr')
-            ->setCampus($allCampus[mt_rand(0, count($allCampus) - 1)])
-            ->setIsAdmin(false)
-            ->setIsActive(true)
-            ->setPseudo('Nikotiine')
-            ->setPhoneNumber('0606060606');
-        $niko->setPlainPassword('password');
-        $manager->persist($niko);
+
         $coach = new User();
         $coach->setFirstName('Phillipe')
             ->setLastName('ENI')
